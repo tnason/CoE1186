@@ -72,7 +72,7 @@ public class TrainMotion {
 	}
 	
 	public void printState() {
-		System.out.format("t (s): %.3f, p (m): %.6f, v (m/s): %.6f, a (m/s^2): %.3f %d%n", time, position, velocity, acceleration, accelRegime);
+		System.out.format("t (s): %.3f, x (m): %.6f, v (m/s): %.6f, a (m/s^2): %.3f %d%n", time, position, velocity, acceleration, accelRegime);
 	}
 	
 	public void motionStep() {
@@ -85,15 +85,29 @@ public class TrainMotion {
 			power = maxPower;
 		}
 		
+		//calculate resistance due to wheel friction
+		//F_frict = k_wheels * g * m(kg)
 		rollingFriction = trainFriction * (gravity * mass);
 		
+		//start motion integration
+		//velocity verlet algorithm
+		//calculates current position from last step velocity and acceleration
+		//x(t+dt) = x(t) + v(t)*dt + a(t)*dt*dt
 		endPosition = position + velocity*time_step + .5*acceleration*time_step*time_step;
 		
-		if(Math.abs(endPosition - position) > (time_step/5)) {
+		//Then, acceleration is calculated based on the power going to the train
+		//and the 
+		//F(t+dt) = P(t+dt)*dt / (x(t+dt) - x(t))
+		//a(t+dt) = (F(t+dt) - F_frict) / mass
+		
+		//Due to the determination of the force on the train from power applied 
+		//and motion in the last step, we must "bootstrap" before fast enough
+		//motion starts up, to avoid explosions from dividing by tiny numbers
+		if(Math.abs(endPosition - position) > 2*time_step) {
 			endAccel = ((power*time_step / (endPosition - position)) - rollingFriction)/mass;
 			accelRegime = 1;
 		} else {
-			endAccel = ((power*time_step / (.1)) - rollingFriction)/mass;
+			endAccel = ((power / 50) - rollingFriction)/mass;
 			accelRegime = 0;
 		}
 		
@@ -111,9 +125,9 @@ public class TrainMotion {
 			endVelocity = 0;
 		}
 		
-		if(endVelocity > maxSpeed) {
+		if(endVelocity > maxSpeed) { //cap speed at speed limit
 			endVelocity = maxSpeed;
-			endAccel = 0; 
+			endAccel = 0; //and stop acceleration (for position calc in next step)
 		}
 		
 		position = endPosition;
