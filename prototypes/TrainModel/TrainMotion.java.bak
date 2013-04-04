@@ -10,6 +10,8 @@ public class TrainMotion {
 	
 	private double mass = 51437; //loaded train mass in kg
 	
+	private double trackGrade = 0.0; //in %
+	
 	private double trLength = 32.2; //in m
 	private double trWidth = 2.65;
 	private double trHeight = 3.42;
@@ -17,7 +19,7 @@ public class TrainMotion {
 	private boolean trainBrakeOn = false;
 	private boolean trainEmergencyBrakeOn = false;
 	
-	private final double time_step = .001; //in s
+	private final double time_step = .0001; //in s
 	
 	private final double maxPower = 120000.0; //in W (120kW)
 	private final double maxSpeed = 70000/3600.0; //in m/s (70km/hr)
@@ -32,6 +34,10 @@ public class TrainMotion {
 	private int accelRegime = 0;
 	
 	public TrainMotion() {
+	}
+	
+	public void setGrade(double gr) {
+		trackGrade = gr;
 	}
 	
 	public void setPower(double pow) {
@@ -81,13 +87,20 @@ public class TrainMotion {
 		double endVelocity;
 		double endAccel;
 		
+		double trackAngle;
+		trackAngle = Math.toDegrees(Math.atan(trackGrade/100.0));
+		
 		if(power > maxPower) {
 			power = maxPower;
 		}
 		
 		//calculate resistance due to wheel friction
-		//F_frict = k_wheels * g * m(kg)
-		rollingFriction = trainFriction * (gravity * mass);
+		//F_frict = (k_wheels * g * m(kg) * cos(trackAngle)) 
+		//	Friction due to normal force of train on track
+		//... + (mg*sin(trackAngle))
+		//	Additional resistance (uphill) or additional force provided (downhill)
+		rollingFriction = (trainFriction * (Math.cos(Math.toRadians(trackAngle))*gravity * mass)) + (mass * gravity * Math.sin(Math.toRadians(trackAngle)));
+		//System.out.println(rollingFriction);
 		
 		//start motion integration
 		//velocity verlet algorithm
@@ -103,11 +116,11 @@ public class TrainMotion {
 		//Due to the determination of the force on the train from power applied 
 		//and motion in the last step, we must "bootstrap" before fast enough
 		//motion starts up, to avoid explosions from dividing by tiny numbers
-		if(Math.abs(endPosition - position) > 2*time_step) {
+		if(Math.abs(endPosition - position) > time_step) {
 			endAccel = ((power*time_step / (endPosition - position)) - rollingFriction)/mass;
 			accelRegime = 1;
 		} else {
-			endAccel = ((power / 25) - rollingFriction)/mass;
+			endAccel = (power/5 - rollingFriction)/mass;
 			accelRegime = 0;
 		}
 		
@@ -123,6 +136,7 @@ public class TrainMotion {
 		
 		if(endVelocity < 0) { //train cannot go backwards
 			endVelocity = 0;
+			endAccel = 0; 
 		}
 		
 		if(endVelocity > maxSpeed) { //cap speed at speed limit
