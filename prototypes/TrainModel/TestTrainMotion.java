@@ -4,24 +4,34 @@ public class TestTrainMotion {
 		TrainMotion test = new TrainMotion();	
 		
 
-		test.setPower(120000);
-		test.setGrade(-1);
-		for(int i = 0; i < 10000000; i++) {
-			if(i % 10000 == 0 && i < 200000) {
-				test.printState();
+		test.setGrade(1);
+		for(int j = 0; j < 13; j++) {
+			test.setPower(27+(10000*j));
+			for(int i = 0; i < 2500; i++) {
+				if(i % 250 == 0 || (j<2 && i < 20)) {
+					test.printState();
+				}
+				test.motionStep();
+			}	
+		}
+
+		for(int i = 0; i < 50000; i++) {
+				if(i % 2500 == 0) {
+					test.printState();
+				}
+				test.motionStep();
 			}
-			test.motionStep();
-		}	
-		
+		/*
 		test.setPower(0);
 		test.setEmergencyBrake(true);
 		
-		for(int i = 0; i < 100000; i++) {
-			if(i % 10000 == 0) {
+		for(int i = 0; i < 10000; i++) {
+			if(i % 1000 == 0) {
 				test.printState();
 			}
 			test.motionStep();
 		}	
+		*/
 	}
 	
 }
