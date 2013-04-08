@@ -1,0 +1,96 @@
+#use actual tabs!!!
+#we can put comments in the layout
+
+#read nodes first
+#resolve sybolic links in blocks to nodes
+
+
+node 1	
+	type : yard
+	x : 0
+	y : 0
+	z : 0
+
+node 2	
+	type : connection
+	x : 200
+	y : 0
+	z : 0
+
+node 3	
+	type : connection
+	x : 400
+	y : 0
+	z : 1
+
+node 4	
+	type : connection
+	x : 600
+	y : 0
+	z : 2
+
+node 5	
+	type : connection
+	x : 800
+	y : 0
+	z : 2
+
+node 6	
+	type : connection
+	x : 1000
+	y : 0
+	z : 1
+
+node 7	
+	type : connection
+	x : 1200
+	y : 0
+	z : 0	
+	
+node 8	
+	type : yard
+	x : 1400
+	y : 0
+	z : 0
+
+#----------------------------------------------------------	
+	
+block 1
+	type : linear
+	start : 1
+	stop : 2
+	
+block 2
+	type : linear
+	start : 2
+	stop : 3
+
+block 3
+	type : linear
+	start : 3
+	stop : 4
+
+block 4
+	type : linear
+	start : 4
+	stop : 5	
+	
+block 5
+	type : linear
+	start : 5
+	stop : 6
+	
+block 6
+	type : linear
+	start : 6
+	stop : 7
+	
+block 7
+	type : linear
+	start : 7
+	stop : 8
+	
+	
+	
+	
+	
