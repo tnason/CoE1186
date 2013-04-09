@@ -7,15 +7,22 @@ import java.util.concurrent.*;
 public class TrainContainer implements Runnable, constData 
 {
 	private Module name;
-  private LinkedBlockingQueue<Message> msgs = new LinkedBlockingQueue<Message>();
+  private LinkedBlockingQueue<Message> msgs;
   
-  private ArrayList<TrainModel> trains = new ArrayList<TrainModel>();
+  private HashTable<int, TrainModel> trains;
   
 	private Timer motionTimer;
+
+	//for message sending/receiving
+	int trainID;
+	TrainModel tm;
+	
 
   public TrainContainer()
   { 
   	this.name = Module.trainModel;
+  	msgs  = new LinkedBlockingQueue<Message>();
+  	trains = new HashTable<int, TrainModel>();
   	motionTimer = new Timer();
   	motionTimer.scheduleAtFixedRate(new motionTask(), 0, 10); //update all the train motion every 10 ms
   }
@@ -25,10 +32,10 @@ public class TrainContainer implements Runnable, constData
   {
   	public void run()
   	{
-  		Iterator<TrainModel> it = trains.iterator();
-  		while(it.hasNext())
+  		Enumeration<int> enumKey = trains.keys();
+  		while(enumKey.hasMoreElements())
   		{
-  			it.next().motionStep(); //move the trains!
+  			trains.get(enumKey.nextElement()).motionStep(); //move the trains!
   		}
   	}
   }
@@ -42,7 +49,7 @@ public class TrainContainer implements Runnable, constData
 
   public void run()
 	{
-		Thread t = new Thread();
+		//Thread t = new Thread();
 
 		while(true)
 		{
@@ -52,11 +59,22 @@ public class TrainContainer implements Runnable, constData
 
 				if(name == mine.getDest())
 				{
+					
 					System.out.println("\nRECEIVED MSG: source->"+mine.getSource() + " : dest->"+mine.getDest()+"\n");
 
-					if(mine.getData() != null && mine.getData().get("check") != null )
+					if(mine.getData() != null)
 					{
+						trainID = (int)(m.getData.get("train_ID"));
+						tm = trains.get(trainID);
 						System.out.println(mine.getData().get("check"));
+						
+						//handling incoming messages
+						switch (m.getType())
+						{
+							//case MESSAGE_NAME:
+							//stuff
+						}
+						
 					}
 					else
 					{
@@ -74,26 +92,28 @@ public class TrainContainer implements Runnable, constData
 					Environment.passMessage(mine);
 				}
 			}
-		 }
-    }
+		}
+  }
 
-    public void setMsg(Message m)
-    {
-			msgs.add(m);
-    }
+  public void setMsg(Message m)
+  {
+		msgs.add(m);
+  }
 
-    public void send()
-    {
-			Message outgoing = new Message(name, name, Module.trainController);
+  public void send()
+  {
+		Message outgoing = new Message(name, name, Module.trainController);
 
-			System.out.println("SENDING MSG: start->"+outgoing.getSource() + " : dest->"+outgoing.getDest()+"\n");
+		System.out.println("SENDING MSG: start->"+outgoing.getSource() + " : dest->"+outgoing.getDest()+"\n");
 
-			Environment.passMessage(outgoing);
-    }
+		Environment.passMessage(outgoing);
+  }
 
 	public void send(Message m)
   {
    	System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+"\n");
 		Environment.passMessage(m);
   }
+  
+  //methods to send messages go here
 }

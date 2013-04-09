@@ -2,7 +2,13 @@
 
 public class TrainModel implements Runnable, constData 
 {
+	//tracking block occupancy
+	//[0] = 'front' block (in direction of motion)
 	private ArrayList<Block> occupiedBlocks = new ArrayList<Block> ();
+	private ArrayList<int> blockEntryPos = new ArrayList<int> ();
+	
+	private boolean fromYard;
+	
 	private int trainID;
 
 	//train state
@@ -11,12 +17,12 @@ public class TrainModel implements Runnable, constData
 	private double velocity = 0; //in m/s
 	private double acceleration = 0;//in m/s^2
 	
-	private double currentBlockGrade;
+	private double currentBlockGrade; //for motion!
 	
 	private double time = 0; //in s
 	
 	private double mass = 51437; //loaded train mass in kg
-	
+		
 	private final double trLength = 32.2; //in m
 	private final double trWidth = 2.65;
 	private final double trHeight = 3.42;
@@ -50,10 +56,12 @@ public class TrainModel implements Runnable, constData
 		}
 		
 		occupiedBlocks.add(start);
+		blockEntryPos.add(position); 
 		
-		//place the train on the block outside of the yard
+		//place the train on the initial block (outside of the yard)
 		currentBlockGrade = occupiedBlocks.get(0).getGrade();
 		occupiedBlocks.get(0).setOccupation(true);
+		fromYard = true;
 	}
 	
 	
@@ -98,7 +106,7 @@ public class TrainModel implements Runnable, constData
 		
 		
 		double trackAngle;
-		trackAngle = Math.toDegrees(Math.atan(trackGrade/100.0));
+		trackAngle = Math.toDegrees(Math.atan(currentBlockGrade/100.0));
 		
 		if(power > maxPower) 
 		{
@@ -209,9 +217,57 @@ public class TrainModel implements Runnable, constData
 		acceleration = endAccel;
 		
 		time += time_step;
-		
-		//TRAVERSE BLOCKS/
-		//SET BLOCK OCCUPANCY
+	
+		updateOccupancy();	
+	}
+	
+	private void updateOccupancy()
+	{
+		//Update occupancy/traverse blocks
+		//must 'bootstrap' to get consistent stats after leaving yard
+		//Do I need to send messages on occupancy changes?
+		if(fromYard)
+		{
+			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength() - trLength/2.0)) //if the front of the train is crossing into a new block
+			{
+				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(/* NOT_SURE_YET */));
+				blockEntryPos.add(0, position);
+				
+				occupiedBlocks.get(0).setOccupation(true);
+			}
+			
+			if(occupiedBlocks.size() == 2)
+			{
+				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() - trLength/2.0)) //if the back of the train has left the old block
+				{
+					fromYard = false;
+					occupiedBlocks.get(1).setOccupation(false);
+					occupiedBlocks.remove(1);
+					blockEntryPos.remove(1);
+				}
+			}
+		}
+		//normal case
+		else
+		{
+			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength()))
+			{
+				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(/* NOT_SURE_YET */));
+				blockEntryPos.add(0, position);
+				
+				occupiedBlocks.get(0).setOccupation(true);
+			}
+			
+			if(occupiedBlocks.size() == 2)
+			{
+				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() + trLength)) //if the back of the train has left the old block
+				{
+					occupiedBlocks.get(1).setOccupation(false);
+					occupiedBlocks.remove(1);
+					blockEntryPos.remove(1);
+				}
+			}
+		}
 	}
 	
 }
