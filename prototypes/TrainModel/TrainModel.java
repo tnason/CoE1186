@@ -1,5 +1,5 @@
 //The actual train
-
+package TLTTC;
 public class TrainModel implements Runnable, constData 
 {
 	//tracking block occupancy
