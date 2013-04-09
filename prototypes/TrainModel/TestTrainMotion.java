@@ -1,3 +1,4 @@
+package TLTTC;
 public class TestTrainMotion {
 
 	public static void main(String[] args) {

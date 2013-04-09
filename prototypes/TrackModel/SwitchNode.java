@@ -1,4 +1,4 @@
-
+package TLTTC;
 public class SwitchNode extends Node{
 	protected Block divergingOutput;
 	protected int   direction;

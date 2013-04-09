@@ -1,4 +1,4 @@
-
+package TLTTC;
 public class StationNode extends Node{
 	protected String name;
 	
