@@ -1,4 +1,4 @@
-
+package TLTTC;
 public class CrossingNode extends Node{
 	protected boolean opened;
 	

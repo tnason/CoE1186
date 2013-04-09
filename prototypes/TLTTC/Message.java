@@ -1,3 +1,4 @@
+package TLTTC;
 import java.util.*;
 
 /*
@@ -10,22 +11,20 @@ public class Message implements constData
 {
 	private Hashtable<String, Object> data;
 	private Module sender, source, dest;
-	private msg mType;
 
-	public Message(Module sender, Module source, Module dest, msg mType)
+	public Message(Module sender, Module source, Module dest)
 	{
 		this.sender = sender;
 		this.source = source;
 		this.dest   = dest;
-		this.mType 	= mType;
 
 		data = new Hashtable<String, Object>();
 	}
 
-	public Message(Module sender, Module source, Module dest, msg mType
+	public Message(Module sender, Module source, Module dest,
 					String[] keys, Object[] values)
 	{
-		this(sender, source, dest, mType);
+		this(sender, source, dest);
 
 		if(keys != null && values != null && keys.length == values.length)
 		{
@@ -91,11 +90,6 @@ public class Message implements constData
 	public Module getDest()
 	{
 		return dest;
-	}
-	
-	public msg getType()
-	{
-		return mType;
 	}
 
 	public Hashtable<String, Object>  getData()

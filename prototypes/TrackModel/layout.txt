@@ -11,6 +11,7 @@ node 1
 	y : 0
 	z : 0
 
+
 node 2	
 	type : connection
 	x : 200
@@ -59,36 +60,43 @@ block 1
 	type : linear
 	start : 1
 	stop : 2
+	controller : 0
 	
 block 2
 	type : linear
 	start : 2
 	stop : 3
+	controller : 0
 
 block 3
 	type : linear
 	start : 3
 	stop : 4
+	controller : 0
 
 block 4
 	type : linear
 	start : 4
-	stop : 5	
+	stop : 5
+	controller : 0, 1	
 	
 block 5
 	type : linear
 	start : 5
 	stop : 6
+	controller : 1
 	
 block 6
 	type : linear
 	start : 6
 	stop : 7
+	controller : 1
 	
 block 7
 	type : linear
 	start : 7
 	stop : 8
+	controller : 1
 	
 	
 	
