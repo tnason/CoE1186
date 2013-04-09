@@ -1,28 +1,37 @@
+//The actual train
 package TLTTC;
-public class TrainMotion 
+public class TrainModel implements Runnable, constData 
 {
+	//tracking block occupancy
+	//[0] = 'front' block (in direction of motion)
+	private ArrayList<Block> occupiedBlocks = new ArrayList<Block> ();
+	private ArrayList<int> blockEntryPos = new ArrayList<int> ();
 	
+	private boolean fromYard;
+	
+	private int trainID;
+
 	//train state
 	private double power = 0; //in Watts
 	private double position = 0; //in m
 	private double velocity = 0; //in m/s
 	private double acceleration = 0;//in m/s^2
 	
+	private double currentBlockGrade; //for motion!
+	
 	private double time = 0; //in s
 	
 	private double mass = 51437; //loaded train mass in kg
-	
-	private double trackGrade = 0.0; //in %
-	
-	private double trLength = 32.2; //in m
-	private double trWidth = 2.65;
-	private double trHeight = 3.42;
+		
+	private final double trLength = 32.2; //in m
+	private final double trWidth = 2.65;
+	private final double trHeight = 3.42;
 	
 	private boolean trainBrakeOn = false;
 	private boolean trainEmergencyBrakeOn = false;
 	
-	private final double time_step = .01; //in s
-	
+	private final double time_step; //in s
+
 	private final double maxPower = 120000.0; //in W (120kW)
 	private final double maxSpeed = 70000/3600.0; //in m/s (70km/hr)
 	
@@ -37,14 +46,24 @@ public class TrainMotion
 	private int forceRegime = 0;
 	
 	
-	public TrainMotion() 
+	public TrainModel(int trainID, Block start, double time_step) 
 	{
+		this.trainID = trainID;
+		
+		if(start.isOccupied())
+		{
+			//error, stop making this train!!!!
+		}
+		
+		occupiedBlocks.add(start);
+		blockEntryPos.add(position); 
+		
+		//place the train on the initial block (outside of the yard)
+		currentBlockGrade = occupiedBlocks.get(0).getGrade();
+		occupiedBlocks.get(0).setOccupation(true);
+		fromYard = true;
 	}
 	
-	public void setGrade(double gr) 
-	{
-		trackGrade = gr;
-	}
 	
 	public void setPower(double pow) 
 	{
@@ -59,12 +78,7 @@ public class TrainMotion
 		}
 	}
 	
-	public void setAccel(double accel) 
-	{
-		acceleration = accel;
-	}
-	
-	public boolean setBrake(boolean brake) 
+	private boolean setBrake(boolean brake) 
 	{
 		return trainBrakeOn = brake;
 	}
@@ -74,26 +88,7 @@ public class TrainMotion
 		return trainEmergencyBrakeOn = brake;
 	}
 	
-	public double getPosition() 
-	{
-		return position;
-	}
-	
-	public double getVelocity() 
-	{
-		return velocity;
-	}
-	
-	public double getAccel() 
-	{
-		return acceleration;
-	}
-	
-	public double getTime() 
-	{
-		return time;
-	}
-	
+	//for motion debugging
 	public void printState() 
 	{
 		System.out.format("t: %.3f, p: %.1e, x: %.6f, v: %.6f, a: %.3f %d %d%n", time, power, position, velocity, acceleration, forceRegime, accelRegime);
@@ -111,7 +106,7 @@ public class TrainMotion
 		
 		
 		double trackAngle;
-		trackAngle = Math.toDegrees(Math.atan(trackGrade/100.0));
+		trackAngle = Math.toDegrees(Math.atan(currentBlockGrade/100.0));
 		
 		if(power > maxPower) 
 		{
@@ -222,6 +217,57 @@ public class TrainMotion
 		acceleration = endAccel;
 		
 		time += time_step;
+	
+		updateOccupancy();	
+	}
+	
+	private void updateOccupancy()
+	{
+		//Update occupancy/traverse blocks
+		//must 'bootstrap' to get consistent stats after leaving yard
+		//Do I need to send messages on occupancy changes?
+		if(fromYard)
+		{
+			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength() - trLength/2.0)) //if the front of the train is crossing into a new block
+			{
+				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(/* NOT_SURE_YET */));
+				blockEntryPos.add(0, position);
+				
+				occupiedBlocks.get(0).setOccupation(true);
+			}
+			
+			if(occupiedBlocks.size() == 2)
+			{
+				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() - trLength/2.0)) //if the back of the train has left the old block
+				{
+					fromYard = false;
+					occupiedBlocks.get(1).setOccupation(false);
+					occupiedBlocks.remove(1);
+					blockEntryPos.remove(1);
+				}
+			}
+		}
+		//normal case
+		else
+		{
+			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength()))
+			{
+				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(/* NOT_SURE_YET */));
+				blockEntryPos.add(0, position);
+				
+				occupiedBlocks.get(0).setOccupation(true);
+			}
+			
+			if(occupiedBlocks.size() == 2)
+			{
+				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() + trLength)) //if the back of the train has left the old block
+				{
+					occupiedBlocks.get(1).setOccupation(false);
+					occupiedBlocks.remove(1);
+					blockEntryPos.remove(1);
+				}
+			}
+		}
 	}
 	
 }

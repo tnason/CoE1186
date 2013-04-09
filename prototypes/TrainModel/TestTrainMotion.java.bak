@@ -6,7 +6,7 @@ public class TestTrainMotion {
 
 		test.setGrade(1);
 		for(int j = 0; j < 13; j++) {
-			test.setPower(29+(10000*j));
+			test.setPower(27+(10000*j));
 			for(int i = 0; i < 2500; i++) {
 				if(i % 250 == 0 || (j<2 && i < 20)) {
 					test.printState();
