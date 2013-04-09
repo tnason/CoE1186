@@ -1,27 +1,31 @@
-public class TrainMotion 
+//The actual train
+
+public class TrainModel implements Runnable, constData 
 {
-	
+	private ArrayList<Block> occupiedBlocks = new ArrayList<Block> ();
+	private int trainID;
+
 	//train state
 	private double power = 0; //in Watts
 	private double position = 0; //in m
 	private double velocity = 0; //in m/s
 	private double acceleration = 0;//in m/s^2
 	
+	private double currentBlockGrade;
+	
 	private double time = 0; //in s
 	
 	private double mass = 51437; //loaded train mass in kg
 	
-	private double trackGrade = 0.0; //in %
-	
-	private double trLength = 32.2; //in m
-	private double trWidth = 2.65;
-	private double trHeight = 3.42;
+	private final double trLength = 32.2; //in m
+	private final double trWidth = 2.65;
+	private final double trHeight = 3.42;
 	
 	private boolean trainBrakeOn = false;
 	private boolean trainEmergencyBrakeOn = false;
 	
-	private final double time_step = .01; //in s
-	
+	private final double time_step = .05; //in s
+
 	private final double maxPower = 120000.0; //in W (120kW)
 	private final double maxSpeed = 70000/3600.0; //in m/s (70km/hr)
 	
@@ -36,14 +40,22 @@ public class TrainMotion
 	private int forceRegime = 0;
 	
 	
-	public TrainMotion() 
+	public TrainModel(int trainID, Block start) 
 	{
+		this.trainID = trainID;
+		
+		if(start.isOccupied())
+		{
+			//error, stop making this train!!!!
+		}
+		
+		occupiedBlocks.add(start);
+		
+		//place the train on the block outside of the yard
+		currentBlockGrade = occupiedBlocks.get(0).getGrade();
+		occupiedBlocks.get(0).setOccupation(true);
 	}
 	
-	public void setGrade(double gr) 
-	{
-		trackGrade = gr;
-	}
 	
 	public void setPower(double pow) 
 	{
@@ -58,12 +70,7 @@ public class TrainMotion
 		}
 	}
 	
-	public void setAccel(double accel) 
-	{
-		acceleration = accel;
-	}
-	
-	public boolean setBrake(boolean brake) 
+	private boolean setBrake(boolean brake) 
 	{
 		return trainBrakeOn = brake;
 	}
@@ -73,26 +80,7 @@ public class TrainMotion
 		return trainEmergencyBrakeOn = brake;
 	}
 	
-	public double getPosition() 
-	{
-		return position;
-	}
-	
-	public double getVelocity() 
-	{
-		return velocity;
-	}
-	
-	public double getAccel() 
-	{
-		return acceleration;
-	}
-	
-	public double getTime() 
-	{
-		return time;
-	}
-	
+	//for motion debugging
 	public void printState() 
 	{
 		System.out.format("t: %.3f, p: %.1e, x: %.6f, v: %.6f, a: %.3f %d %d%n", time, power, position, velocity, acceleration, forceRegime, accelRegime);
@@ -221,6 +209,9 @@ public class TrainMotion
 		acceleration = endAccel;
 		
 		time += time_step;
+		
+		//TRAVERSE BLOCKS/
+		//SET BLOCK OCCUPANCY
 	}
 	
 }

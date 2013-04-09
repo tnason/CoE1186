@@ -162,7 +162,7 @@ public class TrainMotion {
 				//but train will not reverse
 				endAccel = (engineForce - (rollingFrictionForce + hillResistanceForce))/mass;
 				accelRegime = 3;	
-				if(endVelocity < 0) {
+				if(endVelocity < 0.0001) {
 					endVelocity = 0.0;
 					endAccel = 0.0;
 				}

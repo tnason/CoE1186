@@ -3,7 +3,7 @@ public abstract class Block {
 	/*unique identification number*/
 	protected int blockID;
 	
-	int occupied;
+	boolean occupied;
 	
 	/*keep track of nodes*/
 	protected Node startNode;
@@ -16,58 +16,70 @@ public abstract class Block {
 	 */
 	protected int allowedDirections;
 	
-	public void setOccupation(int state){
-		//TODO - bounds check state
+	public void setOccupation(boolean state)
+	{
 		occupied = state;
 	}
 	
-	public boolean isOccupied(){
+	public boolean isOccupied()
+	{
 		return false;
 	}
 	
-	public double getGrade(){
+	public double getGrade()
+	{
 		return 0;
 	}
 	
-	public double getLength(){
+	public double getLength()
+	{
 		return 0;
 	}
 	
-	public double getPowerLimit(){
+	public double getPowerLimit()
+	{
 		return 0;
 	}
 	
-	public double getSpeedLimit(){
+	public double getSpeedLimit()
+	{
 		return 0;
 	}
 	
-	public boolean isUnderground(){
+	public boolean isUnderground()
+	{
 		return false;
 	}
 	
-	public Node getStartNode(){
+	public Node getStartNode()
+	{
 		return startNode;
 	}
 	
-	public Node getStopNode(){
+	public Node getStopNode()
+	{
 		return stopNode;
 	}
 	
-	public int getAllowedDirection(){
+	public int getAllowedDirection()
+	{
 		return allowedDirections;
 	}
 	
-	public Block getNextBlock(int direction){
+	public Block getNextBlock(int direction)
+	{
 		/*direction uses same number convention as allowableDirection*/
 		return null;
 	}
 	
-	public Block getNextBlock(Node lastNode){
+	public Block getNextBlock(Node lastNode)
+	{
 		/*it is easier to implement if we keep track of last node passed*/
 		return null;
 	}
 	
-	public double[] getAbsolutePosition(double distance){
+	public double[] getAbsolutePosition(double distance)
+	{
 		return new double[3]; //[x,y,z]
 	}
 	
