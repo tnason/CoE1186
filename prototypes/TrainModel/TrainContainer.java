@@ -13,6 +13,10 @@ public class TrainContainer implements Runnable, constData
   
 	private Timer motionTimer;
 
+	private int timerTrigger = 10; //real-time value (in ms) for triggering motionStep() calls
+	private double trainTimestep = .05; //timestep (in s) for train motion integration (simulation time!)
+	//For now, simulationSpeedup = (trainTimestep * 1000) / timerTrigger
+
 	//for message sending/receiving
 	int trainID;
 	TrainModel tm;
@@ -24,7 +28,7 @@ public class TrainContainer implements Runnable, constData
   	msgs  = new LinkedBlockingQueue<Message>();
   	trains = new HashTable<int, TrainModel>();
   	motionTimer = new Timer();
-  	motionTimer.scheduleAtFixedRate(new motionTask(), 0, 10); //update all the train motion every 10 ms
+  	motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every 10 ms
   }
   
   //Driver for timed motion!
@@ -42,7 +46,7 @@ public class TrainContainer implements Runnable, constData
 
 	public void newTrain(int TrainID, Block start)
 	{
-		trains.add(new TrainModel(TrainID, start));
+		trains.add(new TrainModel(TrainID, start, trainTimestep));
 		//send a message to TrainControllerModule to make a new, linked TrainController
 
 	}

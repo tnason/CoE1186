@@ -74,7 +74,14 @@ public abstract class Block {
 	
 	public Block getNextBlock(Node lastNode)
 	{
-		/*it is easier to implement if we keep track of last node passed*/
+		/*
+			it is easier to implement if we keep track of last node passed
+		
+			Tom: To do this, the train needs a way to query the block it is occupying to find which node it is entering/exiting on
+			This could be done relatively easily if someone passes me the yard node when dispatching a new train
+			Then, Block could resolve my direction from the node that I entered it on (+ switches, etc)
+			I could then set a new block's entry node to the current block's exit node (which it returns to me after I pass it the node I entered on)
+		*/
 		return null;
 	}
 	

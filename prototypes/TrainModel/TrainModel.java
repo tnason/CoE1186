@@ -30,7 +30,7 @@ public class TrainModel implements Runnable, constData
 	private boolean trainBrakeOn = false;
 	private boolean trainEmergencyBrakeOn = false;
 	
-	private final double time_step = .05; //in s
+	private final double time_step; //in s
 
 	private final double maxPower = 120000.0; //in W (120kW)
 	private final double maxSpeed = 70000/3600.0; //in m/s (70km/hr)
@@ -46,7 +46,7 @@ public class TrainModel implements Runnable, constData
 	private int forceRegime = 0;
 	
 	
-	public TrainModel(int trainID, Block start) 
+	public TrainModel(int trainID, Block start, double time_step) 
 	{
 		this.trainID = trainID;
 		
