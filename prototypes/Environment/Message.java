@@ -23,7 +23,7 @@ public class Message implements constData
 		data = new Hashtable<String, Object>();
 	}
 
-	public Message(Module sender, Module source, Module dest, msg mType
+	public Message(Module sender, Module source, Module dest, msg mType,
 					String[] keys, Object[] values)
 	{
 		this(sender, source, dest, mType);
