@@ -8,9 +8,9 @@ import java.util.concurrent.*;
 public class TrainContainer implements Runnable, constData 
 {
 	private Module name;
-  private LinkedBlockingQueue<Message> msgs;
+	private LinkedBlockingQueue<Message> msgs;
   
-  private HashTable<int, TrainModel> trains;
+	private HashTable<int, TrainModel> trains;
   
 	private Timer motionTimer;
 
@@ -23,27 +23,27 @@ public class TrainContainer implements Runnable, constData
 	TrainModel tm;
 	
 
-  public TrainContainer()
-  { 
-  	this.name = Module.trainModel;
-  	msgs  = new LinkedBlockingQueue<Message>();
-  	trains = new HashTable<int, TrainModel>();
-  	motionTimer = new Timer();
-  	motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every 10 ms
-  }
+	public TrainContainer()
+	{ 
+  		this.name = Module.trainModel;
+		msgs  = new LinkedBlockingQueue<Message>();
+		trains = new HashTable<int, TrainModel>();
+		motionTimer = new Timer();
+  		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every 10 ms
+	}
   
-  //Driver for timed motion!
-  private class motionTask extends TimerTask 
-  {
-  	public void run()
-  	{
-  		Enumeration<int> enumKey = trains.keys();
-  		while(enumKey.hasMoreElements())
-  		{
-  			trains.get(enumKey.nextElement()).motionStep(); //move the trains!
+	//Driver for timed motion!
+	private class motionTask extends TimerTask 
+	{
+ 		public void run()
+		{
+  			Enumeration<int> enumKey = trains.keys();
+  			while(enumKey.hasMoreElements())
+  			{
+  				trains.get(enumKey.nextElement()).motionStep(); //move the trains!
+	  		}
   		}
-  	}
-  }
+	}
 
 	public void newTrain(int TrainID, Block start)
 	{
@@ -52,7 +52,7 @@ public class TrainContainer implements Runnable, constData
 
 	}
 
-  public void run()
+	public void run()
 	{
 		//Thread t = new Thread();
 
@@ -98,27 +98,25 @@ public class TrainContainer implements Runnable, constData
 				}
 			}
 		}
-  }
+	}
 
-  public void setMsg(Message m)
-  {
+	public void setMsg(Message m)
+	{
 		msgs.add(m);
-  }
+	}
 
-  public void send()
-  {
+	public void send()
+	{
 		Message outgoing = new Message(name, name, Module.trainController);
-
 		System.out.println("SENDING MSG: start->"+outgoing.getSource() + " : dest->"+outgoing.getDest()+"\n");
-
 		Environment.passMessage(outgoing);
-  }
+	}
 
 	public void send(Message m)
-  {
-   	System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+"\n");
+	{
+   		System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+"\n");
 		Environment.passMessage(m);
-  }
+	}
   
   //methods to send messages go here
 }
