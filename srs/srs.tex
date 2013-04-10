@@ -1,0 +1,228 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{titlesec}
+
+\usepackage[T1]{fontenc}
+\usepackage{pslatex}
+
+\usepackage{enumerate}
+
+\begin{document}
+
+\title{Software Requirement Specifications}
+\author{Authors...}
+\date{}
+\maketitle
+
+\section{Introduction}
+     \subsection{Purpose}
+     Purpose of the SRS and specify the audience of the SRS.
+
+     \subsection{Scope}
+     Identify the software products to be produced by name. Explain what the product will/will not do. Describe the application of software being specified; relevent benefits, objectives, and goals. Consistent with high level specs.
+
+     \subsection{Definitions}
+     Define all terms, acronyms and abbreviations. May refer to appendixes or other docs.
+
+     \subsection{References}
+     Complete list of docs refered to by the SRS. ID docs by title/report num/ date/ publisher. Specify sources from which ref can be obtained.
+
+     \subsection{Overview}
+     Describe the rest of the SRS. Explain how SRS is organized.
+
+\section{Overall description}
+Describe the general factors taht affect the product and its requirements. Does not state specific requirements. Provide background for those requirements that are defined in section 3 and clarify them.
+
+     \subsection{Product perspective}
+     Put the product into perspective with other related products. State if product is independent/ totally self contained. If product is component of larger system, relate the requirements to the larger system and identify interfaces between system and the software.
+
+          \subsubsection{System Interface}
+	  List each system interface and identify the functionality of the software requirements and the interface description to match the system.
+	  
+	  \subsubsection{User Interface}
+	  Logical characteristics of each interface between the software product and its users. Include configuration characteristics neccessary to accomplish the software requirements.
+	  
+	  Include aspects of optimizing the interface with the person who must use the system. Maybe list of do's and don'ts on how the system will appear to the user. Long/short error messages. Must be verifiable. 
+	  
+	  \subsubsection{Hardware interfaces}
+	  Specify logical characteristics of each interface between the software and the hardware components. Include configuration characteristics. Cover what devices are supported, how they are supported and protocols.
+	  
+	  \subsubsection{Software interfaces}
+	  Specify use of other required software products and interfaces with other application systems. For each required software product, provide: Name, mnemonic, specification number, version number and source.
+
+	  For each interface: discuss the purpose of interfacing software as related to this product. Define the interface in terms of message content and format. 
+
+	  \subsubsection{Communication interfaces}
+	  Specify the various interfaces to communications sucha as local network protocols etc.
+
+	  \subsubsection{Memory constraints}
+	  Specify any applicable characterisitcs and limits on primary and secondary memory.
+
+	  \subsubsection{Operations}
+	  Specify special and normal operations required by the user such as:
+	  The various modes of operation in the user organization; user initiated operations.
+	  Periods of interactive operations and periods of unattended operations.
+	  Data processing support functions.
+	  Backup and recovery operations.
+
+	  \subsubsection{Site adaptation requirements}
+	  Define the requirements for any data or initalized sequences that are specific to a given site, mission or operational mode, ie grid values, safety limits etc.
+	  Specify the site or mission related features that should be modified to adapt the software to a particular installation. 
+
+     \subsection{Product functions}
+     Provide summary of the major functions of software. Organize function list in a way that is understandable to customer. Text/graphical methods to show different functions and relationships. Not intended to show design of a product but to show logical representation among varaiables.
+
+     \subsection{User characteristics}
+     Describe general characteristics of the intended user of the product including education level, experience and technical expertise. Not used to state specific requirements but should provide the reason why certain specific requirements are in section 3.
+
+     \subsection{Constraints}
+     Provide general description of any other items that will limit the developer's options.
+     
+     \begin{enumerate}[(a)]
+     \item{Regulatory Policies}
+     \item{Hardware Limitations}
+     \item{Interface to other applications}
+     \item{Parallel Operations}
+     \item{Audit functions}
+     \item{Control functions}
+     \item{Higher order language requirements}
+     \item{Single handshake protocols}
+     \item{Reliability requirements}
+     \item{Criticality of the application}
+     \item{Safety/ security considerations}
+     \end{enumerate}
+
+     \subsection{Assumptions and dependencies}
+     List each of the factors taht affect the requirements stated in the SRS. These are not design constraints on the software but are any changes to them that can affect the requirements in the SRS. ie assume specific OS on certain hardware; may have to change SRS if specific OS is not available.
+
+     \subsection{Apportioning of requirements}
+     Identify requirements that may be delayed untiol future versions of the system.
+     
+\section{Specific requirements}
+Contains all software requirements to a level of detail sufficent to enabel the designers to design a system to satisfy those requirements and testers to test that the system satisfies those requirements. Every stated requirement should be externally perceivable by users, operators or other external systems. At minimum, a description of each input (stimulus) into the system, every output (response) from the system and all functions performed bt the system in response to an input or in support of an output. 
+
+\vspace{12pt}
+
+     \begin{enumerate}[(a)]
+     \item{Specific requirements should be stated in conformace with all characteristics described in 4.3 of recommended practices.}
+     \item{Specific requirements shoudl be cross-referenced wiht earlier documents that relate.}
+     \item{All reuirements should be uniquely identifiable.}
+     \item{Careful attention given to oragnization of requirements for readability.}
+     \end{enumerate}
+
+     \subsection{External interfaces}
+     Detail description of all inputs into and all outputs from the system. It should complement the interface description of 5.2 and should not repeate information. It should include both content and format as follows:
+     
+     \begin{enumerate}[(a)]
+     \item{Name of item}
+     \item{Description of purpose}
+     \item{Valid range, accuracy and/or tolerance}
+     \item{Units of measure}
+     \item{Timing}
+     \item{Relationship to other inputs/outputs}
+     \item{Screen formats/organization}
+     \item{Data formats}
+     \item{Command formats}
+     \item{End messages}
+     \end{enumerate}
+
+     \subsection{Functions}
+     Functional requirements should define the fundamental actions that take place in the software acceptiing and processing the inputs and in processing and generating the outputs. ``The system shall''....
+
+     \begin{enumerate}[(a)]
+     \item{Validity checks on the input}
+     \item{Exact sequence of operations}
+     \item{Responses to abnormal situations, including}
+       \begin{enumerate}
+       \item{Overflow}
+       \item{Communication facilities}
+       \item{Error handling and recovery}
+       \end{enumerate}
+     \item{Effects of parameters}
+     \item{Relationship of outputs to inputs, including}
+       \begin{enumerate}
+       \item{Input/Output sequences}
+       \item{Formulas for input to output conversion}
+       \end{enumerate}
+    \end{enumerate}
+
+     \subsection{Performace requirements}
+     Specify both the static and dynamic numberical requirements placed on the software or on human interaction with the software. Static numberical requirements may include:
+     
+     \begin{enumerate}[(a)]
+     \item{The number of terminals to be supported}
+     \item{The number of simultaneous users to be supported}
+     \item{Amount and type of information to be handled}
+     \end{enumerate}
+
+     Dynamic numberical requirements may include the numbers of transactions and tasks and the amount of data to be processes within certain time periods for both normal and peak workload conditions. Stated in measurable terms.
+
+     \subsection{Logical database requirements}
+     Specify logical requirements for any information that is to be placed in a database. Includes:
+     
+     \begin{enumerate}[(a)]
+     \item{Types of information used by various functions}
+     \item{Frequency of use}
+     \item{Accessing capabilities}
+     \item{Data entities and their relationships}
+     \item{Integrity constratints}
+     \item{Data retention requirements}
+     \end{enumerate}
+
+     \subsection{Design constraints}
+     Specify the requirements that can be imposed by other standards, hardware limitations, etc.
+
+     \subsubsection{Standards compliance}
+     Specify the requirements derived from existing standards or regulations. May include:
+
+     \begin{enumerate}
+     \item{Report format}
+     \item{Data naming}
+     \item{Accounting procedures}
+     \item{Audit tracing}
+     \end{enumerate}
+
+     ie could specify the requirements for software to trace processing activity.
+
+     \subsection{Software system attributes}
+     There are a number of attributes of software taht can serve as requirements. Specify required attributes so their achievement can be objectively verifies.
+
+          \subsubsection{Reliablility}
+          Specify factors required to establish the required reliability of the software system at time of delivery.
+
+          \subsubsection{Availability}
+          This should specify the factors required to garuntee a devined availability level for the entire system sucha as checkpoint, recovery, and restart.
+          
+          \subsubsection{Security}
+          Specify factors that would protect software from accidental or malicious access, use, modification, destruction, or disclosure. Could include:
+
+          \begin{enumerate}[(a)]
+          \item{Utilize cryptographical techniques}
+          \item{Keep log or history data sets}
+          \item{Assign certain functions to different modules}
+          \item{Restrict communications between some areas of the program}
+          \item{Check data integrity for critical varaibles}
+          \end{enumerate}
+          
+          \subsubsection{Maintainability}
+          Specify attributes of software taht realate to ease of maintainance of the software itself. May be requirements for moducarity, interfaces, complexity, etc. Requirements should not be placed here because they are thought to be good design practice.
+
+          \subsubsection{Portability}
+          Specify attributes of software that relate to ease of porting to other host machines/OS. 
+
+          \begin{enumerate}[(a)]
+          \item{Percentage of component with host dependent code}
+          \item{Percentage of code that is host dependent}
+          \item{Use of proven portable language}
+          \item{Use of particulate compiler or language subset}
+          \item{Use of particular OS}
+          \end{enumerate}
+
+          
+     \subsection{Organizing the specific requirements}
+     
+     
+     
+
+\end{document}
