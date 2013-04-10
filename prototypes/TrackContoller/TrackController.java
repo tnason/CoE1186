@@ -5,7 +5,7 @@ import java.util.concurrent.*;
 public class TrackController implements constData, Runnable
 {
 
-	private Module name Module.trackController;
+	private Module name = Module.trackController;
     private LinkedBlockingQueue<Message> msgs = new LinkedBlockingQueue<Message>();
 
 	public void run()
