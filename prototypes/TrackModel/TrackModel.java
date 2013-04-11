@@ -24,10 +24,16 @@ public class TrackModel extends Worker implements Runnable, constData
     
                 if(name == m.getDest())
                 {
-                    System.out.println("\nRECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
+                    System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
                 }
                 else
                 {
+
+                    if(m.getType() == msg.CTC_TnMd_Request_Train_Creation)
+                    {
+                        m.addData("yard",null); // FIX THIS!
+                    }
+
                     System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
                     m.updateSender(name);
                     Environment.passMessage(m);
@@ -47,6 +53,12 @@ public class TrackModel extends Worker implements Runnable, constData
     public void setMsg(Message m) 
     {
         msgs.add(m);
+    }
+
+    public void send(Message m)
+    {
+        System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        Environment.passMessage(m);
     }
     
 

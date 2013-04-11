@@ -31,7 +31,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
                 Message m = msgs.poll();
                 if (name == m.getDest())
                 { // hey, this was sent to me; let's do something
-                    System.out.println("\nRECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
+                    System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")");
                     switch (m.getType()) {
 		    case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
 			     // unpack the data from the message
@@ -67,8 +67,10 @@ public class CTCOffice extends Worker implements Runnable, constData {
         msgs.add(m);
     }
     
-    public void send() {
-        
+    public void send(Message m)
+    {
+        System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        Environment.passMessage(m);
     }
 }
 /*

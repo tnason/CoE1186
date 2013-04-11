@@ -26,7 +26,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         
         if(name == m.getDest())
         {
-          System.out.println("\nRECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
+          System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
 
           if(m.getData() != null && m.getData().containsKey("trainID"))
           {
@@ -94,10 +94,10 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   
   
   public void send(Message m)
-  {
-    System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+"\n");
-    Environment.passMessage(m);
-  }
+    {
+        System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " +  m.getType()+ ")");
+        Environment.passMessage(m);
+    }
   
   private void sendPower(){
     double powerCommand = tc.setPower();

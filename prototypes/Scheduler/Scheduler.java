@@ -146,7 +146,7 @@ public class Scheduler extends Worker implements constData
 
 				if(name == message.getDest())
 				{
-					System.out.println("\nRECEIVED MESSAGE ~ (source : " + message.getSource() + "), (dest : " + message.getDest() + ")\n");
+					System.out.println("RECEIVED MESSAGE ~ (source : " + message.getSource() + "), (dest : " + message.getDest() + ")\n");
 
 					switch(message.getType())
 					{
@@ -276,8 +276,8 @@ public class Scheduler extends Worker implements constData
 
 	public void send(Message message)
 	{
-	    System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
-		Environment.passMessage(message);
+   		System.out.println("SENDING MSG ~ (start : "+message.getSource() + "), (dest : "+message.getDest()+"), (type : " + message.getType()+ ")");
+        Environment.passMessage(message);
 	}
 
 	private void requestTrainGPS()

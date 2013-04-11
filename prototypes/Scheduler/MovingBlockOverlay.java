@@ -87,7 +87,7 @@ public class MovingBlockOverlay extends Worker implements constData
 
 				if(name == message.getDest())
 				{
-					System.out.println("\nRECEIVED MESSAGE ~ (source : " + message.getSource() + "), (dest : " + message.getDest() + ")\n");
+					System.out.println("RECEIVED MESSAGE ~ (source : " + message.getSource() + "), (dest : " + message.getDest() + ")\n");
 					switch(message.getType())
 					{
 						/*case 86:
@@ -171,10 +171,10 @@ public class MovingBlockOverlay extends Worker implements constData
 		Message Senders
 	*/
 
-	public void send(Message message)
+	public void send(Message m)
 	{
-		System.out.println("SENDING MSG: start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
-		Environment.passMessage(message);
+		System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        Environment.passMessage(m);
 	}
 
 	private void sendAuthority(int trainNumber, double authority)
