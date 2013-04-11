@@ -235,7 +235,6 @@ public class TrainModel implements constData
 	{
 		//Update occupancy/traverse blocks
 		//must 'bootstrap' to get consistent stats after leaving yard
-		//Do I need to send messages on occupancy changes?
 		if(fromYard)
 		{
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength() - trLength/2.0)) //if the front of the train is crossing into a new block
