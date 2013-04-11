@@ -23,12 +23,12 @@ public class TrackController extends Worker implements constData, Runnable
         
         		if(name == m.getDest())
 			    {
-
+			    	System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
 			    }
 			    else
        			{
-         			System.out.println("PASSING MSG: step->"+name + " source->"+m.getSource()+ " dest->"+m.getDest());
-          			m.updateSender(name);
+         			System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+")");
+                    m.updateSender(name);
           			Environment.passMessage(m);
           		}
           	}
@@ -38,7 +38,7 @@ public class TrackController extends Worker implements constData, Runnable
 	public void init()
 	{
 
-		
+
 	}
 
 	public void setMsg(Message m)
@@ -49,7 +49,14 @@ public class TrackController extends Worker implements constData, Runnable
     public void send()
     {
     	Message m = new Message(name,name,name,msg.verify);
-    	Environment.passMessage(m);
+    	//Environment.passMessage(m);
+    	send(m);
+    }
+
+    public void send(Message m)
+    {
+        System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        Environment.passMessage(m);
     }
 
 	public static void main(String [] args)

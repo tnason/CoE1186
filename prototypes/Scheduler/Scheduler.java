@@ -7,7 +7,7 @@ public class Scheduler extends Worker implements constData
 {
 	public static int NEXT_TRAIN_NUMBER = 0;
 
-	private List listeners = new ArrayList();
+	private List<SchedulerListener> listeners = new ArrayList<SchedulerListener>();
 	private LinkedBlockingQueue<Message> messages;
 	private Module name;
 	private OperatorSchedule schedule;
@@ -146,7 +146,7 @@ public class Scheduler extends Worker implements constData
 
 				if(name == message.getDest())
 				{
-					System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+					System.out.println("RECEIVED MESSAGE ~ (source : " + message.getSource() + "), (dest : " + message.getDest() + ")\n");
 
 					switch(message.getType())
 					{
@@ -173,8 +173,8 @@ public class Scheduler extends Worker implements constData
 				}
 				else
 				{
-					System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
-					message.updateSender(name);
+					System.out.println("PASSING MSG ~ (source : " + message.getSource() + "), (step : " + name + "), (dest : "+message.getDest()+")");
+                    message.updateSender(name);
 					Environment.passMessage(message);
 				}
 			}
@@ -276,8 +276,8 @@ public class Scheduler extends Worker implements constData
 
 	public void send(Message message)
 	{
-	    	System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
-		Environment.passMessage(message);
+   		System.out.println("SENDING MSG ~ (start : "+message.getSource() + "), (dest : "+message.getDest()+"), (type : " + message.getType()+ ")");
+        Environment.passMessage(message);
 	}
 
 	private void requestTrainGPS()
@@ -330,7 +330,7 @@ public class Scheduler extends Worker implements constData
 
 	private synchronized void operatorScheduleChanged()
 	{
-		Iterator i;
+		Iterator<SchedulerListener> i;
 		SchedulerEvent e;
 
 		e = new SchedulerEvent(this);
@@ -338,13 +338,13 @@ public class Scheduler extends Worker implements constData
 
 		while(i.hasNext())
 		{
-			((SchedulerListener) i.next()).operatorScheduleChanged(e);
+			i.next().operatorScheduleChanged(e);
 		}
 	}
 
 	private synchronized void timetableChanged()
 	{
-		Iterator i;
+		Iterator<SchedulerListener> i;
 		SchedulerEvent e;
 
 		e = new SchedulerEvent(this);
@@ -352,7 +352,7 @@ public class Scheduler extends Worker implements constData
 
 		while(i.hasNext())
 		{
-			((SchedulerListener) i.next()).timetableChanged(e);
+			 i.next().timetableChanged(e);
 		}
 	}
 }
