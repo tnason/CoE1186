@@ -9,7 +9,6 @@ public class Scheduler extends Worker implements constData
 
 
 	private List<SchedulerListener> listeners = new ArrayList<SchedulerListener>();
-
 	private LinkedBlockingQueue<Message> messages;
 	private Module name;
 	private OperatorSchedule schedule;
@@ -350,14 +349,12 @@ public class Scheduler extends Worker implements constData
 
 	private synchronized void timetableChanged()
 	{
-
 		Message m = new Message(Module.MBO, Module.MBO, Module.scheduler, msg.TnMd_Sch_Notify_Yard);
 		m.addData("trainID", 1);
 		m.addData("entry", true);
 		send(m);
 /*
-=======
->>>>>>> 3e34b24b82a3f0e958c0a0b0e367b4a715e532c4
+
 		Iterator<SchedulerListener> i;
 		SchedulerEvent e;
 
@@ -366,11 +363,9 @@ public class Scheduler extends Worker implements constData
 
 		while(i.hasNext())
 		{
-<<<<<<< HEAD
-			i.next().timetableChanged(e);
-=======
+
 			 i.next().timetableChanged(e);
->>>>>>> 3e34b24b82a3f0e958c0a0b0e367b4a715e532c4
+
 		}
 */
 	}

@@ -23,6 +23,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 	int trainID;
 	TrainModel tm;
 	Block bl;
+	Node n;
 	Message outgoingMessage;
 	
 
@@ -78,7 +79,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 						switch (mine.getType())
 						{
 							case CTC_TnMd_Request_Train_Creation:
-							  bl = (Block)mine.getData().get("yard");
+								n = (YardNode)mine.getData().get("yardNode");
+								bl = (Block)mine.getData().get("yard");
 								if(bl.isOccupied())
 								{
 									//fail silently
@@ -86,17 +88,13 @@ public class TrainContainer extends Worker implements Runnable, constData
 								else
 								{
 									tm = new TrainModel((int)mine.getData().get("trainID"), bl, TIME_STEP);
-								
+									tm.setYardNode(n);
 									//send associated messages!!!
 									
 									// Send will pass message to environment. Notify to console of msg send.
 									//send TnMd_CTC_Confirm_Train_Creation
 									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Confirm_Train_Creation, new String[] {"trainID"}, new Object[] {mine.getData().get("trainID")});
 									send(outgoingMessage); 
-
-									//send TnMd_TcMd_Request_Yard_Node
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackModel, msg.TnMd_TcMd_Request_Yard_Node, new String[] {"trainID", "blockID"}, new Object[] {mine.getData().get("trainID"), (Object)(bl.getID())});
-									send(outgoingMessage);
 
 									//send TnMd_TnCt_Request_Train_Controller_Creation
 									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Request_Train_Controller_Creation, new String[] {"trainID"}, new Object[] {mine.getData().get("trainID")});
@@ -113,12 +111,6 @@ public class TrainContainer extends Worker implements Runnable, constData
 								tm = trains.get(trainID);
 								double power = (double)mine.getData().get("power");
 								tm.setPower(power);
-								break;
-							case TcMd_TnMd_Send_Yard_Node:
-								trainID = (int)(mine.getData().get("trainID"));
-								tm = trains.get(trainID);
-
-								//tm.setYardNode((Node)mine.getData().get("yard"));
 								break;
 							case TnCt_TnMd_Request_Train_Velocity:
 								trainID = (int)(mine.getData().get("trainID"));

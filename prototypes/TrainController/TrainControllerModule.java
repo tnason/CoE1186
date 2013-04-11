@@ -104,7 +104,14 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     Environment.passMessage(m);
   }
   
+  private void requestVelocity(){
+    String[] keys = {"trainID"};
+    Object[] data = {trainID};
+    send(new Message(name, name, Module.trainModel, msg.TnCt_TnMd_TnCt_TnMd_Request_Train_Velocity, keys, data));
+  }
+  
   private void sendPower(){
+    requestVelocity();
     double powerCommand = tc.setPower();
     String[] keys = {"trainID", "power"};
     Object[] data = {trainID, powerCommand};
