@@ -14,7 +14,7 @@ public class TrainContainer extends Worker implements Runnable, constData
   
 	private Timer motionTimer;
 
-	private final TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time!)
+	private final double TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time!)
 
 	private int timerTrigger = 1; //real-time value (in ms) for triggering motionStep() calls
 	//For now, simulationSpeedup = (trainTimestep * 1000) / timerTrigger
