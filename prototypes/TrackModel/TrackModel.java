@@ -140,6 +140,8 @@ public class TrackModel extends Worker implements Runnable, constData
             LinearBlock block5 = new LinearBlock(node5, node6, 5 , 1 );
             LinearBlock block6 = new LinearBlock(node6, node7, 6 , 1 );
             LinearBlock block7 = new LinearBlock(node7, node8, 7 , 1 );
+
+            block4.addController(1);
             
             blocks.put(1, block1);
             blocks.put(2, block2);
