@@ -5,9 +5,20 @@ import java.util.HashMap;
 
 public class TrackModel extends Worker
 {
-    private HashMap<int, Block> blocks;
-    private HashMap<int, Node> nodes;
+    private HashMap<Integer, Block> blocks;
+    private HashMap<Integer, Node> nodes;
+    private java.util.concurrent.LinkedBlockingQueue<Message> msgs;
+    
+    public TrackModel (Module name) {
+        msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
+    }
 
+    public void run() {
+        while (true) {
+        
+        }
+    }
+    
     public TrackModel()
     {
     
@@ -17,6 +28,11 @@ public class TrackModel extends Worker
     {
     
     
+    }
+    
+    public void setMsg(Message m) 
+    {
+        msgs.add(m);
     }
     
 

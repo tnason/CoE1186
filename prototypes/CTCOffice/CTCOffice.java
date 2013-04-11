@@ -30,7 +30,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
                 Message m = msgs.poll();
                 if (name == m.getDest()) { // hey, this was sent to me; let's do something
                     switch (m.getType()) {
-                        case constData.TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
+                        case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
                            // unpack the data from the message
                            m.getData().get("trainID");
                         break; // end Confirm train creation case
