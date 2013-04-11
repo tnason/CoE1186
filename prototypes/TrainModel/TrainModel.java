@@ -240,7 +240,7 @@ public class TrainModel implements Runnable, constData
 		{
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength() - trLength/2.0)) //if the front of the train is crossing into a new block
 			{
-				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(/* NOT_SURE_YET */));
+				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(currentNode));
 				blockEntryPos.add(0, position);
 				
 				occupiedBlocks.get(0).setOccupation(true);
@@ -262,7 +262,7 @@ public class TrainModel implements Runnable, constData
 		{
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength()))
 			{
-				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(/* NOT_SURE_YET */));
+				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(currentNode));
 				blockEntryPos.add(0, position);
 				
 				occupiedBlocks.get(0).setOccupation(true);
