@@ -26,9 +26,7 @@ public interface constData
 		TnMd_TnCt_Request_Train_Controller_Creation,
 		TnMd_TnCt_Request_Train_Controller_Destruction,
 		TnMd_TnCt_Send_Train_Velocity,
-		TnMd_CTC_Confirm_Train_Creation,
-		TnMd_CTC_Request_Train_Destruction,
-		TnMd_CTC_Send_Block_Occupied
+		TnMd_CTC_Send_Block_Occupied,
 		TnCt_TnMd_Send_Power,
 		TnCt_TcMd_Request_Track_Speed_Limit
 	}
