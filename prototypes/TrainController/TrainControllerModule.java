@@ -12,7 +12,6 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   
   public TrainControllerModule()
   {
-    super(name);
     controllers = new Hashtable<Integer, TrainController>();
     name = Module.trainController;
     msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
