@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.event.*;
 
-
+//@SuppressWarnings("serial")
 public class CTCOfficeView extends JFrame{
     
     private JPanel dispatchPanel;
