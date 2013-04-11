@@ -2,7 +2,8 @@ package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class CTCOffice extends worker {
+
+public class CTCOffice extends Worker implements Runnable, constData {
     
     
     // ivars! Yay!
@@ -11,12 +12,11 @@ public class CTCOffice extends worker {
     private Module name = Module.CTC; //CTCOffice?
     // private ArrayList<BlockViewModel> _blockList;
     // private ArrayList<ControllerViewModel> _controllerList;
-    // private ArrayList<TrainViewModel> _trainList;
+    private ArrayList<TrainViewModel> _trainList;
     // 
     
     CTCOffice (Module name) {
         // Do any set-up needed, launch the GUI, and get it on!
-        super(name);
         msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
         // generate a virtual model of the track, boi!
         
@@ -28,13 +28,14 @@ public class CTCOffice extends worker {
             if (msgs.peek() != null) {
                 
                 Message m = msgs.poll();
-                if (name = m.getDest()) { // hey, this was sent to me; let's do something
+                if (name == m.getDest()) { // hey, this was sent to me; let's do something
                     switch (m.getType()) {
-                        case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
-                            
+                        case constData.TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
+                           // unpack the data from the message
+                           m.getData().get("trainID");
                         break; // end Confirm train creation case
                         case TnMd_CTC_Request_Train_Destruction: // Aw snap! Train's going away, better let everyone know
-                        
+                            m.getData().get("trainID");
                         break; // end train destruction case
 		                case TnMd_CTC_Send_Block_Occupied: // Train has definitely moved to a new block; let e'rybody know
 		                
@@ -55,6 +56,18 @@ public class CTCOffice extends worker {
             }
         }
     }
+    
+    public void setMsg(Message m) {
+        msgs.add(m);
+    }
+    
+    public void send(Message m) {
+        
+    }
+}
+/*
+class CTCController
+{
     
     public void dispatchTrain (String line) { // probably other vars needed
     
@@ -94,5 +107,22 @@ public class CTCOffice extends worker {
     private void updateControllerForTrain(int controllerID, int trainID) {
     
     }
+}
+*/
+class TrainViewModel
+{
+    // ivars and such
+    
+    // methods. Get/set some!
+}
+/*
+class blockViewModel
+{
     
 }
+
+class controllerViewModel
+{
+
+}
+*/
