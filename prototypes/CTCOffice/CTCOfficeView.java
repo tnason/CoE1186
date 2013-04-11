@@ -57,10 +57,8 @@ public class CTCOfficeView extends JFrame{
         //dispatchButton.setSize(20,40);
         dispatchButton.addActionListener(new CTCOfficeViewListener());
         commandPanel.add(dispatchButton);
-        
-        
-        
         add(commandPanel);
+        System.out.println("GUI for CTC Office init");
     }
     
     private class CTCOfficeViewListener implements ActionListener {

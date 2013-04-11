@@ -13,9 +13,9 @@ public class TrainModel implements constData
 	private Message outgoingMessage;
 
 	public boolean whiteFlag = false; //if true, TrainContainer will kill this train
-	
+
 	private boolean fromYard;
-	
+
 	private int trainID;
 
 	//train state
@@ -23,44 +23,44 @@ public class TrainModel implements constData
 	private double position = 0; //in m
 	private double velocity = 0; //in m/s
 	private double acceleration = 0;//in m/s^2
-	
+
 	private double currentBlockGrade; //for motion!
-	
+
 	private double time = 0; //in s
-	
+
 	private double mass = 51437; //loaded train mass in kg
-		
+
 	private final double trLength = 32.2; //in m
 	private final double trWidth = 2.65;
 	private final double trHeight = 3.42;
-	
+
 	private boolean trainBrakeOn = false;
 	private boolean trainEmergencyBrakeOn = false;
-	
+
 	private final double timeStep; //in s
 
 	private final double maxPower = 120000.0; //in W (120kW)
 	private final double maxSpeed = 70000/3600.0; //in m/s (70km/hr)
-	
+
 	private final double trainFriction = .001; //coefficient of friction of rolling steel wheels
-	
+
 	private final double trainBrake = 1.2; //in m/s^2
 	private final double trainEmergencyBrake = 2.73; //in m/s^2
-	
+
 	private final double gravity = 9.81; //in m/s^2
 
 	private int accelRegime = 0;
 	private int forceRegime = 0;
-	
-	
+
+
 	public TrainModel(int trainID, Block start, double timeStep) 
 	{
 		this.trainID = trainID;
 		this.timeStep = timeStep;
-		
+
 		occupiedBlocks.add(start);
 		blockEntryPos.add(position); 
-		
+
 		//place the train on the initial block (outside of the yard)
 		currentBlockGrade = occupiedBlocks.get(0).getGrade();
 		occupiedBlocks.get(0).setOccupation(true);
@@ -77,8 +77,8 @@ public class TrainModel implements constData
 	{
 		currentNode = yard;
 	}
-	
-	
+
+
 	public void setPower(double pow) 
 	{
 		power = pow;
@@ -91,42 +91,42 @@ public class TrainModel implements constData
 			setBrake(false);
 		}
 	}
-	
+
 	private boolean setBrake(boolean brake) 
 	{
 		return trainBrakeOn = brake;
 	}
-	
+
 	public boolean setEmergencyBrake(boolean brake) 
 	{
 		return trainEmergencyBrakeOn = brake;
 	}
-	
+
 	//for motion debugging
 	public void printState() 
 	{
 		System.out.format("t: %.3f, p: %.1e, x: %.6f, v: %.6f, a: %.3f %d %d%n", time, power, position, velocity, acceleration, forceRegime, accelRegime);
 	}
-	
+
 	public void motionStep() 
 	{
 		double rollingFrictionForce;
 		double hillResistanceForce;
 		double engineForce;
-		
+
 		double endPosition; //x(t+dt)
 		double endVelocity; //v(t+dt) 
 		double endAccel = 0;//a(t+dt)
-		
-		
+
+
 		double trackAngle;
 		trackAngle = Math.toDegrees(Math.atan(currentBlockGrade/100.0));
-		
+
 		if(power > maxPower) 
 		{
 			power = maxPower;
 		}
-		
+
 		//apply brakes over train power
 		if(trainBrakeOn) 
 		{
@@ -138,7 +138,7 @@ public class TrainModel implements constData
 			acceleration = -trainEmergencyBrake;
 			endAccel = -trainEmergencyBrake;
 		}
-		
+
 		//Modified velocity verlet algorithm
 		//Step 1: Determine v(t+dt)
 		//	v(t+dt) = v(t) + a(t)*dt
@@ -146,9 +146,9 @@ public class TrainModel implements constData
 		// 	a(t+dt) = F_engine / m (with F_friction + F_hill)
 		//Step 3: Determine x(t+dt)
 		//	x(t+dt) = x(t) + .5(v(t)+v(t+dt))*dt + .25(a(t)+a(t+dt))*dt^2
-		
+
 		endVelocity = velocity + acceleration*timeStep;
-		
+
 		//apply brakes
 		if(trainBrakeOn || trainEmergencyBrakeOn) 
 		{
@@ -156,7 +156,7 @@ public class TrainModel implements constData
 			{
 				endVelocity = 0.0;
 				endAccel = 0.0;
-				
+
 				accelRegime = 0;
 				//stopped
 				endPosition = position;
@@ -184,7 +184,7 @@ public class TrainModel implements constData
 				forceRegime = 0;
 				engineForce = power / .005;
 			}	
-	
+
 			//Use forces to determine acceleration/direction
 			if(engineForce > (rollingFrictionForce + hillResistanceForce)) 
 			{
@@ -213,28 +213,28 @@ public class TrainModel implements constData
 				endAccel = 0.0;
 				accelRegime = 5;
 			}
-		
+
 			if(endVelocity > maxSpeed) 
 			{ //cap speed at speed limit
 				endVelocity = maxSpeed;
 				endAccel = 0; //and stop acceleration (for position calc in next step)
 			}
-			
+
 			//calculates current position from last step velocity and acceleration
 			//x(t+dt) = x(t) + .5(v(t)+v(t+dt))*dt + .25(a(t)+a(t+dt))*dt^2
 			endPosition = position + .5*(velocity+endVelocity)*timeStep + .25*(acceleration+endAccel)*timeStep*timeStep;
-	
+
 		}	
 
 		position = endPosition;
 		velocity = endVelocity;
 		acceleration = endAccel;
-		
+
 		time += timeStep;
-	
+
 		updateOccupancy();	
 	}
-	
+
 	private void updateOccupancy()
 	{
 		Node nextNode;
@@ -247,16 +247,17 @@ public class TrainModel implements constData
 			{
 
 				System.out.println("	!!!!!!!!!!!!!!!NEW BLOCK!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
+				System.out.println("currentNode: " + currentNode);
 				nextNode = occupiedBlocks.get(0).getNextNode(currentNode);
+				System.out.println("nextNode: " + nextNode);
 				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(currentNode));
 				blockEntryPos.add(0, position);
-				
+
 				occupiedBlocks.get(0).setOccupation(true);
 
 				currentNode = nextNode;
 				//shouldn't need yard entry stuff here...
-				
+
 				//new block!
 				//send TnMd_TcMd_Request_Track_Speed_Limit
 				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackModel, msg.TnMd_TcMd_Request_Track_Speed_Limit, new String[] {"trainID", "blockID"}, new Object[] {trainID, occupiedBlocks.get(0).getID()});
@@ -265,12 +266,12 @@ public class TrainModel implements constData
 				//send TnMd_CTC_Send_Block_Occupied
 				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Send_Block_Occupied, new String[] {"blockID"}, new Object[] {occupiedBlocks.get(0).getID()});
 				Environment.passMessage(outgoingMessage);
-	
+
 				//send TnMd_TcCt_Update_Block_Occupancy
 				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlocks.get(0)});
 				Environment.passMessage(outgoingMessage);
 			}
-			
+
 			if(occupiedBlocks.size() == 2)
 			{
 				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() - trLength/2.0)) //if the back of the train has left the old block
@@ -278,7 +279,7 @@ public class TrainModel implements constData
 					//send TnMd_TcCt_Update_Block_Occupancy
 					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlocks.get(1)});
 					Environment.passMessage(outgoingMessage);
-					
+
 					fromYard = false;
 					occupiedBlocks.get(1).setOccupation(false);
 					occupiedBlocks.remove(1);
@@ -301,11 +302,11 @@ public class TrainModel implements constData
 					//send TnMd_TnCt_Request_Train_Controller_Destruction
 					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Request_Train_Controller_Destruction, new String[] {"trainID"}, new Object[] {trainID});
 					Environment.passMessage(outgoingMessage); 
-					
+
 					//send TnMd_CTC_Request_Train_Destruction
 					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Request_Train_Destruction, new String[] {"trainID"}, new Object[] {trainID});
 					Environment.passMessage(outgoingMessage); 
-					
+
 					//send TnMd_Sch_Notify_Yard
 					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID", "blockID"}, new Object[] {true, trainID, occupiedBlocks.get(0).getID()});
 					Environment.passMessage(outgoingMessage);
@@ -319,7 +320,7 @@ public class TrainModel implements constData
 				//if not yard, keep goin!
 				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(currentNode));
 				blockEntryPos.add(0, position);
-				
+
 				occupiedBlocks.get(0).setOccupation(true);
 				currentNode = nextNode;
 
@@ -333,17 +334,17 @@ public class TrainModel implements constData
 				Environment.passMessage(outgoingMessage);
 
 				//send TnMd_TcCt_Update_Block_Occupancy
-				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlock.get(0)});
+				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlocks.get(0)});
 				Environment.passMessage(outgoingMessage);
 
 			}
-			
+
 			if(occupiedBlocks.size() == 2)
 			{
 				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() + trLength)) //if the back of the train has left the old block
 				{
 					//send TnMd_TcCt_Update_Block_Occupancy
-					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlock.get(0)});
+					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlocks.get(0)});
 					Environment.passMessage(outgoingMessage);
 
 					occupiedBlocks.get(1).setOccupation(false);
@@ -353,5 +354,5 @@ public class TrainModel implements constData
 			}
 		}
 	}
-	
+
 }
