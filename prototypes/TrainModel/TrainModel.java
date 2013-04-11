@@ -1,11 +1,13 @@
 //The actual train
 package TLTTC;
+import java.util.*;
+
 public class TrainModel implements Runnable, constData 
 {
 	//tracking block occupancy
 	//[0] = 'front' block (in direction of motion)
 	private ArrayList<Block> occupiedBlocks = new ArrayList<Block> ();
-	private ArrayList<int> blockEntryPos = new ArrayList<int> ();
+	private ArrayList<Integer> blockEntryPos = new ArrayList<Integer> ();
 	
 	private boolean fromYard;
 	
