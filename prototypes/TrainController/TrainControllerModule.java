@@ -107,7 +107,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   private void requestVelocity(){
     String[] keys = {"trainID"};
     Object[] data = {trainID};
-    send(new Message(name, name, Module.trainModel, msg.TnCt_TnMd_TnCt_TnMd_Request_Train_Velocity, keys, data));
+    send(new Message(name, name, Module.trainModel, msg.TnCt_TnMd_Request_Train_Velocity, keys, data));
   }
   
   private void sendPower(){
