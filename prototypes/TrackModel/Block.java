@@ -77,11 +77,12 @@ public abstract class Block {
   
   public Node getYardNode(){
     //return a yard node if it belongs to block else return null
-    
+        return startNode; //FOR THE LOVE OF GOD CHANGE THIS!!!
   }
   
   public Node getNextNode(Node nextNode){
     //
+    return nextNode;
   }
   	
 }

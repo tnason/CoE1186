@@ -3,7 +3,7 @@ package TLTTC;
 import java.util.HashMap;
 
 
-public class TrackModel extends Worker
+public class TrackModel extends Worker implements Runnable, constData
 {
     private HashMap<Integer, Block> blocks;
     private HashMap<Integer, Node> nodes;
