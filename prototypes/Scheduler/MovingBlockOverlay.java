@@ -3,7 +3,7 @@ package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
 
-@suppressWarnings("unchecked")
+@SuppressWarnings("unchecked")
 public class MovingBlockOverlay extends Worker implements constData
 {
 	public static long DELIVERY_FREQUENCY = 1000; //milliseconds
