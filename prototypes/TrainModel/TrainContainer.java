@@ -90,19 +90,19 @@ public class TrainContainer extends Worker implements Runnable, constData
 									//send associated messages!!!
 									
 									//send TnMd_CTC_Confirm_Train_Creation
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Confirm_Train_Creation, ["trainID"], [mine.getData.get("trainID")]);
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Confirm_Train_Creation, {"trainID"}, {mine.getData.get("trainID")});
 									Environment.passMessage(outgoingMessage);
 
 									//send TnMd_TcMd_Request_Yard_Node
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackModel, msg.TnMd_TcMd_Request_Yard_Node, ["trainID", "blockID"], [mine.getData.get("trainID"), (Object)(bl.getID())]);
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackModel, msg.TnMd_TcMd_Request_Yard_Node, {"trainID", "blockID"}, {mine.getData.get("trainID"), (Object)(bl.getID())});
 									Environment.passMessage(outgoingMessage);
 
 									//send TnMd_TnCt_Request_Train_Controller_Creation
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Request_Train_Controller_Creation, ["trainID"], [mine.getData.get("trainID")]);
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Request_Train_Controller_Creation, {"trainID"}, {mine.getData.get("trainID")});
 									Environment.passMessage(outgoingMessage);
 
 									//send TnMd_Sch_Notify_Yard
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, ["entry","trainID","blockID"], [(Object)false, mine.getData.get("trainID"), (Object)(bl.getID())]);
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, {"entry","trainID","blockID"}, {(Object)false, mine.getData.get("trainID"), (Object)(bl.getID())});
 									Environment.passMessage(outgoingMessage);
 								}
 								break;
@@ -123,7 +123,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 								trainID = (int)(mine.getData.get("trainID"));
 								tm = trains.get(trainID);
 							
-								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, ["trainID","velocity"], [(Object)trainID, (Object)tm.getVelocity()]);
+								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, {"trainID","velocity"}, {(Object)trainID, (Object)tm.getVelocity()});
 
 								break;
 							default:
