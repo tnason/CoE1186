@@ -267,36 +267,18 @@ public class MovingBlockOverlay extends Worker implements constData
 	private void requestLocation(int trainNumber)
 	{
 		Message message;
-
-<<<<<<< HEAD
-		//message = new Message(name, name, Module.satellite);
-		//message.addData("trainID", trainNumber);
-		//send(message);
-
-		//locationOutbox.remove(trainNumber);
-		//locationOutbox.put(trainNumber, message);
-=======
 		message = new Message(name, name, Module.satellite,msg.placeHolder);
 		message.addData("Train Number", trainNumber);
 		send(message);
->>>>>>> 3e34b24b82a3f0e958c0a0b0e367b4a715e532c4
+
 	}
 
 	private void requestStoppingDistance(int trainNumber)
 	{
 		Message message;
-
-<<<<<<< HEAD
-		//message = new Message(name, name, Module.trainModel);
-		//message.addData("trainID", trainNumber);
-		//send(message);
-
-		//distanceOutbox.remove(trainNumber);
-		//distanceOutbox.put(trainNumber, message);
-=======
 		message = new Message(name, name, Module.trainModel,msg.placeHolder);
 		message.addData("Train Number", trainNumber);
 		send(message);
->>>>>>> 3e34b24b82a3f0e958c0a0b0e367b4a715e532c4
+
 	}
 }
