@@ -15,7 +15,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
     private ArrayList<TrainViewModel> _trainList;
     // 
     
-    CTCOffice (Module name) {
+    CTCOffice () {
         // Do any set-up needed, launch the GUI, and get it on!
         msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
         // generate a virtual model of the track, boi!

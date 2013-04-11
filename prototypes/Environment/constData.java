@@ -8,8 +8,7 @@ public interface constData
 	}
 	
 	public enum msg
-	{
-		verify, // temporary. Just used so that Worker.java compiles
+	{ 	
 		MBO_TnCt_Send_Moving_Block_Authority,
 		CTC_Sch_Generate_Schedule,
 		CTC_TnMd_Request_Train_Creation,
@@ -29,6 +28,6 @@ public interface constData
 		TnMd_TnCt_Request_Train_Controller_Destruction,
 		TnMd_TnCt_Send_Train_Velocity,
 		TnCt_TnMd_Send_Power,
-		TnCt_TcMd_Request_Track_Speed_Limit
+		TnCtTcMdRequestTrackSpeedLimit, verify
 	}
 }

@@ -4,9 +4,14 @@ import java.util.concurrent.*;
 
 public class TrackController extends Worker implements constData, Runnable
 {
-
+	Environment env;
 	private Module name = Module.trackController;
     private LinkedBlockingQueue<Message> msgs = new LinkedBlockingQueue<Message>();
+
+    public TrackController()
+    {
+
+    }
 
 	public void run()
 	{
