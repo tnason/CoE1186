@@ -10,8 +10,8 @@ public class CTCOffice extends Worker implements Runnable, constData {
     private static String _sender = "CTC";
     private java.util.concurrent.LinkedBlockingQueue<Message> msgs;
     private Module name = Module.CTC; //CTCOffice?
-    private HashMap<Integer, TrainViewModel> _trainList;
-    private HashMap<Integer, BlockViewModel> _blockList;
+    private HashMap<Integer, TrainViewModel> _trainList = new HashMap<Integer, TrainViewModel>();
+    private HashMap<Integer, BlockViewModel> _blockList = new HashMap<Integer, BlockViewModel>();
     // 
     private int _trainCount = 0;
     
@@ -46,9 +46,9 @@ public class CTCOffice extends Worker implements Runnable, constData {
 		                case TnMd_CTC_Send_Block_Occupied: // Train has definitely moved to a new block; let e'rybody know
 		                    bID = (Integer) m.getData().get("blockID");
 		                break; // end block occupied case
-		                /*
-		                 * Other cases will be implemented here in the future.
-		                 */
+		                case Sch_CTC_Send_Schedule:
+		                    // probably do something here
+		                break;
 		                default:// Well shit, 
 		                    
 		                System.out.println("Unknown message Type!");
@@ -169,14 +169,6 @@ public class CTCOffice extends Worker implements Runnable, constData {
         else {
             System.out.println("Naw man, that speed don't make no sense!");
         } 
-    }
-    
-    private void updateBlockForTrain(int blockID, int trainID) {
-    
-    }
-    
-    private void updateControllerForTrain(int controllerID, int trainID) {
-    
     }
 }
 
