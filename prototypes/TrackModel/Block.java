@@ -2,7 +2,14 @@ package TLTTC;
 import java.util.*;
 
 public abstract class Block {
-
+	
+	public Block(Node start, Node stop){
+		startNode = start;
+		stopNode = stop;
+	}
+	
+	
+	
 	/*unique identification number*/
 	protected int blockID;
 	
