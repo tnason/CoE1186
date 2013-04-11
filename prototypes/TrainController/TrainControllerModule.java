@@ -58,6 +58,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 break;
               case TnMd_TnCt_Send_Train_Velocity: // Current train velocity from train model
                 tc.velocity = (Double)(m.getData().get("velocity"));
+                System.out.println("Got velocity of " + velocity + " from train model.");
                 sendPower();
                 break;
               case CTC_TnCt_Send_Manual_MovingBlock: // Manual moving block authority from CTC
