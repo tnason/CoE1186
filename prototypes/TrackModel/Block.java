@@ -5,8 +5,7 @@ public abstract class Block {
 	protected int blockID;
 	
 	boolean occupied;
-  /*unique identification number*/
-	protected int blockID;
+
 	
 	/*keep track of nodes*/
 	protected Node startNode;
@@ -81,7 +80,7 @@ public abstract class Block {
     
   }
   
-  public Node getNextNode(Node ){
+  public Node getNextNode(Node nextNode){
     //
   }
   	
