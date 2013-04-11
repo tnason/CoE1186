@@ -234,7 +234,7 @@ public class TrainModel implements constData
 		acceleration = endAccel;
 	    
         stepCounter++;
-		if(stepCounter % 500 == 0)
+		if(stepCounter % 200 == 0)
 		{
 			System.out.println("!!TRAIN  MOTION___: p: " + position + " v: " + velocity + " a: " + acceleration);
 		}
