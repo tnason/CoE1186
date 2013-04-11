@@ -1,8 +1,8 @@
 package TLTTC;
 public class ArcBlock extends Block {
-	public ArcBlock(Node start, Node stop, int id, int c){
-		super(start, stop, c);
-		super.setId(id);
+	public ArcBlock(Node start, Node stop) throws Exception{
+		super(start, stop);
+		throw new Exception("ArcBlock Not Implemented!!!!!!!");
 	}
 	
 	public String toString(){
