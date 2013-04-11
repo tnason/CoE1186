@@ -3,10 +3,10 @@ import java.util.*;
 
 public abstract class Block {
 	
-	public Block(Node start, Node stop){
+	public Block(Node start, Node stop, int c){
 		startNode = start;
 		stopNode = stop;
-
+		controller.add(c);
 	}
 	
 	public String toString(){
@@ -43,6 +43,10 @@ public abstract class Block {
 		maintenance = state;
 	}
 	
+	public void setID(int id)
+	{
+		blockID = id;
+	}
 	
 	public int getID()
 	{
@@ -141,6 +145,11 @@ public abstract class Block {
   public ArrayList<Integer> getController(){
     // Should return a list of the controller(s) that a block is under
     return controller;
+  }
+
+  public void addController(int c)
+  {
+  	controller.add(c);
   }
   	
 }
