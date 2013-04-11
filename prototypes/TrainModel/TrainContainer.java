@@ -44,7 +44,17 @@ public class TrainContainer extends Worker implements Runnable, constData
   			Enumeration<Integer> enumKey = trains.keys();
   			while(enumKey.hasMoreElements())
   			{
-  				trains.get(enumKey.nextElement()).motionStep(); //move the trains!
+				trainID = enumKey.nextElement();
+				tm = trains.get(trainID);
+				if(tm.whiteFlag)
+				{
+					//kill it!
+					trains.remove(trainID);
+				}
+				else
+				{
+					tm.motionStep(); //move the trains!
+				}
 	  		}
   		}
 	}
@@ -80,7 +90,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 						{
 							case CTC_TnMd_Request_Train_Creation:
 								n = (YardNode)mine.getData().get("yardNode");
-								bl = (Block)mine.getData().get("yard");
+								bl = (Block)mine.getData().get("yardBlock");
 								if(bl.isOccupied())
 								{
 									//fail silently

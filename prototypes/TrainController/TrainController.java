@@ -81,6 +81,6 @@ public class TrainController{
   }
   
   public void closeGUI(){
-    gui.dispose();    
+    gui.closeGUI();    
   }
 }

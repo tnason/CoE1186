@@ -126,9 +126,9 @@ public abstract class Block {
   
   public Node getYardNode(){
     //return a yard node if it belongs to block else return null
-	  if(startNode.getNodeType() == NodeType.Yard)
+	  if(startNode.getNodeType() == constData.NodeType.Yard)
 		  return startNode;
-	  if(stopNode.getNodeType() == NodeType.Yard)
+	  if(stopNode.getNodeType() == constData.NodeType.Yard)
 		  return stopNode;
 	  return null;
   }

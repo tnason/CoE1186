@@ -112,6 +112,11 @@ public class TrainControllerGUI extends javax.swing.JFrame {
     
   }
   
+  public void closeGUI(){
+    setVisible(false);
+    dispose();
+  }
+  
   public void openGUI(){
     try {
       for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -130,10 +135,11 @@ public class TrainControllerGUI extends javax.swing.JFrame {
       java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
     
+    final TrainControllerGUI gui = this;
     java.awt.EventQueue.invokeLater(new Runnable() {
       
       public void run() {
-        new TrainControllerGUI(trainID, tc).setVisible(true);
+        gui.setVisible(true);
       }
     });
   }
