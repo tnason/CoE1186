@@ -44,7 +44,17 @@ public class TrainContainer extends Worker implements Runnable, constData
   			Enumeration<Integer> enumKey = trains.keys();
   			while(enumKey.hasMoreElements())
   			{
-  				trains.get(enumKey.nextElement()).motionStep(); //move the trains!
+				trainID = enumKey.nextElement();
+				tm = trains.get(trainID);
+				if(tm.whiteFlag)
+				{
+					//kill it!
+					trains.remove(trainID);
+				}
+				else
+				{
+					tm.motionStep(); //move the trains!
+				}
 	  		}
   		}
 	}
