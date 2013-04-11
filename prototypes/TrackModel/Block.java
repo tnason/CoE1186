@@ -3,9 +3,10 @@ import java.util.*;
 
 public abstract class Block {
 	
-	public Block(Node start, Node stop){
+	public Block(Node start, Node stop, int c){
 		startNode = start;
 		stopNode = stop;
+		controller.add(c);
 	}
 	
 	
@@ -40,6 +41,11 @@ public abstract class Block {
 	public int getID()
 	{
 		return blockID;
+	}
+
+	public void setId(int id)
+	{
+		blockID = id;
 	}
 
 	public boolean isOccupied(){
@@ -101,7 +107,10 @@ public abstract class Block {
     //
     return nextNode;
   }
-
+  public void addController(int i)
+  {
+  	controller.add(i);
+  }
   public ArrayList<Integer> getController(){
     // Should return a list of the controller(s) that a block is under
     return controller;

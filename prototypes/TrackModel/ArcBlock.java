@@ -1,7 +1,8 @@
 package TLTTC;
 public class ArcBlock extends Block {
-	public ArcBlock(Node start, Node stop){
-		super(start, stop);
+	public ArcBlock(Node start, Node stop, int id, int c){
+		super(start, stop, c);
+		super.setId(id);
 	}
 	
 	

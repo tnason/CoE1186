@@ -25,14 +25,14 @@ public class TrackController extends Worker implements constData, Runnable
         		if(name == m.getDest())
 			    {
 			    	System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
-			    }
+			     }
 			    else
        			{
          			System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+")");
-                    m.updateSender(name);
-          			Environment.passMessage(m);
-          		}
+              m.updateSender(name);
+          		Environment.passMessage(m);
           	}
+          }
         }
 	}
 
@@ -53,6 +53,15 @@ public class TrackController extends Worker implements constData, Runnable
         
         blockUnderController.get(c).add(b);
       }
+    }
+
+    for(int i : blockUnderController.keySet())
+    {
+        for(Block blk : blockUnderController.get(i))
+        {
+          System.out.println("Controller " + i + " block " + blk.getID() );
+       }
+      System.out.println();
     }
 	}
 
