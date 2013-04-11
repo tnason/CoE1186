@@ -1,5 +1,10 @@
 package TLTTC;
 public class ArcBlock extends Block {
+	public ArcBlock(Node start, Node stop){
+		super(start, stop);
+	}
+	
+	
 	protected double radius;
 	protected double centerX;
 	protected double centerY;

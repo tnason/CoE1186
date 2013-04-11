@@ -10,6 +10,8 @@ public interface constData
 	public enum msg
 	{
 		MBO_TnCt_Send_Moving_Block_Authority,
+		Sch_MBO_Notify_Train_Added_Removed,
+		Sch_CTC_Send_Schedule,
 		CTC_Sch_Generate_Schedule,
 		CTC_TnMd_Request_Train_Creation,
 		CTC_TnCt_Send_Manual_MovingBlock,
@@ -30,6 +32,7 @@ public interface constData
 		TnCt_TnMd_Send_Power,
 		TnCtTcMdRequestTrackSpeedLimit, verify,
 		TnCt_TnMd_Request_Train_Velocity,
-		TnCt_TcMd_Request_Track_Speed_Limit
+		TnCt_TcMd_Request_Track_Speed_Limit,
+		placeHolder
 	}
 }

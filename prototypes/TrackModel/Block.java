@@ -1,6 +1,15 @@
 package TLTTC;
-public abstract class Block {
+import java.util.*;
 
+public abstract class Block {
+	
+	public Block(Node start, Node stop){
+		startNode = start;
+		stopNode = stop;
+	}
+	
+	
+	
 	/*unique identification number*/
 	protected int blockID;
 	
@@ -10,6 +19,9 @@ public abstract class Block {
 	/*keep track of nodes*/
 	protected Node startNode;
 	protected Node stopNode;
+
+	// In constructor of block, add controller number(s) to this list
+	protected ArrayList<Integer> controller = new ArrayList<Integer>();
 	
 	/*	allowable directions
 	 * 		start -> stop = 1
@@ -88,6 +100,11 @@ public abstract class Block {
   public Node getNextNode(Node nextNode){
     //
     return nextNode;
+  }
+
+  public ArrayList<Integer> getController(){
+    // Should return a list of the controller(s) that a block is under
+    return controller;
   }
   	
 }

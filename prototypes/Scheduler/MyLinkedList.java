@@ -14,15 +14,6 @@ public class MyLinkedList<T extends Comparable<? super T>>
 		size = 0;
 	}
 
-	public MyLinkedList(MyLinkedList list)
-	{
-		if(list != null)
-		{
-			head = list.head();
-			selected = head;
-			size = list.size();
-		}
-	}
 	public boolean add(T o)
 	{
 		if(head == null)
@@ -168,6 +159,29 @@ public class MyLinkedList<T extends Comparable<? super T>>
 	public void reset()
 	{
 		selected = head;
+	}
+
+	public MyLinkedList<T> copy()
+	{
+		MyLinkedList<T> list;
+		Node node;
+
+		list = new MyLinkedList<T>();
+		selected = head;
+		node = selected;
+
+		if(node != null)
+		{
+			do
+			{
+				list.add(next());
+			}
+			while(!selected.equals(head));
+		}
+
+		selected = node;
+
+		return list;
 	}
 
 	public int size()
