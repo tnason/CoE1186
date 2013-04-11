@@ -3,15 +3,14 @@ import java.util.*;
 
 public class TrainControllerModule extends Worker implements Runnable, constData{
   private Hashtable<Integer, TrainController> controllers;
-  private Module name;
+  private Module name = Module.trainController;
   private java.util.concurrent.LinkedBlockingQueue<Message> msgs;
   
   private int trainID;
   private TrainController tc;
   
-  public TrainControllerModule(Module name)
+  public TrainControllerModule()
   {
-    super(name);
     controllers = new Hashtable<Integer, TrainController>();
     name = Module.trainController;
     msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
@@ -37,7 +36,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
             }
             switch (m.getType())
             {
-              case CTC_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC
+              case MBO_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC
                 tc.movingBlockAuth = (Double)(m.getData().get("movingBlockAuthority"));
                 sendPower();
                 break;
@@ -53,9 +52,9 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 tc.velocity = (Double)(m.getData().get("velocity"));
                 sendPower();
                 break;
-              case TnMd_TnCt_Request_Power: // Power request from train model
-                sendPower();
-                break;
+              //case TnMd_TnCt_Request_Power: // Power request from train model
+              // sendPower();
+              // break;
               case CTC_TnCt_Send_Manual_MovingBlock: // Manual moving block authority from CTC
                 tc.ctcMovingBlockAuth = (Double)(m.getData().get("ctcMovingBlockAuth"));
                 sendPower();
@@ -102,6 +101,6 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     double powerCommand = tc.setPower();
     String[] keys = {"train_ID", "power"};
     Object[] data = {trainID, powerCommand};
-    send(new Message(name, name, Module.trainModel, msg.tnCtTnMdSendPower, keys, data));
+    send(new Message(name, name, Module.trainModel, msg.TnCt_TnMd_Send_Power, keys, data));
   }
 }

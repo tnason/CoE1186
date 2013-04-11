@@ -39,7 +39,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
 		    case TnMd_CTC_Request_Train_Destruction: // Aw snap! Train's going away, better let everyone know
 			m.getData().get("trainID");
                         break; // end train destruction case
-<<<<<<< HEAD
+
 		                case TnMd_CTC_Send_Block_Occupied: // Train has definitely moved to a new block; let e'rybody know
 		                
 		                break; // end block occupied case
