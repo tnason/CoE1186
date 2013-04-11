@@ -49,7 +49,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 sendPower();
                 break;
               case CTC_TnCt_Send_Manual_Speed: // Manual velocity from CTC
-                tc.ctcOperatorVelocity = (double)(m.getData().get("velocity"));
+                tc.ctcOperatorVelocity = (Double)(m.getData().get("velocity"));
                 sendPower();
                 break;
               case TcMd_TnCt_Send_Track_Speed_Limit: // Track speed limit from track model
