@@ -36,9 +36,9 @@ public class TrackController extends Worker implements constData, Runnable
         }
 	}
 
-  public void init()
+  public void init(Worker tModel)
 	{
-    Hashtable<Integer, Block> allBlocks = new Hashtable<Integer, Block>(TrackModel.getBlocks());
+    Hashtable<Integer, Block> allBlocks = new Hashtable<Integer, Block>(((TrackModel)tModel).getBlocks());
 
     for(Block b : allBlocks.values())
     {
@@ -70,6 +70,7 @@ public class TrackController extends Worker implements constData, Runnable
   public void send(Message m)
   {
       System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+      m.updateSender(name);
       Environment.passMessage(m);
   }
 }

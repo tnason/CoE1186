@@ -108,7 +108,7 @@ public class MovingBlockOverlay extends Worker implements constData
 				{
 					System.out.println("PASSING MSG ~ (source : " + message.getSource() + "), (step : " + name + "), (dest : "+message.getDest()+")");
                     message.updateSender(name);
-					Environment.passMessage(message);
+					send(message);
 				}
 			}
 
@@ -173,7 +173,8 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	public void send(Message m)
 	{
-		System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+		//System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        m.updateSender(name);
         Environment.passMessage(m);
 	}
 
