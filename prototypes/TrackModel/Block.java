@@ -1,9 +1,12 @@
 package TLTTC;
 public abstract class Block {
-  /*unique identification number*/
+
+	/*unique identification number*/
 	protected int blockID;
 	
-	int occupied;
+	boolean occupied;
+  /*unique identification number*/
+	protected int blockID;
 	
 	/*keep track of nodes*/
 	protected Node startNode;
@@ -16,13 +19,15 @@ public abstract class Block {
 	 */
 	protected int allowedDirections;
 	
-	public void setOccupation(int state){
+
+	public void setOccupation(boolean state){
+
 		//TODO - bounds check state
 		occupied = state;
 	}
 	
 	public boolean isOccupied(){
-		return false;
+		return occupied;
 	}
 	
 	public double getGrade(){
@@ -70,5 +75,14 @@ public abstract class Block {
 	public double[] getAbsolutePosition(double distance){
 		return new double[3]; //[x,y,z]
 	}
-	
+  
+  public Node getYardNode(){
+    //return a yard node if it belongs to block else return null
+    
+  }
+  
+  public Node getNextNode(Node ){
+    //
+  }
+  	
 }
