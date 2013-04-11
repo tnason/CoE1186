@@ -57,10 +57,6 @@ public class TrainContainer extends Worker implements Runnable, constData
 				else
 				{
 					tm.motionStep(); //move the trains!
-					if(motionStepCount % 250 == 0) 
-					{
-						tm.printState();
-					}
 				}
 	  		}
 			motionStepCount++;
