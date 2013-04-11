@@ -49,11 +49,11 @@ public class TrainContainer extends Worker implements Runnable, constData
   		}
 	}
 
-	public void newTrain(int TrainID, Block start)
+	public TrainModel newTrain(int TrainID, Block start, double step)
 	{
-		trains.put(TrainID, new TrainModel(TrainID, start, TIME_STEP));
-		//send a message to TrainControllerModule to make a new, linked TrainController
-
+		TrainModel n = new TrainModel(TrainID, start, step);
+		trains.put(TrainID, n);
+		return n;
 	}
 
 	public void run()
@@ -87,7 +87,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 								} 
 								else
 								{
-									tm = new TrainModel((int)mine.getData().get("trainID"), bl, TIME_STEP);
+									tm = newTrain((int)mine.getData().get("trainID"), bl, TIME_STEP);
+									
 									tm.setYardNode(n);
 									//send associated messages!!!
 									
