@@ -63,7 +63,7 @@ public abstract class Block {
 		double dy = stopNode.getY() - startNode.getY();
 		double dz = stopNode.getZ() - startNode.getZ();
 		
-		double dist = Math.sqrt(dx*dx * dy*dy);
+		double dist = Math.sqrt(dx*dx + dy*dy);
 		
 		return dz/dist;
 	}
@@ -78,11 +78,11 @@ public abstract class Block {
 	}
 	
 	public double getPowerLimit(){
-		return 0;
+		return 10000;
 	}
 	
 	public double getSpeedLimit(){
-		return 0;
+		return 15; //meters per second
 	}
 	
 	public boolean isUnderground(){

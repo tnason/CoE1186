@@ -45,7 +45,7 @@ public abstract class Node implements constData
 	}
 	
 	public double getY(){
-		return zPos;
+		return yPos;
 	}
 	
 	public double getZ(){

@@ -28,7 +28,7 @@ public class TrainControllerGUI extends javax.swing.JFrame {
     jLabel3 = new javax.swing.JLabel();
     jLabel4 = new javax.swing.JLabel();
     
-    setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     
     jButton1.setText("Enter");
     jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -48,7 +48,7 @@ public class TrainControllerGUI extends javax.swing.JFrame {
     jLabel1.setText("Train Operator Velocity");
     jLabel1.setToolTipText("");
     
-    jLabel2.setText("mph");
+    jLabel2.setText("m/s");
     
     jLabel3.setText("No commands sent.");
     
@@ -103,8 +103,8 @@ public class TrainControllerGUI extends javax.swing.JFrame {
     if (velocity < 0){
       velocity = 0;
     }
-    jLabel3.setText("Sent velocity of " + velocity + " mph.");
-    tc.trainOperatorVelocity = velocity*0.44704;
+    jLabel3.setText("Sent velocity of " + velocity + " m/s.");
+    tc.trainOperatorVelocity = velocity;
     tc.setPower();
   }
   

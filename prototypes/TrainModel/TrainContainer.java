@@ -16,7 +16,10 @@ public class TrainContainer extends Worker implements Runnable, constData
 
 	private final double TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time!)
 
-	private int timerTrigger = 1; //real-time value (in ms) for triggering motionStep() calls
+	private long timerTrigger = 1; //real-time value (in ms) for triggering motionStep() calls
+
+	private int motionStepCount = 0;
+
 	//For now, simulationSpeedup = (trainTimestep * 1000) / timerTrigger
 
 	//for message sending/receiving
@@ -41,6 +44,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 	{
  		public void run()
 		{
+			System.out.println("	!!!!!!!!!!!!!!!!!!TRYING TO MOVE TRAINS!!!!!!!!!!!!!!!");
   			Enumeration<Integer> enumKey = trains.keys();
   			while(enumKey.hasMoreElements())
   			{
@@ -54,8 +58,13 @@ public class TrainContainer extends Worker implements Runnable, constData
 				else
 				{
 					tm.motionStep(); //move the trains!
+					if(motionStepCount % 10 == 0)
+					{
+						tm.printState();
+					}
 				}
 	  		}
+			motionStepCount++;
   		}
 	}
 

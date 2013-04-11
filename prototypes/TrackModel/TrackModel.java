@@ -72,12 +72,14 @@ public class TrackModel extends Worker implements Runnable, constData
                     System.out.println("TrackModel RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
                     //System.out.println("Unhandled...");	
                 	//_---------------my handlers in here
-                    if(m.getType() == msg.TnMd_TcMd_Request_Track_Speed_Limit){
+
+                    if(m.getType() == constData.msg.TnMd_TcMd_Request_Track_Speed_Limit){
+
                     	Hashtable<String, Object> mData = m.getData();
                     	
 
                     	Message response = new Message(Module.trackModel, Module.trackModel, Module.trainController, msg.TcMd_TnCt_Send_Track_Speed_Limit);
-                    	response.addData("speedLimit", new Integer(1));		//1 meter per second always
+                    	response.addData("speedLimit", new Integer(15));		//1 meter per second always
                     	response.addData("trainID", mData.get("trainID"));
                     	Environment.passMessage(response);
                     	
