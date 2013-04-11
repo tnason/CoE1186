@@ -63,7 +63,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
                     }
                 }
                 else { // it ain't ours
-                    System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
+                    System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+"), (type : " + m.getType()+")");
                     m.updateSender(name);
                     Environment.passMessage(m);
                 }
