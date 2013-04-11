@@ -2,7 +2,7 @@ package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class TrackController implements constData, Runnable
+public class TrackController extends Worker implements constData, Runnable
 {
 
 	private Module name = Module.trackController;
