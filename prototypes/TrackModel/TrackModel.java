@@ -20,6 +20,8 @@ public class TrackModel /*extends Worker implements Runnable, constData*/
     
     private LinkedBlockingQueue<Message> msgs;
     private Module name = Module.trackModel;
+
+    private static HashMap<Integer, Block> b;
     
     public TrackModel () {
         msgs = new LinkedBlockingQueue<Message>();
@@ -62,6 +64,9 @@ public class TrackModel /*extends Worker implements Runnable, constData*/
         try
         {
             Scanner s = new Scanner(new File("layout_new.txt"));
+
+            blocks = null;
+            b = blocks;
 
             while(s.hasNextLine())
             {
@@ -142,6 +147,11 @@ public class TrackModel /*extends Worker implements Runnable, constData*/
     public void relayTrainCreationMsg()
     {
     
+    }
+
+    public static HashMap<Integer, Block> getBlocks()
+    {
+        return b;
     }
 
 }

@@ -1,4 +1,4 @@
-# node num type x y z
+#node num type x y z
 #block type num start stop controller(s)
 yard 1 0 0 0
 connection 2 200 0 0

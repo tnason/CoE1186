@@ -7,7 +7,7 @@ public class TrackController extends Worker implements constData, Runnable
 	private Module name = Module.trackController;
   private LinkedBlockingQueue<Message> msgs = new LinkedBlockingQueue<Message>();
 
-  private ArrayList<ArrayList<Block>> blockUnderController = new ArrayList<ArrayList<Block>>();
+  private Hashtable<Integer, ArrayList<Block>> blockUnderController = new Hashtable<Integer, ArrayList<Block>>();
 
   public TrackController()
   {
@@ -38,8 +38,22 @@ public class TrackController extends Worker implements constData, Runnable
 
   public void init()
 	{
+    Hashtable<Integer, Block> allBlocks = new Hashtable<Integer, Block>(TrackModel.getBlocks());
 
+    for(Block b : allBlocks.values())
+    {
+      ArrayList<Integer> control = b.getController();
 
+      for(int c : control)
+      {
+        if(!blockUnderController.containsKey(c))
+        {
+            blockUnderController.put(c, new ArrayList<Block>());
+        }
+        
+        blockUnderController.get(c).add(b);
+      }
+    }
 	}
 
 	public void setMsg(Message m)
@@ -58,10 +72,4 @@ public class TrackController extends Worker implements constData, Runnable
       System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
       Environment.passMessage(m);
   }
-
-	public static void main(String [] args)
-	{
-        
-	}
-
 }
