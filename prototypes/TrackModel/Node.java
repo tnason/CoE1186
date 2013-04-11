@@ -1,19 +1,10 @@
 package TLTTC;
 
 public abstract class Node {
-  protected enum NodeType
-  {
-    Yard,
-    Connection,
-    Switch,
-    
-  }
-
-  protected NodeType nodeType;  //----------------------------------------------------------make public
-  public NodeType getType(){
-  
-  }
-
+	public Node(){
+		nodeType = NodeType.Node;
+	}
+	
 	/*Unique identifier*/
 	protected int nodeID;
 	
@@ -26,6 +17,13 @@ public abstract class Node {
 	protected Block input;
 	/*block that exits this node*/
 	protected Block output;
+	
+	/*keep track of the type of node*/
+	protected NodeType nodeType;
+	public NodeType getNodeType(){
+		return nodeType;
+	}
+	
 	
 	/*getters for coordinates*/
 	public double getX(){
