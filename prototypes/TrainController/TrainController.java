@@ -42,6 +42,7 @@ public class TrainController{
     
     // Test variables -- Remove later
     velocity = 5;
+    trainOperatorVelocity = 10;
     ctcOperatorVelocity = 1000;
     trackLimit = 15;
     
