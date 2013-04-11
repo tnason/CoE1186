@@ -32,18 +32,21 @@ public class CTCOffice extends Worker implements Runnable, constData {
                 Message m = msgs.poll();
                 if (name == m.getDest())
                 { // hey, this was sent to me; let's do something
-                    System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")");
+                    System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + "), (type: " + m.getType() + ")");
                     switch (m.getType()) {
 		                case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
 			                // unpack the data from the message
 			                tID = (Integer) m.getData().get("trainID");
+			                System.out.println("Adding Train #" + tID + " to CTC list...");
 			                addTrainToTrainList(tID);
                         break; // end Confirm train creation case
 		                case TnMd_CTC_Request_Train_Destruction: // Aw snap! Train's going away, better let everyone know
 			                tID = (Integer) m.getData().get("trainID");
+			                System.out.println("Removing Train #" + tID + " to CTC list...");
 			                removeTrainFromTrainList(tID);
                         break; // end train destruction case
 		                case TnMd_CTC_Send_Block_Occupied: // Train has definitely moved to a new block; let e'rybody know
+		                    System.out.println("Updating Block Occupancy in CTC...");
 		                    bID = (Integer) m.getData().get("blockID");
 		                break; // end block occupied case
 		                case Sch_CTC_Send_Schedule:
@@ -87,11 +90,13 @@ public class CTCOffice extends Worker implements Runnable, constData {
     public void addTrainToTrainList(Integer tID) {
         TrainViewModel train = new TrainViewModel(tID);
         _trainList.put(tID, train);
+        System.out.println("Train added!");
     }
     
     public void removeTrainFromTrainList(Integer tID) {
         if (_trainList.containsKey(tID)) {
             _trainList.remove(tID);
+            System.out.println("Train removed!");
         }
     }
     
@@ -114,6 +119,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
                     // THIS IS NOT GOING TO WORK WITH SWITCHES, HAVE TO USE A GENERATED ROUTE TO DETERMINE TRAIN THAT MOVED
                     train.setCurrentBlockID(bID);
                     _trainList.put(train.getTrainID(), train);
+                    System.out.println("Train #" + train.getTrainID() + " just moved from block #" + cBID + " to block #" + bID + ".");
                     break;
                 }
             }
