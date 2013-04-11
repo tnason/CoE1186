@@ -1,5 +1,18 @@
 package TLTTC;
 public abstract class Node {
+  protected enum NodeType
+  {
+    Yard,
+    Connection,
+    Switch,
+    
+  }
+
+  protected NodeType nodeType;  //----------------------------------------------------------make public
+  public NodeType getType(){
+  
+  }
+
 	/*Unique identifier*/
 	protected int nodeID;
 	
