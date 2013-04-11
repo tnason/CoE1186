@@ -74,7 +74,7 @@ public class Environment implements constData
 
 		while(true)
 		{
-			if(messageQ.peek() != null)
+			while(messageQ.peek() != null)
 			{
 				Message inbox = messageQ.poll();
 
@@ -95,7 +95,7 @@ public class Environment implements constData
 					modWorker.get(left).setMsg(inbox);
 				}
 			}
-			try{t.sleep(1000);}catch(Exception e){}
+			try{t.sleep(500);}catch(Exception e){}
 		}
     }
 
