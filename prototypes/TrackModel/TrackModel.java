@@ -79,7 +79,7 @@ public class TrackModel extends Worker implements Runnable, constData
                     	
 
                     	Message response = new Message(Module.trackModel, Module.trackModel, Module.trainController, msg.TcMd_TnCt_Send_Track_Speed_Limit);
-                    	response.addData("speedLimit", new Integer(15));		//1 meter per second always
+                    	response.addData("speedLimit", new Double(15.0));		//1 meter per second always
                     	response.addData("trainID", mData.get("trainID"));
                     	Environment.passMessage(response);
                     	
