@@ -8,6 +8,7 @@ public class TrainModel implements Runnable, constData
 	//[0] = 'front' block (in direction of motion)
 	private ArrayList<Block> occupiedBlocks = new ArrayList<Block> ();
 	private ArrayList<Integer> blockEntryPos = new ArrayList<Integer> ();
+	private Node currentNode;
 	
 	private boolean fromYard;
 	
@@ -32,7 +33,7 @@ public class TrainModel implements Runnable, constData
 	private boolean trainBrakeOn = false;
 	private boolean trainEmergencyBrakeOn = false;
 	
-	private final double time_step; //in s
+	private final double timeStep; //in s
 
 	private final double maxPower = 120000.0; //in W (120kW)
 	private final double maxSpeed = 70000/3600.0; //in m/s (70km/hr)
@@ -51,11 +52,7 @@ public class TrainModel implements Runnable, constData
 	public TrainModel(int trainID, Block start, double time_step) 
 	{
 		this.trainID = trainID;
-		
-		if(start.isOccupied())
-		{
-			//error, stop making this train!!!!
-		}
+		this.timeStep = time_step;
 		
 		occupiedBlocks.add(start);
 		blockEntryPos.add(position); 
@@ -64,6 +61,17 @@ public class TrainModel implements Runnable, constData
 		currentBlockGrade = occupiedBlocks.get(0).getGrade();
 		occupiedBlocks.get(0).setOccupation(true);
 		fromYard = true;
+
+	}
+
+	public double getVelocity() 
+	{
+		return velocity;
+	}
+
+	public void setYardNode (Node yard)
+	{
+		currentNode = yard;
 	}
 	
 	
