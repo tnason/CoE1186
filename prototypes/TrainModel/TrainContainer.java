@@ -14,13 +14,16 @@ public class TrainContainer extends Worker implements Runnable, constData
   
 	private Timer motionTimer;
 
-	private int timerTrigger = 10; //real-time value (in ms) for triggering motionStep() calls
-	private double trainTimestep = .05; //timestep (in s) for train motion integration (simulation time!)
+	private final TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time!)
+
+	private int timerTrigger = 1; //real-time value (in ms) for triggering motionStep() calls
 	//For now, simulationSpeedup = (trainTimestep * 1000) / timerTrigger
 
 	//for message sending/receiving
 	int trainID;
 	TrainModel tm;
+	Block bl;
+	Message outgoingMessage;
 	
 
 	public TrainContainer()
@@ -29,7 +32,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 		msgs  = new LinkedBlockingQueue<Message>();
 		trains = new HashTable<Integer, TrainModel>();
 		motionTimer = new Timer();
-  		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every 10 ms
+  		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every X ms
 	}
   
 	//Driver for timed motion!
@@ -69,27 +72,62 @@ public class TrainContainer extends Worker implements Runnable, constData
 
 					if(mine.getData() != null)
 					{
-						trainID = (int)(m.getData.get("trainID"));
-						tm = trains.get(trainID);
 						//System.out.println(mine.getData().get("check")); ????
 						
 						//handling incoming messages
-						switch (m.getType())
+						switch (mine.getType())
 						{
 							case CTC_TnMd_Request_Train_Creation:
-								//check yard block occupancy
-								//if empty
-								//create train
-								//send confirmation
-								//
-								//if not empty
-								//fail silently
+								bl = (Block)mine.getData.get("yard");
+								if(bl.isOccupied())
+								{
+									//fail silently
+								} 
+								else
+								{
+									tm = new TrainModel((int)mine.getData.get("trainID"), bl, TIME_STEP);
+
+									//send associated messages!!!
+									
+									//send TnMd_CTC_Confirm_Train_Creation
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Confirm_Train_Creation, ["trainID"], [mine.getData.get("trainID")]);
+									Environment.passMessage(outgoingMessage);
+
+									//send TnMd_TcMd_Request_Yard_Node
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackModel, msg.TnMd_TcMd_Request_Yard_Node, ["trainID", "blockID"], [mine.getData.get("trainID"), (Object)(bl.getID())]);
+									Environment.passMessage(outgoingMessage);
+
+									//send TnMd_TnCt_Request_Train_Controller_Creation
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Request_Train_Controller_Creation, ["trainID"], [mine.getData.get("trainID")]);
+									Environment.passMessage(outgoingMessage);
+
+									//send TnMd_Sch_Notify_Yard
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, ["entry","trainID","blockID"], [(Object)false, mine.getData.get("trainID"), (Object)(bl.getID())]);
+									Environment.passMessage(outgoingMessage);
+								}
+								break;
 							case TnCt_TnMd_Send_Power:
 								//update power setting
-								tm.setPower(m.getData.get("power"));
-							case others:
+								trainID = (int)(mine.getData.get("trainID"));
+								tm = trains.get(trainID);
 
-							//stuff
+								tm.setPower(mine.getData.get("power"));
+								break;
+							case TcMd_TnMd_Send_Yard_Node:
+								trainID = (int)(mine.getData.get("trainID"));
+								tm = trains.get(trainID);
+
+								tm.setYardNode((Node)mine.getData.get("yard"));
+								break;
+							case TnCt_TnMd_Request_Train_Velocity:
+								trainID = (int)(mine.getData.get("trainID"));
+								tm = trains.get(trainID);
+							
+								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, ["trainID","velocity"], [(Object)trainID, (Object)tm.getVelocity()]);
+
+								break;
+							default:
+								//stuff
 						}
 						
 					}
