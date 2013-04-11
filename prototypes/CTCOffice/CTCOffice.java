@@ -25,10 +25,12 @@ public class CTCOffice extends Worker implements Runnable, constData {
     
     public void run () {
         while(true) {
-            if (msgs.peek() != null) {
+            if (msgs.peek() != null)
+                {
                 
                 Message m = msgs.poll();
-                if (name == m.getDest()) { // hey, this was sent to me; let's do something
+                if (name == m.getDest())
+                { // hey, this was sent to me; let's do something
                     switch (m.getType()) {
 		    case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
 			// unpack the data from the message
@@ -37,15 +39,18 @@ public class CTCOffice extends Worker implements Runnable, constData {
 		    case TnMd_CTC_Request_Train_Destruction: // Aw snap! Train's going away, better let everyone know
 			m.getData().get("trainID");
                         break; // end train destruction case
-		    case TnMd_CTC_Send_Block_Occupied: // Train has definitely moved to a new block; let e'rybody know
-			                
-			break; // end block occupied case
-			/*
-			 * Other cases will be implemented here in the future.
-			 */
-		    default: // Well shit, somebody fucked up this one.
-			                    
-			System.out.println("Unknown message Type!");
+
+		                case TnMd_CTC_Send_Block_Occupied: // Train has definitely moved to a new block; let e'rybody know
+		                
+		                break; // end block occupied case
+		                /*
+		                 * Other cases will be implemented here in the future.
+		                 */
+		                default:// Well shit, somebody fucked up this one.
+		                    
+		                System.out.println("Unknown message Type!");
+		                
+		                break;
                     }
                 }
                 else { // it ain't ours, get that shit outta here!
@@ -61,7 +66,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
         msgs.add(m);
     }
     
-    public void send(Message m) {
+    public void send() {
         
     }
 }
@@ -112,16 +117,103 @@ class CTCController
 class TrainViewModel
 {
     // ivars and such
+    private final int _trainID;
+    private int _fixedBlockAuthority;
+    private double _movingBlockAuthority;
+    private double _speed;
+    private int _currentBlockID;
+    private int _currentControllerID;
     
     // methods. Get/set some!
+    public int getTrainID () {
+        return _trainID;
+    }
+    
+    public int getFixedBlockAuthority() {
+        return _fixedBlockAuthority;   
+    }
+    
+    public void setFixedBlockAuthority(int authority) {
+        if (authority >= 0) {
+            _fixedBlockAuthority = authority;
+        }
+    }
+    
+    public double getMovingBlockAuthority() {
+        return _movingBlockAuthority;
+    }
+    
+    public void setMovingBlockAuthority(double authority) {
+        if (authority >= 0) {
+            _movingBlockAuthority = authority;
+        }
+    }
+    
+    public double getSpeed() {
+        return _speed;
+    }
+    
+    public void setSpeed(double speed) {
+        if (speed >= 0) {
+            _speed = speed;
+        }
+    }
+    
+    public int getCurrentBlockID() {
+        return _currentBlockID;
+    }
+    
+    public void setCurrentBlockID(int id) {
+        _currentBlockID = id;
+    }
+    
+    public int getCurrentControllerID() {
+        return _currentControllerID;
+    }
+    
+    public int setCurrentControllerID(int id) {
+        return _currentControllerID;
+    }
+    
+    // some REAL methods:
+    TrainViewModel(int tID)
+    {
+        _trainID = tID;
+        _currentBlockID = 0;
+        _currentControllerID = 0;
+        _fixedBlockAuthority = 0;
+        _movingBlockAuthority = 0;
+        _speed = 0;
+    }
+    
+    TrainViewModel(int tID, int bID, int cID)
+    {
+    // Convenience initializer to set custom block/controller ids.
+        _trainID = tID;
+        _currentBlockID = bID;
+        _currentControllerID = cID;
+        _fixedBlockAuthority = 0;
+        _movingBlockAuthority = 0;
+        _speed = 0;
+    }
+    TrainViewModel( int tID, int bID, int cID, int fBA, int mBA, int s)
+    {
+    // Convenience to set all ivars at init.
+        _trainID = tID;
+        _currentBlockID = bID;
+        _currentControllerID = cID;
+        _fixedBlockAuthority = fBA;
+        _movingBlockAuthority = mBA;
+        _speed = s;
+    }
 }
 /*
-class blockViewModel
+class BlockViewModel
 {
     
 }
 
-class controllerViewModel
+class ControllerViewModel
 {
 
 }

@@ -28,11 +28,8 @@ public interface constData
 		TnMd_TnCt_Request_Train_Controller_Destruction,
 		TnMd_TnCt_Send_Train_Velocity,
 		TnCt_TnMd_Send_Power,
-<<<<<<< HEAD
-		TnCtTcMdRequestTrackSpeedLimit, verify
-=======
+		TnCtTcMdRequestTrackSpeedLimit, verify,
 		TnCt_TnMd_Request_Train_Velocity,
 		TnCt_TcMd_Request_Track_Speed_Limit
->>>>>>> 049bcf9ba49a2b2be2f8731845ae3a361b8dcc0e
 	}
 }

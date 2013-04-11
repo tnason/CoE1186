@@ -37,32 +37,32 @@ public class TrainControllerModule extends Worker implements Runnable, constData
             }
             switch (m.getType())
             {
-              case msg.CTC_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC
+              case MBO_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC
                 tc.movingBlockAuth = (Double)(m.getData().get("movingBlockAuthority"));
                 sendPower();
                 break;
-              case msg.TcCt_TnCt_Send_Fixed_Block_Authority: // Fixed block authority from track controller
+              case TcCt_TnCt_Send_Fixed_Block_Authority: // Fixed block authority from track controller
                 tc.fixedBlockAuth = (Double)(m.getData().get("authority"));
                 sendPower();
                 break;
-              case msg.TcMd_TnCt_Send_Track_Speed_Limit: // Track speed limit from track model
+              case TcMd_TnCt_Send_Track_Speed_Limit: // Track speed limit from track model
                 tc.trackLimit = (Double)(m.getData().get("trackSpeedLimit"));
                 sendPower();
                 break;
-              case msg.TnMd_TnCt_Send_Train_Velocity: // Current train velocity from train model
+              case TnMd_TnCt_Send_Train_Velocity: // Current train velocity from train model
                 tc.velocity = (Double)(m.getData().get("velocity"));
                 sendPower();
                 break;
-              case msg.TnMd_TnCt_Request_Power: // Power request from train model
+              case TnMd_TnCt_Request_Power: // Power request from train model
                 sendPower();
                 break;
-              case msg.CTC_TnCt_Send_Manual_MovingBlock: // Manual moving block authority from CTC
+              case CTC_TnCt_Send_Manual_MovingBlock: // Manual moving block authority from CTC
                 tc.ctcMovingBlockAuth = (Double)(m.getData().get("ctcMovingBlockAuth"));
                 sendPower();
                 break;
-              case msg.TnMd_TnCt_Request_Train_Controller_Creation: // Train controller creation
+              case TnMd_TnCt_Request_Train_Controller_Creation: // Train controller creation
                 controllers.put(trainID, new TrainController(trainID));
-              case msg.TnMd_TnCt_Request_Train_Controller_Destruction:
+              case TnMd_TnCt_Request_Train_Controller_Destruction:
                 tc.closeGUI();
                 controllers.remove(trainID);
                 break;
@@ -102,6 +102,6 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     double powerCommand = tc.setPower();
     String[] keys = {"train_ID", "power"};
     Object[] data = {trainID, powerCommand};
-    send(new Message(name, name, Module.trainModel, msg.tnCtTnMdSendPower, keys, data));
+    send(new Message(name, name, Module.trainModel, tnCtTnMdSendPower, keys, data));
   }
 }
