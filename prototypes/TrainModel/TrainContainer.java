@@ -139,7 +139,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 								trainID = (int)(mine.getData().get("trainID"));
 								tm = trains.get(trainID);
 							
-								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, new String[] {"trainID","velocity"}, new Object[] {(Object)trainID, (Object)tm.getVelocity()});
+								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, new String[] {"trainID","velocity"}, new Object[] {trainID, tm.getVelocity()});
+								send(outgoingMessage);
 
 								break;
 							default:
