@@ -25,6 +25,11 @@ public abstract class Block {
 		occupied = state;
 	}
 	
+	public int getID()
+	{
+		return blockID;
+	}
+
 	public boolean isOccupied(){
 		return occupied;
 	}
