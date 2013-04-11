@@ -10,7 +10,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   private int trainID;
   private TrainController tc;
   
-  public TrainControllerModule(Module name)
+  public TrainControllerModule()
   {
     super(name);
     controllers = new Hashtable<Integer, TrainController>();
