@@ -106,7 +106,7 @@ public class MovingBlockOverlay extends Worker implements constData
 				}
 				else
 				{
-					System.out.println("PASSING MSG ~ (source : " + message.getSource() + "), (step : " + name + "), (dest : "+message.getDest()+")");
+					System.out.println("PASSING MSG ~ (source : " + message.getSource() + "), (step : " + name + "), (dest : "+message.getDest()+"), (type : " + message.getType()+")");
                     message.updateSender(name);
 					send(message);
 				}
