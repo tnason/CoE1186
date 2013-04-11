@@ -110,8 +110,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 								//update power setting
 								trainID = (int)(mine.getData().get("trainID"));
 								tm = trains.get(trainID);
-
-								tm.setPower((double)mine.getData().get("power"));
+								double power = (double)mine.getData().get("power");
+								tm.setPower(power);
 								break;
 							case TnCt_TnMd_Request_Train_Velocity:
 								trainID = (int)(mine.getData().get("trainID"));
