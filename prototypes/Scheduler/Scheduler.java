@@ -148,19 +148,26 @@ public class Scheduler extends Worker implements constData
 				{
 					System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 
-					switch((int)message.getData().get("id"))
+					switch(message.getType())
 					{
-						case 93:
+						case CTC_Sch_Generate_Schedule:
+							receivedTimetableUpdateRequest(message);
+							break;
+						/*case:
 							receivedGPSLocation(message);
-							break;
-						case 94:
-							receivedTrainDispatch(message);
-							break;
-						case 95:
+							break;*/
+						/*case 95:
 							receivedTrainArrival(message);
-							break;	
-						case 99:
-							receivedYardArrival(message);
+							break;	*/
+						case TnMd_Sch_Notify_Yard:
+							if((boolean)message.getData("entry"))
+							{
+								receivedTrainReturn(message);
+							}
+							else
+							{
+								receivedTrainDispatch(message);
+							}
 							break;	
 					}
 				}
@@ -207,7 +214,7 @@ public class Scheduler extends Worker implements constData
 		int trainID;
 		Operator operator;
 
-		trainID = (int)message.getData().get("train_ID");
+		trainID = (int)message.getData().get("trainID");
 		trains.add(new Train(trainID, System.currentTimeMillis()));
 		sendTrainUpdate();
 
@@ -236,12 +243,18 @@ public class Scheduler extends Worker implements constData
 	{
 	}
 
-	private void receivedYardArrival(Message message)
+	private void receivedTimetableUpdateRequest(Message message)
+	{
+		updateTimetable();
+		sendTimetable();
+	}
+
+	private void receivedTrainReturn(Message message)
 	{
 		int trainID;
 		Operator operator;
 
-		trainID = (int)message.getData("train_ID");
+		trainID = (int)message.getData().get("trainID");
 		operator = schedule.search(trainID);
 
 		if(operator.status == OperatorStatus.SHIFTFIRSTHALF)
@@ -286,9 +299,18 @@ public class Scheduler extends Worker implements constData
 	{
 		Message message;
 
-		message = new Message(name, name, Module.MBO);
-		message.addData("train_ID", 96);
+		message = new Message(name, name, Module.MBO, msg.Sch_MBO_Notify_Train_Added_Removed);
+		message.addData("id", 96);
 		message.addData("trainList", trains.copy());
+		send(message);
+	}
+
+	private void sendTimetable()
+	{
+		Message message;
+
+		message = new Message(name, name, Module.CTC, msg.Sch_CTC_Send_Schedule);
+		message.addData("schedule", timetable);
 		send(message);
 	}
 

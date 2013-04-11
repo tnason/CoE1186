@@ -8,9 +8,18 @@ public class MovingBlockOverlay extends Worker implements constData
 	private Module name;
 	private MyLinkedList<Train> trains;
 
+	/*
+		Main
+	*/
+
 	public static void main(String[] args)
 	{
+
 	}
+
+	/*
+		Constructor
+	*/
 
 	public MovingBlockOverlay()
 	{
@@ -18,98 +27,9 @@ public class MovingBlockOverlay extends Worker implements constData
 		this.name = Module.MBO;	
 	}
 
-	public void run()
-	{
-
-		while(true)
-		{
-			if(messages.peek() != null)
-			{
-				Message message = messages.poll();
-
-				if(name == message.getDest())
-				{
-					System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
-
-					switch((int)message.getData().get("id"))
-					{
-						case 86:
-							receivedGPSLocation(message);
-							break;
-						case 88:
-							receivedStoppingDistance(message);
-							break;
-						case 91:
-							//Not implemented
-							break;
-						case 96:
-							receivedTrainUpdate(message);
-							break;	
-					}
-				}
-				else
-				{
-					System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
-					message.updateSender(name);
-					Environment.passMessage(message);
-				}
-			}
-
-			if(trains != null && trains.size() > 0)
-			{
-				Train forwardTrain;
-				Train train;
-	
-				forwardTrain = trains.previous(); //returns selected train, then goes backwards
-				train = trains.selected();
-
-				if(forwardTrain.isLocationValid() && train.isLocationValid() && train.isStoppingDistanceValid())
-				{
-					sendAuthority(train.trainNumber, calculateMovingBlock(train.getLocation(), train.getStoppingDistance(), forwardTrain.getLocation(), 0));
-				}
-
-				forwardTrain.setLocationValid(false);
-				requestLocation(forwardTrain.trainNumber);
-				train.setStoppingDistanceValid(false);
-				requestStoppingDistance(train.trainNumber);
-			}			
-		}
-
-	}
-
-	private void receivedGPSLocation(Message message)
-	{
-		
-	}
-
-	private void receivedStoppingDistance(Message message)
-	{
-		Train train;
-
-		train = findTrain((int)(message.getData().get("train_ID")));
-
-		if(train != null)
-		{
-			train.setStoppingDistance((double)(message.getData().get("stoppingDist")), System.currentTimeMillis());
-			train.setStoppingDistanceValid(true);
-		}
-	}
-
-	private void receivedTrainUpdate(Message message)
-	{
-		trains = new MyLinkedList<Train>(message.getData().get("trainList"));
-	}
-
-	public void setMsg(Message message)
-	{
-		messages.add(message);
-	}
-
-	public void send(Message message)
-	{
-		System.out.println("SENDING MSG: start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
-		Environment.passMessage(message);
-	}
+	/*
+		Methods
+	*/
 
 	private Train findTrain(int trainNumber)
 	{
@@ -152,11 +72,116 @@ public class MovingBlockOverlay extends Worker implements constData
 		return Double.MAX_VALUE;
 	}
 
+	/*
+		Thread Loop
+	*/
+
+	public void run()
+	{
+
+		while(true)
+		{
+			if(messages.peek() != null)
+			{
+				Message message = messages.poll();
+
+				if(name == message.getDest())
+				{
+					System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+
+					switch(message.getType())
+					{
+						/*case 86:
+							receivedGPSLocation(message);
+							break;*/
+						/*case 88:
+							receivedStoppingDistance(message);
+							break;*/
+						//case 91:
+							//Not implemented
+							//break;
+						case Sch_MBO_Notify_Train_Added_Removed:
+							receivedTrainUpdate(message);
+							break;	
+					}
+				}
+				else
+				{
+					System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
+					message.updateSender(name);
+					Environment.passMessage(message);
+				}
+			}
+
+			if(trains != null && trains.size() > 0)
+			{
+				Train forwardTrain;
+				Train train;
+	
+				forwardTrain = trains.previous(); //returns selected train, then goes backwards
+				train = trains.selected();
+
+				//if(forwardTrain.isLocationValid() && train.isLocationValid() && train.isStoppingDistanceValid())
+				{
+					sendAuthority(train.trainNumber, calculateMovingBlock(train.getLocation(), train.getStoppingDistance(), forwardTrain.getLocation(), 0));
+				}
+
+				forwardTrain.setLocationValid(false);
+				//requestLocation(forwardTrain.trainNumber);
+				train.setStoppingDistanceValid(false);
+				//requestStoppingDistance(train.trainNumber);
+			}			
+		}
+
+	}
+
+	/*
+		Message Handlers
+	*/
+
+	public void setMsg(Message message)
+	{
+		messages.add(message);
+	}
+
+	private void receivedGPSLocation(Message message)
+	{
+		
+	}
+
+	private void receivedStoppingDistance(Message message)
+	{
+		Train train;
+
+		train = findTrain((int)(message.getData().get("train_ID")));
+
+		if(train != null)
+		{
+			train.setStoppingDistance((double)(message.getData().get("stoppingDist")), System.currentTimeMillis());
+			train.setStoppingDistanceValid(true);
+		}
+	}
+
+	private void receivedTrainUpdate(Message message)
+	{
+		trains = (MyLinkedList<Train>)message.getData().get("trainList");
+	}
+
+	/*
+		Message Senders
+	*/
+
+	public void send(Message message)
+	{
+		System.out.println("SENDING MSG: start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
+		Environment.passMessage(message);
+	}
+
 	private void sendAuthority(int trainNumber, double authority)
 	{
 		Message message;
 
-		message = new Message(Module.MBO, Module.MBO, Module.CTC);
+		message = new Message(name, name, Module.trainController, msg.MBO_TnCt_Send_Moving_Block_Authority);
 		message.addData("Train Number", trainNumber);
 		message.addData("MBO Authority", authority);
 		send(message);
@@ -165,7 +190,7 @@ public class MovingBlockOverlay extends Worker implements constData
 	{
 		Message message;
 
-		message = new Message(Module.MBO, Module.MBO, Module.satellite);
+		message = new Message(name, name, Module.satellite);
 		message.addData("Train Number", trainNumber);
 		send(message);
 	}
@@ -174,7 +199,7 @@ public class MovingBlockOverlay extends Worker implements constData
 	{
 		Message message;
 
-		message = new Message(Module.MBO, Module.MBO, Module.trainController);
+		message = new Message(name, name, Module.trainModel);
 		message.addData("Train Number", trainNumber);
 		send(message);
 	}
