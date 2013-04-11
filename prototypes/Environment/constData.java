@@ -8,7 +8,11 @@ public interface constData
 	}
 	
 	public enum msg
+<<<<<<< HEAD
 	{ 	
+=======
+	{
+>>>>>>> 4c0df79b44fd2c8d6263e763431619f658c631c4
 		MBO_TnCt_Send_Moving_Block_Authority,
 		CTC_Sch_Generate_Schedule,
 		CTC_TnMd_Request_Train_Creation,
