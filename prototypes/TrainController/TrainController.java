@@ -75,7 +75,7 @@ public class TrainController{
     histEk = ek;
     histUk = uk;
     System.out.println("Power command of " + power + " Watts sent.");
-    return power/trainMaxPower;
+    return power;
   }
   
   public void closeGUI(){
