@@ -57,7 +57,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 				else
 				{
 					tm.motionStep(); //move the trains!
-					if(motionStepCount % 5000 == 0)
+					if(motionStepCount % 500 == 0)
 					{
 						tm.printState();
 					}
@@ -105,6 +105,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 								} 
 								else
 								{
+									System.out.println("	!!!!!!!!!!!!!!!!!NEW TRAIN!!!!!!!!");
+
 									tm = newTrain((int)mine.getData().get("trainID"), bl, TIME_STEP);
 									
 									tm.setYardNode(n);
@@ -133,6 +135,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 								tm.setPower(power);
 								break;
 							case TnCt_TnMd_Request_Train_Velocity:
+								System.out.println("	!!!!!!!!!!!!!!!!!!!!Request velocity");
 								trainID = (int)(mine.getData().get("trainID"));
 								tm = trains.get(trainID);
 							
