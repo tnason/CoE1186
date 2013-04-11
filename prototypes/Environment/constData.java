@@ -9,7 +9,6 @@ public interface constData
 	
 	public enum msg
 	{
-		verify, // temporary. Just used so that Worker.java compiles
 		MBO_TnCt_Send_Moving_Block_Authority,
 		CTC_Sch_Generate_Schedule,
 		CTC_TnMd_Request_Train_Creation,
