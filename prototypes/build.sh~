@@ -1,3 +1,0 @@
-javac -d . Environment/constData.java
-javac -d . Environment/Message.java
-javac -d . Environment/Worker.java 
