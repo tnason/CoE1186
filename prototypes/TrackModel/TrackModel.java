@@ -7,6 +7,7 @@ import java.util.concurrent.*;
 
 public class TrackModel extends Worker implements Runnable, constData
 {
+
     private HashMap<Integer, Block> blocks;
     private HashMap<Integer, Node> nodes;
     private LinkedBlockingQueue<Message> msgs;
@@ -42,8 +43,6 @@ public class TrackModel extends Worker implements Runnable, constData
             }
         }
     }
-    
-   
     
     public void initTrack()
     {
