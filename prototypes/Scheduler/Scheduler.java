@@ -14,37 +14,111 @@ public class Scheduler extends Worker implements constData
 	private Timetable timetable;
 	private MyLinkedList<Train> trains;
 
-	public synchronized void addSchedulerListener(SchedulerListener listener)
+	public static void main(String[] args)
 	{
-		listeners.add(listener);
+
 	}
 
-	private synchronized void operatorScheduleChanged()
+	/*
+		Constructor
+	*/
+
+	public Scheduler()
 	{
-		Iterator i;
-		SchedulerEvent e;
+		new SchedulerViewModel(this);
+		timetable = new Timetable();
+		schedule = new OperatorSchedule();
+		trains = new MyLinkedList<Train>();
+		messages = new LinkedBlockingQueue<Message>();
+		this.name = Module.scheduler;
+	}
 
-		e = new SchedulerEvent(this);
-		i = listeners.iterator();
+	/*
+		Methods
+	*/
 
-		while(i.hasNext())
+	public String toString()
+	{
+		String s;
+
+		s = "Timetable";
+
+		s = s.concat(timetable.toString());
+		s = s.concat("Operator Schedule");
+		s = s.concat(schedule.toString());
+
+		return s;		
+	}
+
+	public boolean updateOperatorSchedule()
+	{
+		int numTrains;
+
+		numTrains = calculateOptimalTrains();
+
+		if(trains.size() < numTrains)
 		{
-			((SchedulerListener) i.next()).operatorScheduleChanged(e);
+			while(schedule.size() < numTrains)
+			{
+				schedule.add("Train", "Operator", Scheduler.NEXT_TRAIN_NUMBER++, System.currentTimeMillis(), OperatorStatus.SHIFTNOTSTARTED);
+			}
+
+			operatorScheduleChanged();
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean updateTimetable()
+	{
+		timetableChanged();
+
+		return true;
+	}
+
+	private int calculateOptimalTrains()
+	{
+		return 1;
+	}
+
+	private void calculateRoutes(int time)
+	{
+		while(time < 36000000)
+		{
+			
+			time = time +1000;
 		}
 	}
 
-	private synchronized void timetableChanged()
+	private Train findTrain(int trainNumber)
 	{
-		Iterator i;
-		SchedulerEvent e;
+		Train t;
+		Train value;
+		Train train;
 
-		e = new SchedulerEvent(this);
-		i = listeners.iterator();
+		value = null;
 
-		while(i.hasNext())
+		if(trains.size() == 0)
 		{
-			((SchedulerListener) i.next()).timetableChanged(e);
+			return value;
 		}
+
+		t = trains.selected();
+
+		do
+		{
+			train = trains.next();
+
+			if(train.trainNumber == trainNumber)
+			{
+				value = train;
+			}
+		}
+		while(!t.equals(trains.selected()));
+
+		return value;
 	}
 
 	public OperatorSchedule getOperatorSchedule()
@@ -57,14 +131,9 @@ public class Scheduler extends Worker implements constData
 		return timetable;
 	}
 
-	public static void main(String[] args)
-	{
-	}
-
-	public synchronized void removeSchedulerListener(SchedulerListener listener)
-	{
-		listeners.remove(listener);
-	}
+	/*
+		Thread loop
+	*/
 
 	public void run()
 	{
@@ -120,6 +189,15 @@ public class Scheduler extends Worker implements constData
 
 	}
 
+	/*
+		Message Handlers
+	*/
+
+	public void setMsg(Message message)
+	{
+		messages.add(message);
+	}
+
 	private void receivedGPSLocation(Message message)
 	{
 	}
@@ -127,15 +205,30 @@ public class Scheduler extends Worker implements constData
 	private void receivedTrainDispatch(Message message)
 	{
 		int trainID;
+		Operator operator;
 
 		trainID = (int)message.getData().get("train_ID");
 		trains.add(new Train(trainID, System.currentTimeMillis()));
+		sendTrainUpdate();
 
-		if(schedule.search(trainID) == null)
+		operator = schedule.search(trainID);
+
+		if(operator == null)
 		{
-			schedule.add("Train", "Operator", trainID, System.currentTimeMillis(), OperatorStatus.SHIFTNOTSTARTED);
+			schedule.add("Train", "Operator", trainID, System.currentTimeMillis(), OperatorStatus.SHIFTFIRSTHALF);
 			operatorScheduleChanged();
 			updateTimetable();
+		}
+		else
+		{
+			if(operator.status == OperatorStatus.SHIFTNOTSTARTED)
+			{
+				operator.status = OperatorStatus.SHIFTFIRSTHALF;
+			}
+			else if(operator.status == OperatorStatus.ONBREAK)
+			{
+				operator.status = OperatorStatus.SHIFTSECONDHALF;
+			}
 		}
 	}
 
@@ -145,6 +238,33 @@ public class Scheduler extends Worker implements constData
 
 	private void receivedYardArrival(Message message)
 	{
+		int trainID;
+		Operator operator;
+
+		trainID = (int)message.getData("train_ID");
+		operator = schedule.search(trainID);
+
+		if(operator.status == OperatorStatus.SHIFTFIRSTHALF)
+		{
+			operator.status = OperatorStatus.ONBREAK;
+		}
+		else if(operator.status == OperatorStatus.SHIFTSECONDHALF)
+		{
+			operator.status = OperatorStatus.SHIFTENDED;
+		}
+
+		trains.remove(findTrain(trainID));
+		sendTrainUpdate();
+	}
+
+	/*
+		Message Senders
+	*/
+
+	public void send(Message message)
+	{
+	    	System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+		Environment.passMessage(message);
 	}
 
 	private void requestTrainGPS()
@@ -162,80 +282,55 @@ public class Scheduler extends Worker implements constData
 		}
 	}
 
-	public Scheduler()
+	private void sendTrainUpdate()
 	{
-		new SchedulerViewModel(this);
-		timetable = new Timetable();
-		schedule = new OperatorSchedule();
-		trains = new MyLinkedList<Train>();
-		messages = new LinkedBlockingQueue<Message>();
-		this.name = Module.scheduler;
-/*
-		timetable.add("Pittsburgh", 35, System.currentTimeMillis(), TrainStatus.ONTIME);
-		timetable.add("Philadelphia", 17, System.currentTimeMillis(), TrainStatus.EARLY);
-		timetable.add("Harrisburg", 2, System.currentTimeMillis(), TrainStatus.LATE);
-*/
+		Message message;
+
+		message = new Message(name, name, Module.MBO);
+		message.addData("train_ID", 96);
+		message.addData("trainList", trains.copy());
+		send(message);
 	}
 
-	public void send(Message message)
+	/*
+		Scheduler UI Communication
+	*/
+
+	public synchronized void addSchedulerListener(SchedulerListener listener)
 	{
-	    	System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
-		Environment.passMessage(message);
+		listeners.add(listener);
 	}
 
-	public void setMsg(Message message)
+	public synchronized void removeSchedulerListener(SchedulerListener listener)
 	{
-		messages.add(message);
+		listeners.remove(listener);
 	}
 
-	public String toString()
+	private synchronized void operatorScheduleChanged()
 	{
-		String s;
+		Iterator i;
+		SchedulerEvent e;
 
-		s = "Timetable";
+		e = new SchedulerEvent(this);
+		i = listeners.iterator();
 
-		s = s.concat(timetable.toString());
-		s = s.concat("Operator Schedule");
-		s = s.concat(schedule.toString());
-
-		return s;		
-	}
-
-	public boolean updateOperatorSchedule()
-	{
-		int numTrains;
-
-		numTrains = calculateOptimalTrains();
-
-		if(trains.size() < numTrains)
+		while(i.hasNext())
 		{
-			schedule.add("Train", "Operator", Scheduler.NEXT_TRAIN_NUMBER++, System.currentTimeMillis(), OperatorStatus.SHIFTNOTSTARTED);
-			operatorScheduleChanged();
-
-			return true;
+			((SchedulerListener) i.next()).operatorScheduleChanged(e);
 		}
-
-		return false;
 	}
 
-	public boolean updateTimetable()
+	private synchronized void timetableChanged()
 	{
-		timetableChanged();
+		Iterator i;
+		SchedulerEvent e;
 
-		return true;
-	}
+		e = new SchedulerEvent(this);
+		i = listeners.iterator();
 
-	private int calculateOptimalTrains()
-	{
-		return 1;
-	}
-
-	private void calculateRoutes(int time)
-	{
-		while(time < 36000000)
+		while(i.hasNext())
 		{
-			
-			time = time +1000;
+			((SchedulerListener) i.next()).timetableChanged(e);
 		}
 	}
 }
