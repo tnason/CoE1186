@@ -67,6 +67,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
               case TnMd_TnCt_Request_Train_Controller_Creation: // Train controller creation
                 TrainController newTrainController = new TrainController(trainID);
                 controllers.put(trainID, newTrainController);
+                break;
               case TnMd_TnCt_Request_Train_Controller_Destruction:
                 tc.closeGUI();
                 controllers.remove(trainID);

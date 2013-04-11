@@ -78,20 +78,20 @@ public class Environment implements constData
 			{
 				Message inbox = messageQ.poll();
 
-				System.out.println("\t"+ inbox.getSender() + " " + inbox.getDest());
+				//System.out.println("\t"+ inbox.getSender() + " " + inbox.getDest());
 
 				if(modualOrder.indexOf(inbox.getSender()) < modualOrder.indexOf(inbox.getDest()))
 				{
 					Module right = modualOrder.get(modualOrder.indexOf(inbox.getSender()) + 1);
-					System.out.print("right " + (modualOrder.indexOf(inbox.getSender())) + " " + (modualOrder.indexOf(inbox.getSender()) + 1));
+					//System.out.print("right " + (modualOrder.indexOf(inbox.getSender())) + " " + (modualOrder.indexOf(inbox.getSender()) + 1));
 					modWorker.get(right).setMsg(inbox);
-					System.out.println(" " + (modualOrder.indexOf(right)));
+					//System.out.println(" " + (modualOrder.indexOf(right)));
 
 				}
 				else if(modualOrder.indexOf(inbox.getSender()) > modualOrder.indexOf(inbox.getDest()))
 				{
 					Module left = modualOrder.get(modualOrder.indexOf(inbox.getSender()) - 1);
-					System.out.println("left " + (modualOrder.indexOf(inbox.getSender())) + " " + (modualOrder.indexOf(inbox.getSender()) - 1));
+					//System.out.println("left " + (modualOrder.indexOf(inbox.getSender())) + " " + (modualOrder.indexOf(inbox.getSender()) - 1));
 					modWorker.get(left).setMsg(inbox);
 				}
 			}

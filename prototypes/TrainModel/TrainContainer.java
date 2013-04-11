@@ -111,8 +111,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 								//update power setting
 								trainID = (int)(mine.getData().get("trainID"));
 								tm = trains.get(trainID);
-
-								tm.setPower((double)mine.getData().get("power"));
+								double power = (double)mine.getData().get("power");
+								tm.setPower(power);
 								break;
 							case TcMd_TnMd_Send_Yard_Node:
 								trainID = (int)(mine.getData().get("trainID"));
