@@ -17,8 +17,28 @@ public class TrackController extends Worker implements constData, Runnable
 	{
 		while(true)
 		{
+			if(msgs.peek() != null)
+     		{
+        		Message m = msgs.poll();
+        
+        		if(name == m.getDest())
+			    {
 
-		}
+			    }
+			    else
+       			{
+         			System.out.println("PASSING MSG: step->"+name + " source->"+m.getSource()+ " dest->"+m.getDest());
+          			m.updateSender(name);
+          			Environment.passMessage(m);
+          		}
+          	}
+        }
+	}
+
+	public void init()
+	{
+
+		
 	}
 
 	public void setMsg(Message m)

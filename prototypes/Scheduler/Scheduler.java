@@ -160,7 +160,7 @@ public class Scheduler extends Worker implements constData
 							receivedTrainArrival(message);
 							break;	*/
 						case TnMd_Sch_Notify_Yard:
-							if((boolean)message.getData("entry"))
+							if((boolean)message.getData().get("entry"))
 							{
 								receivedTrainReturn(message);
 							}
@@ -289,7 +289,7 @@ public class Scheduler extends Worker implements constData
 
 		while(i.hasNext())
 		{
-			message = new Message(Module.scheduler, Module.scheduler, Module.satellite);
+			message = new Message(Module.scheduler, Module.scheduler, Module.satellite, msg.placeHolder);
 			message.addData("trainNumber", i.next().trainNumber);
 			send(message);
 		}
