@@ -7,11 +7,7 @@ public class Scheduler extends Worker implements constData
 {
 	public static int NEXT_TRAIN_NUMBER = 0;
 
-<<<<<<< HEAD
 	private List<SchedulerListener> listeners;
-=======
-	private List<SchedulerListener> listeners = new ArrayList<SchedulerListener>();
->>>>>>> 3e34b24b82a3f0e958c0a0b0e367b4a715e532c4
 	private LinkedBlockingQueue<Message> messages;
 	private Module name;
 	private OperatorSchedule schedule;
@@ -35,8 +31,10 @@ public class Scheduler extends Worker implements constData
 		listeners = new ArrayList<SchedulerListener>();
 		messages = new LinkedBlockingQueue<Message>();
 		this.name = Module.scheduler;
-
 		new SchedulerViewModel(this);
+
+		updateOperatorSchedule();
+		updateTimetable();
 	}
 
 	/*
@@ -152,7 +150,7 @@ public class Scheduler extends Worker implements constData
 
 				if(name == message.getDest())
 				{
-					System.out.println("RECEIVED MESSAGE ~ (source : " + message.getSource() + "), (dest : " + message.getDest() + ")\n");
+					System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 
 					switch(message.getType())
 					{
@@ -178,10 +176,10 @@ public class Scheduler extends Worker implements constData
 					}
 				}
 				else
-				{	System.out.println("in: " + message.getSender());
-					System.out.println("PASSING MSG ~ (source : " + message.getSource() + "), (step : " + name + "), (dest : "+message.getDest()+")");
-                    message.updateSender(Module.scheduler);
-					Environment.passMessage(message);System.out.println("out: " + message.getSender());
+				{
+					System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
+					message.updateSender(name);
+					Environment.passMessage(message);
 				}
 			}
 
@@ -228,19 +226,22 @@ public class Scheduler extends Worker implements constData
 
 		if(operator == null)
 		{
-			schedule.add("Train", "Operator", trainID, System.currentTimeMillis(), OperatorStatus.SHIFTFIRSTHALF);
+			Scheduler.NEXT_TRAIN_NUMBER = trainID;
+			schedule.add("Train", "Operator", Scheduler.NEXT_TRAIN_NUMBER++, System.currentTimeMillis(), OperatorStatus.SHIFTFIRSTHALF);
 			operatorScheduleChanged();
-			//updateTimetable();
+			updateTimetable();
 		}
 		else
 		{
 			if(operator.status == OperatorStatus.SHIFTNOTSTARTED)
 			{
 				operator.status = OperatorStatus.SHIFTFIRSTHALF;
+				operatorScheduleChanged();
 			}
 			else if(operator.status == OperatorStatus.ONBREAK)
 			{
 				operator.status = OperatorStatus.SHIFTSECONDHALF;
+				operatorScheduleChanged();
 			}
 		}
 	}
@@ -261,19 +262,21 @@ public class Scheduler extends Worker implements constData
 		Operator operator;
 
 		trainID = (int)message.getData().get("trainID");
+		trains.remove(findTrain(trainID));
+		sendTrainUpdate();
+
 		operator = schedule.search(trainID);
 
 		if(operator.status == OperatorStatus.SHIFTFIRSTHALF)
 		{
 			operator.status = OperatorStatus.ONBREAK;
+			operatorScheduleChanged();
 		}
 		else if(operator.status == OperatorStatus.SHIFTSECONDHALF)
 		{
 			operator.status = OperatorStatus.SHIFTENDED;
+			operatorScheduleChanged();
 		}
-
-		trains.remove(findTrain(trainID));
-		sendTrainUpdate();
 	}
 
 	/*
@@ -282,9 +285,8 @@ public class Scheduler extends Worker implements constData
 
 	public void send(Message message)
 	{
-   		System.out.println("SENDING MSG ~ (start : "+message.getSource() + "), (dest : "+message.getDest()+"), (type : " + message.getType()+ ")");
-        message.updateSender(name);
-        Environment.passMessage(message);
+	    	System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+		Environment.passMessage(message);
 	}
 
 	private void requestTrainGPS()
@@ -296,7 +298,7 @@ public class Scheduler extends Worker implements constData
 
 		while(i.hasNext())
 		{
-			message = new Message(Module.scheduler, Module.scheduler, Module.satellite, msg.placeHolder);
+			message = new Message(name, name, Module.satellite);
 			message.addData("trainNumber", i.next().trainNumber);
 			send(message);
 		}
@@ -352,14 +354,7 @@ public class Scheduler extends Worker implements constData
 
 	private synchronized void timetableChanged()
 	{
-<<<<<<< HEAD
-		Message m = new Message(Module.MBO, Module.MBO, Module.scheduler, msg.TnMd_Sch_Notify_Yard);
-		m.addData("trainID", 1);
-		m.addData("entry", true);
-		send(m);
-/*
-=======
->>>>>>> 3e34b24b82a3f0e958c0a0b0e367b4a715e532c4
+
 		Iterator<SchedulerListener> i;
 		SchedulerEvent e;
 
@@ -368,12 +363,8 @@ public class Scheduler extends Worker implements constData
 
 		while(i.hasNext())
 		{
-<<<<<<< HEAD
 			i.next().timetableChanged(e);
-=======
-			 i.next().timetableChanged(e);
->>>>>>> 3e34b24b82a3f0e958c0a0b0e367b4a715e532c4
 		}
-*/
+
 	}
 }
