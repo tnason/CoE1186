@@ -22,18 +22,24 @@ public class TrackController extends Worker implements constData, Runnable
      		{
         		Message m = msgs.poll();
         
-        		if(name == m.getDest())
+          if(name == m.getDest())
 			    {
 			    	System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
-			     }
+          }
 			    else
-       			{
+          {
+            if(m.getType() == constData.msg.MBO_TnCt_Send_Moving_Block_Authority)
+            {
+              
+              
+            }
+
          			System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+")");
               m.updateSender(name);
           		Environment.passMessage(m);
-          	}
-          }
+        	}
         }
+      }
 	}
 
   public void init(Worker tModel)

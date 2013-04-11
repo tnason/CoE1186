@@ -30,6 +30,7 @@ public interface constData
 		TnCt_TnMd_Send_Power,
 		verify,
 		TnCt_TnMd_Request_Train_Velocity,
+		TnCt_TcMd_Request_Track_Speed_Limit,
 		TnMd_TcMd_Request_Track_Speed_Limit,
 		placeHolder
 	}
