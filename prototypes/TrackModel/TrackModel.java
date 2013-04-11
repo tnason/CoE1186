@@ -10,6 +10,7 @@ public class TrackModel extends Worker implements Runnable, constData
 	public TrackModel(){
 		blocks = new HashMap<Integer, Block>();
 		nodes = new HashMap<Integer, Node>();
+        msgs = new LinkedBlockingQueue<Message>();
 	}
 
     private HashMap<Integer, Block> blocks;
@@ -58,10 +59,6 @@ public class TrackModel extends Worker implements Runnable, constData
 ///*    
     private LinkedBlockingQueue<Message> msgs;
     private Module name = Module.trackModel;
-    
-    public TrackModel () {
-        msgs = new LinkedBlockingQueue<Message>();
-    }
 
     public void run() {
         while (true) 
