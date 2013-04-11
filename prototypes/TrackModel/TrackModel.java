@@ -8,21 +8,34 @@ public class TrackModel extends Worker implements Runnable, constData
     private HashMap<Integer, Block> blocks;
     private HashMap<Integer, Node> nodes;
     private java.util.concurrent.LinkedBlockingQueue<Message> msgs;
+    private Module name = Module.trackModel;
     
-    public TrackModel (Module name) {
+    public TrackModel () {
         msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
     }
 
     public void run() {
-        while (true) {
-        
+        while (true) 
+        {
+            if(msgs.peek() != null)
+            {
+                Message m = msgs.poll();
+    
+                if(name == m.getDest())
+                {
+
+                }
+                else
+                {
+                    System.out.println("PASSING MSG: step->"+name + " source->"+m.getSource()+ " dest->"+m.getDest());
+                    m.updateSender(name);
+                    Environment.passMessage(m);
+                }
+            }
         }
     }
     
-    public TrackModel()
-    {
-    
-    }
+   
     
     public void initTrack()
     {

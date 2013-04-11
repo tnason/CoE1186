@@ -190,7 +190,7 @@ public class MovingBlockOverlay extends Worker implements constData
 	{
 		Message message;
 
-		message = new Message(name, name, Module.satellite);
+		message = new Message(name, name, Module.satellite,msg.placeHolder);
 		message.addData("Train Number", trainNumber);
 		send(message);
 	}
@@ -199,7 +199,7 @@ public class MovingBlockOverlay extends Worker implements constData
 	{
 		Message message;
 
-		message = new Message(name, name, Module.trainModel);
+		message = new Message(name, name, Module.trainModel,msg.placeHolder);
 		message.addData("Train Number", trainNumber);
 		send(message);
 	}
