@@ -78,7 +78,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 						switch (mine.getType())
 						{
 							case CTC_TnMd_Request_Train_Creation:
-							  /*bl = (Block)mine.getData().get("yard");
+							  bl = (Block)mine.getData().get("yard");
 								if(bl.isOccupied())
 								{
 									//fail silently
@@ -86,7 +86,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 								else
 								{
 									tm = new TrainModel((int)mine.getData().get("trainID"), bl, TIME_STEP);
-								*/
+								
 									//send associated messages!!!
 									
 									// Send will pass message to environment. Notify to console of msg send.
@@ -105,7 +105,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 									//send TnMd_Sch_Notify_Yard
 									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID","blockID"}, new Object[] {(Object)false, mine.getData().get("trainID"), (Object)(bl.getID())});
 									send(outgoingMessage);
-								//}
+								}
 								break;
 							case TnCt_TnMd_Send_Power:
 								//update power setting
@@ -162,6 +162,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 	public void send(Message m)
 	{
    		System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        m.updateSender(name);
         Environment.passMessage(m);
 	}
 

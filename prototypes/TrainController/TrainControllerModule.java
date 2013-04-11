@@ -96,6 +96,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   public void send(Message m)
     {
         System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " +  m.getType()+ ")");
+        m.updateSender(name);
         Environment.passMessage(m);
     }
   

@@ -35,4 +35,15 @@ public interface constData
 		TnCt_TcMd_Request_Track_Speed_Limit,
 		placeHolder
 	}
+
+	public enum NodeType
+	{
+		Node,
+		Connector,
+		Crossing,
+		Switch,
+		Yard,
+		Station
+
+	}
 }

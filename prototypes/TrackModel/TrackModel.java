@@ -5,16 +5,15 @@ import java.io.*;
 import java.util.concurrent.*;
 
 
-public class TrackModel /*extends Worker implements Runnable, constData*/
+public class TrackModel extends Worker implements Runnable, constData
 {
 	
 
-    private HashMap<Integer, Block> blocks;
-    private HashMap<Integer, Node> nodes;
+    private HashMap<Integer, Block> blocks = new HashMap<Integer, Block>();
+    private HashMap<Integer, Node> nodes = new HashMap<Integer, Node>();
 
-    private static HashMap<Integer, Block> staticBlocks;
-    public static HashMap<Integer, Block> getBlocks(){
-    	return staticBlocks;
+    public  HashMap<Integer, Block> getBlocks(){
+    	return blocks;
     }
     
     
@@ -58,8 +57,7 @@ public class TrackModel /*extends Worker implements Runnable, constData*/
   
     public void initTrack()
     {
-    	
-        try
+        /*try
         {
             Scanner s = new Scanner(new File("layout_new.txt"));
 
@@ -75,7 +73,11 @@ public class TrackModel /*extends Worker implements Runnable, constData*/
 
 
             }
-
+        } 
+        catch (Exception e)
+        {
+                //System.out.println(e);
+        }*/
             Node node1 = new YardNode(0,0,0);
             Node node2 = new ConnectorNode(200,0,0);
             Node node3 = new ConnectorNode(400,0,1);
@@ -100,18 +102,8 @@ public class TrackModel /*extends Worker implements Runnable, constData*/
             blocks.put(5, block5);
             blocks.put(6, block6);            
             blocks.put(7, block7);
-
-            //assign to the static so anyone can get at this
-            staticBlocks = blocks;
-            
-            
-        } 
-        catch (Exception e)
-        {
-
-        }
-    
-    
+                
+            //assign to the static so anyone can get at this  
     }
 
     
@@ -123,6 +115,7 @@ public class TrackModel /*extends Worker implements Runnable, constData*/
     public void send(Message m)
     {
         System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        m.updateSender(name);
         Environment.passMessage(m);
     }
     
