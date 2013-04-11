@@ -84,7 +84,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         }
         else
         {
-          System.out.println("PASSING MSG: step->"+name + " source->"+m.getSource()+ " dest->"+m.getDest());
+          System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+"), (type : " + m.getType()+")");
           m.updateSender(name);
           Environment.passMessage(m);
         }
