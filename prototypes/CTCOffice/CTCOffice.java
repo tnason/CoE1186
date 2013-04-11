@@ -207,14 +207,88 @@ class TrainViewModel
         _speed = s;
     }
 }
-/*
+
 class BlockViewModel
 {
+    private final int _blockID;
+    private int _currentOccupantID;
+    private final int _controllerID;
     
+    // get/set methods
+    public int getBlockID() {
+        return _blockID;
+    }
+    
+     public getControllerID {
+        return _controllerID;
+    }
+    
+    public int getCurrentOccupantID {
+        return _currentOccupantID;
+    }
+    
+    public int setCurrentOccupantID (int id) {
+        if (id >= -1) {
+            _currentOccupantID = id;
+        }
+    }
+    
+    // Constructors
+    public BlockViewModel (ind bID, int cID) {
+        _blockID = bID;
+        _controllerID = cID;
+        _currentOccupantID = -1;
+    }
+    
+    // Other Methods
+    
+    public boolean isOccupied() {
+        if (_currentOccupantID >= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 
+/*
 class ControllerViewModel
 {
-
-}
-*/
+    // ivars and all that
+    private final int _controllerID;
+    private final ArrayList<Integer> _containedBlockIDs;
+    private ArrayList<Integer> _containedTrainIDs;
+    
+    // get/set methods
+    public int getControllerID() {
+        return _controllerID;
+    }
+    
+    public ArrayList<Integer> getContainedBlockIDs() {
+        return _containedBlockIDs;
+    }
+    
+    public ArrayList<Integer> getContainedTrainIDs() {
+        return _containedTrainIDs;
+    }
+    
+    public void addContainedTrainID (int id) {
+        if (id >= 0) {
+            _containedTrainIDs.add(id);
+        }
+    }
+    
+    public int removeContainedTrainID (int id) {
+        int tID = -1;
+        if (_containedTrainIDs.contains(id)) {
+            int tID = _containedTrainIDs.remove(id);
+        }
+        
+        return tID;
+    }
+    
+   
+}*/
