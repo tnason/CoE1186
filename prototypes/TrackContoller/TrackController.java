@@ -39,7 +39,7 @@ public class TrackController extends Worker implements constData, Runnable
   public void init(Worker tModel)
 	{
     Hashtable<Integer, Block> allBlocks = new Hashtable<Integer, Block>(((TrackModel)tModel).getBlocks());
-System.out.println(allBlocks.toString());
+
     for(Block b : allBlocks.values())
     {
       ArrayList<Integer> control = b.getController();
