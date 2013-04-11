@@ -9,6 +9,8 @@ public class TrainModel implements constData
 	private ArrayList<Block> occupiedBlocks = new ArrayList<Block> ();
 	private ArrayList<Double> blockEntryPos = new ArrayList<Double> ();
 	private Node currentNode;
+
+	private Message outgoingMessage;
 	
 	private boolean fromYard;
 	
@@ -249,12 +251,29 @@ public class TrainModel implements constData
 
 				currentNode = nextNode;
 				//shouldn't need yard entry stuff here...
+				
+				//new block!
+				//send TnMd_TcMd_Request_Track_Speed_Limit
+				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackModel, msg.TnMd_TcMd_Request_Track_Speed_Limit, new String[] {"trainID", "blockID"}, new Object[] {trainID, occupiedBlocks.get(0).getID()});
+				Environment.passMessage(outgoingMessage); 
+
+				//send TnMd_CTC_Send_Block_Occupied
+				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Send_Block_Occupied, new String[] {"blockID"}, new Object[] {occupiedBlocks.get(0).getID()});
+				Environment.passMessage(outgoingMessage);
+	
+				//send TnMd_TcCt_Update_Block_Occupancy
+				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy"}, new Object[] {occupiedBlocks.get(0).getID(), true});
+				Environment.passMessage(outgoingMessage);
 			}
 			
 			if(occupiedBlocks.size() == 2)
 			{
 				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() - trLength/2.0)) //if the back of the train has left the old block
 				{
+					//send TnMd_TcCt_Update_Block_Occupancy
+					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy"}, new Object[] {occupiedBlocks.get(1).getID(), false});
+					Environment.passMessage(outgoingMessage);
+					
 					fromYard = false;
 					occupiedBlocks.get(1).setOccupation(false);
 					occupiedBlocks.remove(1);
@@ -268,22 +287,54 @@ public class TrainModel implements constData
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength()))
 			{
 				nextNode = occupiedBlocks.get(0).getNextNode(currentNode);
+
+				if(nextNode.getNodeType() == NodeType.Yard) //yard entry
+				{
+					//destruct 
+
+					//send TnMd_TnCt_Request_Train_Controller_Destruction
+					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Request_Train_Controller_Destruction, new String[] {"trainID"}, new Object[] {trainID});
+					Environment.passMessage(outgoingMessage); 
+					
+					//send TnMd_CTC_Request_Train_Destruction
+					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Request_Train_Destruction, new String[] {"trainID"}, new Object[] {trainID});
+					Environment.passMessage(outgoingMessage); 
+					
+					//send TnMd_Sch_Notify_Yard
+					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID", "blockID"}, new Object[] {true, trainID, occupiedBlocks.get(0).getID()});
+					Environment.passMessage(outgoingMessage); 
+				}
+
+				//if not yard, keep goin!
 				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(currentNode));
 				blockEntryPos.add(0, position);
 				
 				occupiedBlocks.get(0).setOccupation(true);
 				currentNode = nextNode;
 
-				if(currentNode.getNodeType() == NodeType.Yard) //yard entry
-				{
-					//destruct 
-				}
+				//new block!
+				//send TnMd_TcMd_Request_Track_Speed_Limit
+				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackModel, msg.TnMd_TcMd_Request_Track_Speed_Limit, new String[] {"trainID", "blockID"}, new Object[] {trainID, occupiedBlocks.get(0).getID()});
+				Environment.passMessage(outgoingMessage); 
+
+				//send TnMd_CTC_Send_Block_Occupied
+				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Send_Block_Occupied, new String[] {"blockID"}, new Object[] {occupiedBlocks.get(0).getID()});
+				Environment.passMessage(outgoingMessage);
+
+				//send TnMd_TcCt_Update_Block_Occupancy
+				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy"}, new Object[] {occupiedBlocks.get(0).getID(), true});
+				Environment.passMessage(outgoingMessage);
+
 			}
 			
 			if(occupiedBlocks.size() == 2)
 			{
 				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() + trLength)) //if the back of the train has left the old block
 				{
+					//send TnMd_TcCt_Update_Block_Occupancy
+					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy"}, new Object[] {occupiedBlocks.get(1).getID(), false});
+					Environment.passMessage(outgoingMessage);
+
 					occupiedBlocks.get(1).setOccupation(false);
 					occupiedBlocks.remove(1);
 					blockEntryPos.remove(1);
