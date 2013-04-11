@@ -44,7 +44,6 @@ public class TrainContainer extends Worker implements Runnable, constData
 	{
  		public void run()
 		{
-			System.out.println("	!!!!!!!!!!!!!!!!!!TRYING TO MOVE TRAINS!!!!!!!!!!!!!!!");
   			Enumeration<Integer> enumKey = trains.keys();
   			while(enumKey.hasMoreElements())
   			{
