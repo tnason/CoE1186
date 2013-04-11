@@ -2,12 +2,12 @@
 package TLTTC;
 import java.util.*;
 
-public class TrainModel implements Runnable, constData 
+public class TrainModel implements constData 
 {
 	//tracking block occupancy
 	//[0] = 'front' block (in direction of motion)
 	private ArrayList<Block> occupiedBlocks = new ArrayList<Block> ();
-	private ArrayList<Integer> blockEntryPos = new ArrayList<Integer> ();
+	private ArrayList<Double> blockEntryPos = new ArrayList<Double> ();
 	private Node currentNode;
 	
 	private boolean fromYard;
@@ -49,10 +49,10 @@ public class TrainModel implements Runnable, constData
 	private int forceRegime = 0;
 	
 	
-	public TrainModel(int trainID, Block start, double time_step) 
+	public TrainModel(int trainID, Block start, double timeStep) 
 	{
 		this.trainID = trainID;
-		this.timeStep = time_step;
+		this.timeStep = timeStep;
 		
 		occupiedBlocks.add(start);
 		blockEntryPos.add(position); 
@@ -143,7 +143,7 @@ public class TrainModel implements Runnable, constData
 		//Step 3: Determine x(t+dt)
 		//	x(t+dt) = x(t) + .5(v(t)+v(t+dt))*dt + .25(a(t)+a(t+dt))*dt^2
 		
-		endVelocity = velocity + acceleration*time_step;
+		endVelocity = velocity + acceleration*timeStep;
 		
 		//apply brakes
 		if(trainBrakeOn || trainEmergencyBrakeOn) 
@@ -159,7 +159,7 @@ public class TrainModel implements Runnable, constData
 			}
 			//calculates current position from last step velocity and acceleration
 			//x(t+dt) = x(t) + .5(v(t)+v(t+dt))*dt + .25(a(t)+a(t+dt))*dt^2
-			endPosition = position + .5*(velocity+endVelocity)*time_step + .25*(acceleration+endAccel)*time_step*time_step;
+			endPosition = position + .5*(velocity+endVelocity)*timeStep + .25*(acceleration+endAccel)*timeStep*timeStep;
 		} 
 		else 
 		{
@@ -218,7 +218,7 @@ public class TrainModel implements Runnable, constData
 			
 			//calculates current position from last step velocity and acceleration
 			//x(t+dt) = x(t) + .5(v(t)+v(t+dt))*dt + .25(a(t)+a(t+dt))*dt^2
-			endPosition = position + .5*(velocity+endVelocity)*time_step + .25*(acceleration+endAccel)*time_step*time_step;
+			endPosition = position + .5*(velocity+endVelocity)*timeStep + .25*(acceleration+endAccel)*timeStep*timeStep;
 	
 		}	
 
@@ -226,7 +226,7 @@ public class TrainModel implements Runnable, constData
 		velocity = endVelocity;
 		acceleration = endAccel;
 		
-		time += time_step;
+		time += timeStep;
 	
 		updateOccupancy();	
 	}
