@@ -233,16 +233,22 @@ public class TrainModel implements constData
 	
 	private void updateOccupancy()
 	{
+		Node nextNode;
+
 		//Update occupancy/traverse blocks
 		//must 'bootstrap' to get consistent stats after leaving yard
 		if(fromYard)
 		{
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength() - trLength/2.0)) //if the front of the train is crossing into a new block
 			{
+				nextNode = occupiedBlocks.get(0).getNextNode(currentNode);
 				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(currentNode));
 				blockEntryPos.add(0, position);
 				
 				occupiedBlocks.get(0).setOccupation(true);
+
+				currentNode = nextNode;
+				//shouldn't need yard entry stuff here...
 			}
 			
 			if(occupiedBlocks.size() == 2)
@@ -261,10 +267,17 @@ public class TrainModel implements constData
 		{
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength()))
 			{
+				nextNode = occupiedBlocks.get(0).getNextNode(currentNode);
 				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(currentNode));
 				blockEntryPos.add(0, position);
 				
 				occupiedBlocks.get(0).setOccupation(true);
+				currentNode = nextNode;
+
+				if(currentNode.getNodeType() == NodeType.Yard) //yard entry
+				{
+					//destruct 
+				}
 			}
 			
 			if(occupiedBlocks.size() == 2)
