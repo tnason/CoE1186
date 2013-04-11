@@ -267,7 +267,7 @@ public class MovingBlockOverlay extends Worker implements constData
 	private void requestLocation(int trainNumber)
 	{
 		Message message;
-<<<<<<< HEAD
+
 
 
 		//message = new Message(name, name, Module.satellite);
@@ -280,18 +280,18 @@ public class MovingBlockOverlay extends Worker implements constData
 		//message = new Message(name, name, Module.satellite,msg.placeHolder);
 		//message.addData("Train Number", trainNumber);
 		//send(message);
-=======
-		message = new Message(name, name, Module.satellite,msg.placeHolder);
-		message.addData("Train Number", trainNumber);
-		send(message);
 
->>>>>>> 032b126e7c1842d53ab17b8179bf020dd8464d8b
+		//message = new Message(name, name, Module.satellite,msg.placeHolder);
+		//message.addData("Train Number", trainNumber);
+		//send(message);
+
+
 	}
 
 	private void requestStoppingDistance(int trainNumber)
 	{
 		Message message;
-<<<<<<< HEAD
+
 
 		//message = new Message(name, name, Module.trainModel);
 		//message.addData("trainID", trainNumber);
@@ -303,11 +303,10 @@ public class MovingBlockOverlay extends Worker implements constData
 		//message = new Message(name, name, Module.trainModel,msg.placeHolder);
 		//message.addData("Train Number", trainNumber);
 		//send(message);
-=======
-		message = new Message(name, name, Module.trainModel,msg.placeHolder);
-		message.addData("Train Number", trainNumber);
-		send(message);
 
->>>>>>> 032b126e7c1842d53ab17b8179bf020dd8464d8b
+		//message = new Message(name, name, Module.trainModel,msg.placeHolder);
+		//message.addData("Train Number", trainNumber);
+		//send(message);
+
 	}
 }
