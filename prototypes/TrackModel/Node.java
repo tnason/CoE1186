@@ -1,8 +1,21 @@
 package TLTTC;
 
-public abstract class Node implements constData {
+public abstract class Node {
 	public Node(){
 		nodeType = NodeType.Node;
+	}
+	
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("Node x=");
+		sb.append(xPos);
+		sb.append(" y=");
+		sb.append(yPos);
+		sb.append(" z=");
+		sb.append(zPos);
+		
+		
+		return sb.toString();
 	}
 	
 	/*Unique identifier*/

@@ -8,4 +8,8 @@ public class ConnectorNode extends Node {
 		yPos = y;
 		zPos = z;
 	}
+	
+	public String toString(){
+		return "Connector" + super.toString();
+	}
 }
