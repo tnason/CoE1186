@@ -5,12 +5,12 @@ import java.util.concurrent.*;
 //This class will hold all of the trains
 //It will also receive messages and route them to the trains
 //It will also also abstract out train construction 
-public class TrainContainer implements Runnable, constData 
+public class TrainContainer extends Worker implements Runnable, constData 
 {
 	private Module name;
 	private LinkedBlockingQueue<Message> msgs;
   
-	private HashTable<int, TrainModel> trains;
+	private HashTable<Integer, TrainModel> trains;
   
 	private Timer motionTimer;
 
@@ -27,7 +27,7 @@ public class TrainContainer implements Runnable, constData
 	{ 
   		this.name = Module.trainModel;
 		msgs  = new LinkedBlockingQueue<Message>();
-		trains = new HashTable<int, TrainModel>();
+		trains = new HashTable<Integer, TrainModel>();
 		motionTimer = new Timer();
   		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every 10 ms
 	}
@@ -69,25 +69,33 @@ public class TrainContainer implements Runnable, constData
 
 					if(mine.getData() != null)
 					{
-						trainID = (int)(m.getData.get("train_ID"));
+						trainID = (int)(m.getData.get("trainID"));
 						tm = trains.get(trainID);
-						System.out.println(mine.getData().get("check"));
+						//System.out.println(mine.getData().get("check")); ????
 						
 						//handling incoming messages
 						switch (m.getType())
 						{
-							//case MESSAGE_NAME:
+							case CTC_TnMd_Request_Train_Creation:
+								//check yard block occupancy
+								//if empty
+								//create train
+								//send confirmation
+								//
+								//if not empty
+								//fail silently
+							case TnCt_TnMd_Send_Power:
+								//update power setting
+								tm.setPower(m.getData.get("power"));
+							case others:
+
 							//stuff
 						}
 						
 					}
 					else
 					{
-
-						Message verify = new Message(name, name, mine.getSource());
-						verify.addData("check", (Object) ("VERIFY LOOP!"));
-
-						send(verify);
+						//other stuff!
 					}
 				}
 				else
