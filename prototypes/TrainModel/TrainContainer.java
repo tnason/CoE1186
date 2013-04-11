@@ -80,7 +80,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 						{
 							case CTC_TnMd_Request_Train_Creation:
 								n = (YardNode)mine.getData().get("yardNode");
-								bl = (Block)mine.getData().get("yard");
+								bl = (Block)mine.getData().get("yardBlock");
 								if(bl.isOccupied())
 								{
 									//fail silently
