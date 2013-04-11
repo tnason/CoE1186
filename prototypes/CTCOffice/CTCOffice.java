@@ -10,10 +10,10 @@ public class CTCOffice extends Worker implements Runnable, constData {
     private static String _sender = "CTC";
     private java.util.concurrent.LinkedBlockingQueue<Message> msgs;
     private Module name = Module.CTC; //CTCOffice?
-    // private ArrayList<BlockViewModel> _blockList;
-    // private ArrayList<ControllerViewModel> _controllerList;
-    private ArrayList<TrainViewModel> _trainList;
+    private HashMap<Integer, TrainViewModel> _trainList;
+    private HashMap<Integer, BlockViewModel> _blockList;
     // 
+    private int _trainCount = 0;
     
     CTCOffice () {
         // Do any set-up needed, launch the GUI, and get it on!
@@ -24,6 +24,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
     }
     
     public void run () {
+        Integer tID, bID;
         while(true) {
             if (msgs.peek() != null)
                 {
@@ -33,16 +34,17 @@ public class CTCOffice extends Worker implements Runnable, constData {
                 { // hey, this was sent to me; let's do something
                     System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")");
                     switch (m.getType()) {
-		    case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
-			     // unpack the data from the message
-			    m.getData().get("trainID");
+		                case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
+			                // unpack the data from the message
+			                tID = (Integer) m.getData().get("trainID");
+			                addTrainToTrainList(tID);
                         break; // end Confirm train creation case
-		    case TnMd_CTC_Request_Train_Destruction: // Aw snap! Train's going away, better let everyone know
-			m.getData().get("trainID");
+		                case TnMd_CTC_Request_Train_Destruction: // Aw snap! Train's going away, better let everyone know
+			                tID = (Integer) m.getData().get("trainID");
+			                removeTrainFromTrainList(tID);
                         break; // end train destruction case
-
 		                case TnMd_CTC_Send_Block_Occupied: // Train has definitely moved to a new block; let e'rybody know
-		                
+		                    bID = (Integer) m.getData().get("blockID");
 		                break; // end block occupied case
 		                /*
 		                 * Other cases will be implemented here in the future.
@@ -72,40 +74,101 @@ public class CTCOffice extends Worker implements Runnable, constData {
         System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
         Environment.passMessage(m);
     }
-}
-/*
-class CTCController
-{
     
-    public void dispatchTrain (String line) { // probably other vars needed
+     public void dispatchTrain () { // probably other vars needed
     
-    // Compose a message to train. Holla at your boy!
+        // Compose a message to train. Holla at your boy!
+        Message m = new Message(Module.CTC, Module.CTC, Module.trainModel, msg.CTC_TnMd_Request_Train_Creation, new String[] {"trainID"}, new Object[] {_trainCount});
+        send(m);
+        
+        _trainCount++;
+    }
+    
+    public void addTrainToTrainList(Integer tID) {
+        TrainViewModel train = new TrainViewModel(tID);
+        _trainList.put(tID, train);
+    }
+    
+    public void removeTrainFromTrainList(Integer tID) {
+        if (_trainList.containsKey(tID)) {
+            _trainList.remove(tID);
+        }
+    }
+    
+    public void updateBlockOccupancy( Integer bID ) {
+        if (_trainList.size() == 1) {
+            // lazy, I know, but why do more work!
+            TrainViewModel train = _trainList.get(1);
+            train.setCurrentBlockID(bID);
+            _trainList.put(train.getTrainID(), train);
+        }
+        else if (_trainList.size() == 0) {
+            // sumthin' weird's happenin' over yar...
+        }
+        else {
+            // a little more complex
+            Collection<TrainViewModel> trains = _trainList.values();
+            for (TrainViewModel train : trains) {
+                int cBID = train.getCurrentBlockID();
+                if (cBID + 1 == bID || cBID - 1 == bID) {
+                    // THIS IS NOT GOING TO WORK WITH SWITCHES, HAVE TO USE A GENERATED ROUTE TO DETERMINE TRAIN THAT MOVED
+                    train.setCurrentBlockID(bID);
+                    _trainList.put(train.getTrainID(), train);
+                    break;
+                }
+            }
+        }
     }
     
     public void generateSchedule() { // vars?
         
     }
     
-    public void setAuthority (int authority) { // yeah, need other stuff too!
+    public void setFixedAuthority (int tID, int authority) { // yeah, need other stuff too!
         
         if (authority >= 0) { // Technically, there shouldn't be any checks on authority, but come on
+            // set in the model
+            TrainViewModel train = _trainList.get(tID);
+            train.setFixedBlockAuthority(authority);
+            _trainList.put(tID, train);            
             // create a message to send to the train controller
-            System.out.println("Good authority, let's send it!");
+            Message m = new Message(Module.CTC, Module.CTC, Module.trainController, msg.CTC_TnCt_Send_Manual_FixedBlock, new String[] {"trainID", "authority"}, new Object[] {tID, authority});
         }
         else {
             System.out.println("Respect my authoritah! And make that number positive!");
         }
     }
     
-    public void setSpeed(double speed) { // and other shit, too
+    public void setMovingAuthority (int tID, double authority) {
+        if (authority >= 0) { // Technically, there shouldn't be any checks on authority, but come on
+            // set in the model
+            TrainViewModel train = _trainList.get(tID);
+            train.setMovingBlockAuthority(authority);
+            _trainList.put(tID, train);            
+            // create a message to send to the train controller
+            Message m = new Message(Module.CTC, Module.CTC, Module.trainController, msg.CTC_TnCt_Send_Manual_MovingBlock, new String[] {"trainID", "authority"}, new Object[] {tID, authority});
+        }
+        else {
+            System.out.println("Respect my (moving) authoritah! And make that number positive!");
+        }
+    }
     
-    if (speed >= 0) {
-        System.out.println("Good speed, let's send it!");
-    }
-    else {
-        System.out.println("Naw man, that speed don't make no sense!");
-    }
-        
+    public void setSpeed(int tID, double speed) { // and other shit, too
+    
+        if (speed >= 0) {
+            TrainViewModel train = _trainList.get(tID);
+            train.setSpeed(speed);
+            _trainList.put(tID, train);            
+            // create a message to send to the train controller
+            
+            // convert speed to m/s from mph
+            speed = speed * (.44704);
+            
+            Message m = new Message(Module.CTC, Module.CTC, Module.trainController, msg.CTC_TnCt_Send_Manual_Speed, new String[] {"trainID", "velocity"}, new Object[] {tID, speed});
+        }
+        else {
+            System.out.println("Naw man, that speed don't make no sense!");
+        } 
     }
     
     private void updateBlockForTrain(int blockID, int trainID) {
@@ -116,7 +179,9 @@ class CTCController
     
     }
 }
-*/
+
+
+
 class TrainViewModel
 {
     // ivars and such
