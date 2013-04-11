@@ -219,22 +219,22 @@ class BlockViewModel
         return _blockID;
     }
     
-     public getControllerID {
+     public int getControllerID() {
         return _controllerID;
     }
     
-    public int getCurrentOccupantID {
+    public int getCurrentOccupantID() {
         return _currentOccupantID;
     }
     
-    public int setCurrentOccupantID (int id) {
+    public void setCurrentOccupantID (int id) {
         if (id >= -1) {
             _currentOccupantID = id;
         }
     }
     
     // Constructors
-    public BlockViewModel (ind bID, int cID) {
+    public BlockViewModel (int bID, int cID) {
         _blockID = bID;
         _controllerID = cID;
         _currentOccupantID = -1;
