@@ -67,6 +67,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
               case TnMd_TnCt_Request_Train_Controller_Creation: // Train controller creation
                 TrainController newTrainController = new TrainController(trainID);
                 controllers.put(trainID, newTrainController);
+                break;
               case TnMd_TnCt_Request_Train_Controller_Destruction:
                 tc.closeGUI();
                 controllers.remove(trainID);
@@ -103,7 +104,14 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     Environment.passMessage(m);
   }
   
+  private void requestVelocity(){
+    String[] keys = {"trainID"};
+    Object[] data = {trainID};
+    send(new Message(name, name, Module.trainModel, msg.TnCt_TnMd_TnCt_TnMd_Request_Train_Velocity, keys, data));
+  }
+  
   private void sendPower(){
+    requestVelocity();
     double powerCommand = tc.setPower();
     String[] keys = {"trainID", "power"};
     Object[] data = {trainID, powerCommand};
