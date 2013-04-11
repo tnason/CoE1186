@@ -1,4 +1,5 @@
 package TLTTC;
-public class ConnectorNode extends Node{
+
+public class ConnectorNode extends Node {
 	/*concrete implementation of Node*/
 }
