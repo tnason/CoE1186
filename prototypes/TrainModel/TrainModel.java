@@ -246,7 +246,7 @@ public class TrainModel implements constData
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength() - trLength/2.0)) //if the front of the train is crossing into a new block
 			{
 
-				System.out.println("!!!!!!!!!!!!!!!NEW BLOCK!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				System.out.println("	!!!!!!!!!!!!!!!NEW BLOCK!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 				nextNode = occupiedBlocks.get(0).getNextNode(currentNode);
 				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(currentNode));
@@ -267,7 +267,7 @@ public class TrainModel implements constData
 				Environment.passMessage(outgoingMessage);
 	
 				//send TnMd_TcCt_Update_Block_Occupancy
-				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy"}, new Object[] {occupiedBlocks.get(0).getID(), true});
+				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlocks.get(0)});
 				Environment.passMessage(outgoingMessage);
 			}
 			
@@ -276,7 +276,7 @@ public class TrainModel implements constData
 				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() - trLength/2.0)) //if the back of the train has left the old block
 				{
 					//send TnMd_TcCt_Update_Block_Occupancy
-					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy"}, new Object[] {occupiedBlocks.get(1).getID(), false});
+					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlocks.get(1)});
 					Environment.passMessage(outgoingMessage);
 					
 					fromYard = false;
@@ -291,7 +291,7 @@ public class TrainModel implements constData
 		{
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength()))
 			{
-				System.out.println("!!!!!!!!!!!!!!!NEW BLOCK!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				System.out.println("	!!!!!!!!!!!!!!!NEW BLOCK!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				nextNode = occupiedBlocks.get(0).getNextNode(currentNode);
 
 				if(nextNode.getNodeType() == NodeType.Yard) //yard entry
@@ -333,7 +333,7 @@ public class TrainModel implements constData
 				Environment.passMessage(outgoingMessage);
 
 				//send TnMd_TcCt_Update_Block_Occupancy
-				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy"}, new Object[] {occupiedBlocks.get(0).getID(), true});
+				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlock.get(0)});
 				Environment.passMessage(outgoingMessage);
 
 			}
@@ -343,7 +343,7 @@ public class TrainModel implements constData
 				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() + trLength)) //if the back of the train has left the old block
 				{
 					//send TnMd_TcCt_Update_Block_Occupancy
-					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy"}, new Object[] {occupiedBlocks.get(1).getID(), false});
+					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlock.get(0)});
 					Environment.passMessage(outgoingMessage);
 
 					occupiedBlocks.get(1).setOccupation(false);
