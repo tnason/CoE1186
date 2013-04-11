@@ -7,11 +7,9 @@ public class Scheduler extends Worker implements constData
 {
 	public static int NEXT_TRAIN_NUMBER = 0;
 
-<<<<<<< HEAD
-	private List<SchedulerListener> listeners;
-=======
+
 	private List<SchedulerListener> listeners = new ArrayList<SchedulerListener>();
->>>>>>> 3e34b24b82a3f0e958c0a0b0e367b4a715e532c4
+
 	private LinkedBlockingQueue<Message> messages;
 	private Module name;
 	private OperatorSchedule schedule;
@@ -352,7 +350,7 @@ public class Scheduler extends Worker implements constData
 
 	private synchronized void timetableChanged()
 	{
-<<<<<<< HEAD
+
 		Message m = new Message(Module.MBO, Module.MBO, Module.scheduler, msg.TnMd_Sch_Notify_Yard);
 		m.addData("trainID", 1);
 		m.addData("entry", true);
