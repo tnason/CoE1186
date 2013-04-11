@@ -126,17 +126,6 @@ public class TrackModel extends Worker implements Runnable, constData
             Node node7 = new ConnectorNode(1200,0,0);
             Node node8 = new YardNode(1400,0,0);            
             
-<<<<<<< HEAD
-            LinearBlock block1 = new LinearBlock(node1, node2, 1, 0);
-            LinearBlock block2 = new LinearBlock(node2, node3, 2, 0);
-            LinearBlock block3 = new LinearBlock(node3, node4, 3, 0);
-            LinearBlock block4 = new LinearBlock(node4, node5, 4, 0);
-            LinearBlock block5 = new LinearBlock(node5, node6, 5, 1);
-            LinearBlock block6 = new LinearBlock(node6, node7, 6, 1);
-            LinearBlock block7 = new LinearBlock(node7, node8, 7, 1);
-
-            block4.addController(1);
-=======
             nodes.put(1, node1);
             nodes.put(2, node2);            
             nodes.put(3, node3);
@@ -154,7 +143,7 @@ public class TrackModel extends Worker implements Runnable, constData
             LinearBlock block5 = new LinearBlock(node5, node6);
             LinearBlock block6 = new LinearBlock(node6, node7);
             LinearBlock block7 = new LinearBlock(node7, node8);
->>>>>>> c6b087eb225ab2dddf2334f6c32cf7bcc744c436
+
             
             blocks.put(1, block1);
             blocks.put(2, block2);
