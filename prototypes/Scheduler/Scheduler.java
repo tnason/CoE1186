@@ -175,10 +175,10 @@ public class Scheduler extends Worker implements constData
 					}
 				}
 				else
-				{	System.out.println("in: " + message.getSender());
-					System.out.println("PASSING MSG ~ (source : " + message.getSource() + "), (step : " + name + "), (dest : "+message.getDest()+")");
+				{	
+					System.out.println("PASSING MSG ~ (source : " + message.getSource() + "), (step : " + name + "), (dest : "+message.getDest()+"), (type : " + message.getType()+")");
                     message.updateSender(Module.scheduler);
-					Environment.passMessage(message);System.out.println("out: " + message.getSender());
+					Environment.passMessage(message);
 				}
 			}
 
@@ -349,6 +349,10 @@ public class Scheduler extends Worker implements constData
 
 	private synchronized void timetableChanged()
 	{
+		Message m = new Message(Module.MBO, Module.MBO, Module.scheduler, msg.TnMd_Sch_Notify_Yard);
+		m.addData("trainID", 1);
+		m.addData("entry", true);
+		send(m);
 /*
 
 		Iterator<SchedulerListener> i;
