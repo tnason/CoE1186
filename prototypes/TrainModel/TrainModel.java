@@ -257,9 +257,9 @@ public class TrainModel implements constData
 			{
 
 				System.out.println("	!!!!!!!!!!!!!!!NEW BLOCK!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				System.out.println("currentNode: " + currentNode);
+			//	System.out.println("currentNode: " + currentNode);
 				nextNode = occupiedBlocks.get(0).getNextNode(currentNode);
-				System.out.println("nextNode: " + nextNode);
+			//	System.out.println("nextNode: " + nextNode);
 				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(currentNode));
 				blockEntryPos.add(0, position);
 
