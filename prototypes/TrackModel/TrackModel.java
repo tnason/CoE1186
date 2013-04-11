@@ -1,72 +1,86 @@
 package TLTTC;
 
-import java.util.HashMap;
+import java.util.*;
+import java.io.*;
+import java.util.concurrent.*;
 
 
-public class TrackModel extends Worker
+public class TrackModel extends Worker implements Runnable, constData
 {
-    private HashMap<int, Block> blocks;
-    private HashMap<int, Node> nodes;
-    private Module name;
+
+    private HashMap<Integer, Block> blocks;
+    private HashMap<Integer, Node> nodes;
+    private LinkedBlockingQueue<Message> msgs;
+    private Module name = Module.trackModel;
     
-    public TrackModel()
+    public TrackModel () {
+        msgs = new LinkedBlockingQueue<Message>();
+    }
+
+    public void run() {
+        while (true) 
+        {
+            if(msgs.peek() != null)
+            {
+                Message m = msgs.poll();
+    
+                if(name == m.getDest())
+                {
+                    System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
+                }
+                else
+                {
+
+                    if(m.getType() == msg.CTC_TnMd_Request_Train_Creation)
+                    {
+                        m.addData("yard",null); // FIX THIS!
+                    }
+
+                    System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
+                    m.updateSender(name);
+                    Environment.passMessage(m);
+                }
+            }
+        }
+    }
+    
+    public void initTrack()
     {
-      		this.name = Module.trackModel;
-		      msgs  = new LinkedBlockingQueue<Message>();
-    
-    
-    
+        try
+        {
+            Scanner s = new Scanner(new File("layout_new.txt"));
+
+            while(s.hasNextLine())
+            {
+                String line = s.nextLine();
+
+                if(line.startsWith("#"))
+                    continue;
+                if(line.equals("-1"))
+                    break;
+
+
+
+            }
+
+        } 
+        catch (Exception e)
+        {
+
+        }
     
     
     }
-
-  	public void run()
-  	{
-  		//Thread t = new Thread();
-  
-  		while(true)
-  		{
-  		 	if(msgs.peek() != null)
-  			{
-  				Message mine = msgs.poll();
-  
-  				if(name == mine.getDest())
-  				{
-  					
-  					if(mine.getData() != null)
-  					{
-  						//handling incoming messages
-  						switch (mine.getType())
-  						{
-  							//case MESSAGE_NAME:
-  							//stuff                                                      ---parse from enum?
-  					    case msg.foooooook;
-            
-            
-            	}
-  						
-  					}
-  					else
-  					{
-  
-  						Message verify = new Message(name, name, mine.getSource());
-  						verify.addData("check", (Object) ("VERIFY LOOP!"));
-  						send(verify);
-  					}
-  				}
-  				else
-  				{
-  					System.out.println("TrackModel PASSING MSG: step->"+name + " source->"+mine.getSource()+ " dest->"+mine.getDest());
-  					mine.updateSender(name);
-  					Environment.passMessage(mine);
-  				}
-  			}  
-  	 	}
-  	}    
-    public void initTrack()
+    
+    public void setMsg(Message m) 
     {
-    
-    
+        msgs.add(m);
+    }
+
+    public void send(Message m)
+    {
+        System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        Environment.passMessage(m);
     }
     
 

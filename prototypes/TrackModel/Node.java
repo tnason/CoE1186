@@ -1,4 +1,5 @@
 package TLTTC;
+
 public abstract class Node {
   protected enum NodeType
   {
@@ -54,3 +55,5 @@ public abstract class Node {
 		}
 	}
 }
+
+

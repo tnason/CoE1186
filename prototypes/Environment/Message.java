@@ -24,7 +24,7 @@ public class Message implements constData
 	}
 
 	public Message(Module sender, Module source, Module dest, msg mType,
-					String[] keys, Object[] values)
+					String [] keys, Object [] values)
 	{
 		this(sender, source, dest, mType);
 

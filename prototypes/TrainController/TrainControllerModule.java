@@ -1,18 +1,16 @@
 package TLTTC;
 import java.util.*;
 
-public class TrainControllerModule extends Worker implements Runnable, constData
-{
+public class TrainControllerModule extends Worker implements Runnable, constData{
   private Hashtable<Integer, TrainController> controllers;
-  private Module name;
+  private Module name = Module.trainController;
   private java.util.concurrent.LinkedBlockingQueue<Message> msgs;
   
   private int trainID;
   private TrainController tc;
   
-  public TrainControllerModule(Module name)
+  public TrainControllerModule()
   {
-    super(name);
     controllers = new Hashtable<Integer, TrainController>();
     name = Module.trainController;
     msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
@@ -28,7 +26,8 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         
         if(name == m.getDest())
         {
-          System.out.println("\nRECEIVED MSG: source->"+m.getSource() + " : dest->"+m.getDest()+"\n");
+          System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
+
           if(m.getData() != null && m.getData().containsKey("trainID"))
           {
             trainID = (Integer)(m.getData().get("trainID"));
@@ -38,7 +37,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
             }
             switch (m.getType())
             {
-              case CTC_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC
+              case MBO_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC
                 tc.movingBlockAuth = (Double)(m.getData().get("movingBlockAuthority"));
                 sendPower();
                 break;
@@ -54,15 +53,16 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 tc.velocity = (Double)(m.getData().get("velocity"));
                 sendPower();
                 break;
-              case TnMd_TnCt_Request_Power: // Power request from train model
-                sendPower();
-                break;
+              //case TnMd_TnCt_Request_Power: // Power request from train model
+              // sendPower();
+              // break;
               case CTC_TnCt_Send_Manual_MovingBlock: // Manual moving block authority from CTC
                 tc.ctcMovingBlockAuth = (Double)(m.getData().get("ctcMovingBlockAuth"));
                 sendPower();
                 break;
               case TnMd_TnCt_Request_Train_Controller_Creation: // Train controller creation
                 controllers.put(trainID, new TrainController(trainID));
+                break;
               case TnMd_TnCt_Request_Train_Controller_Destruction:
                 tc.closeGUI();
                 controllers.remove(trainID);
@@ -79,7 +79,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         }
         else
         {
-          System.out.println("PASSING MSG: step->"+name + " source->"+m.getSource()+ " dest->"+m.getDest());
+          System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
           m.updateSender(name);
           Environment.passMessage(m);
         }
@@ -94,15 +94,15 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   
   
   public void send(Message m)
-  {
-    System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+"\n");
-    Environment.passMessage(m);
-  }
+    {
+        System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " +  m.getType()+ ")");
+        Environment.passMessage(m);
+    }
   
   private void sendPower(){
     double powerCommand = tc.setPower();
     String[] keys = {"train_ID", "power"};
     Object[] data = {trainID, powerCommand};
-    send(new Message(name, name, Module.trainModel, msg.tnCtTnMdSendPower, keys, data));
+    send(new Message(name, name, Module.trainModel, msg.TnCt_TnMd_Send_Power, keys, data));
   }
 }

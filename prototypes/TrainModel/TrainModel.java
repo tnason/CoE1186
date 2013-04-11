@@ -1,11 +1,14 @@
 //The actual train
 package TLTTC;
-public class TrainModel implements Runnable, constData 
+import java.util.*;
+
+public class TrainModel implements constData 
 {
 	//tracking block occupancy
 	//[0] = 'front' block (in direction of motion)
 	private ArrayList<Block> occupiedBlocks = new ArrayList<Block> ();
-	private ArrayList<int> blockEntryPos = new ArrayList<int> ();
+	private ArrayList<Double> blockEntryPos = new ArrayList<Double> ();
+	private Node currentNode;
 	
 	private boolean fromYard;
 	
@@ -30,7 +33,7 @@ public class TrainModel implements Runnable, constData
 	private boolean trainBrakeOn = false;
 	private boolean trainEmergencyBrakeOn = false;
 	
-	private final double time_step; //in s
+	private final double timeStep; //in s
 
 	private final double maxPower = 120000.0; //in W (120kW)
 	private final double maxSpeed = 70000/3600.0; //in m/s (70km/hr)
@@ -46,14 +49,10 @@ public class TrainModel implements Runnable, constData
 	private int forceRegime = 0;
 	
 	
-	public TrainModel(int trainID, Block start, double time_step) 
+	public TrainModel(int trainID, Block start, double timeStep) 
 	{
 		this.trainID = trainID;
-		
-		if(start.isOccupied())
-		{
-			//error, stop making this train!!!!
-		}
+		this.timeStep = timeStep;
 		
 		occupiedBlocks.add(start);
 		blockEntryPos.add(position); 
@@ -62,6 +61,17 @@ public class TrainModel implements Runnable, constData
 		currentBlockGrade = occupiedBlocks.get(0).getGrade();
 		occupiedBlocks.get(0).setOccupation(true);
 		fromYard = true;
+
+	}
+
+	public double getVelocity() 
+	{
+		return velocity;
+	}
+
+	public void setYardNode (Node yard)
+	{
+		currentNode = yard;
 	}
 	
 	
@@ -133,7 +143,7 @@ public class TrainModel implements Runnable, constData
 		//Step 3: Determine x(t+dt)
 		//	x(t+dt) = x(t) + .5(v(t)+v(t+dt))*dt + .25(a(t)+a(t+dt))*dt^2
 		
-		endVelocity = velocity + acceleration*time_step;
+		endVelocity = velocity + acceleration*timeStep;
 		
 		//apply brakes
 		if(trainBrakeOn || trainEmergencyBrakeOn) 
@@ -149,7 +159,7 @@ public class TrainModel implements Runnable, constData
 			}
 			//calculates current position from last step velocity and acceleration
 			//x(t+dt) = x(t) + .5(v(t)+v(t+dt))*dt + .25(a(t)+a(t+dt))*dt^2
-			endPosition = position + .5*(velocity+endVelocity)*time_step + .25*(acceleration+endAccel)*time_step*time_step;
+			endPosition = position + .5*(velocity+endVelocity)*timeStep + .25*(acceleration+endAccel)*timeStep*timeStep;
 		} 
 		else 
 		{
@@ -208,7 +218,7 @@ public class TrainModel implements Runnable, constData
 			
 			//calculates current position from last step velocity and acceleration
 			//x(t+dt) = x(t) + .5(v(t)+v(t+dt))*dt + .25(a(t)+a(t+dt))*dt^2
-			endPosition = position + .5*(velocity+endVelocity)*time_step + .25*(acceleration+endAccel)*time_step*time_step;
+			endPosition = position + .5*(velocity+endVelocity)*timeStep + .25*(acceleration+endAccel)*timeStep*timeStep;
 	
 		}	
 
@@ -216,7 +226,7 @@ public class TrainModel implements Runnable, constData
 		velocity = endVelocity;
 		acceleration = endAccel;
 		
-		time += time_step;
+		time += timeStep;
 	
 		updateOccupancy();	
 	}
@@ -225,12 +235,11 @@ public class TrainModel implements Runnable, constData
 	{
 		//Update occupancy/traverse blocks
 		//must 'bootstrap' to get consistent stats after leaving yard
-		//Do I need to send messages on occupancy changes?
 		if(fromYard)
 		{
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength() - trLength/2.0)) //if the front of the train is crossing into a new block
 			{
-				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(/* NOT_SURE_YET */));
+				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(currentNode));
 				blockEntryPos.add(0, position);
 				
 				occupiedBlocks.get(0).setOccupation(true);
@@ -252,7 +261,7 @@ public class TrainModel implements Runnable, constData
 		{
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength()))
 			{
-				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(/* NOT_SURE_YET */));
+				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(currentNode));
 				blockEntryPos.add(0, position);
 				
 				occupiedBlocks.get(0).setOccupation(true);

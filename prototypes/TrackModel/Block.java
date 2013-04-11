@@ -1,3 +1,5 @@
+package TLTTC;
+import java.util.*;
 
 public abstract class Block {
 
@@ -5,12 +7,14 @@ public abstract class Block {
 	protected int blockID;
 	
 	boolean occupied;
-  /*unique identification number*/
-	protected int blockID;
+
 	
 	/*keep track of nodes*/
 	protected Node startNode;
 	protected Node stopNode;
+
+	// In constructor of block, add controller number(s) to this list
+	protected ArrayList<Integer> controller = new ArrayList<Integer>();
 	
 	/*	allowable directions
 	 * 		start -> stop = 1
@@ -26,6 +30,11 @@ public abstract class Block {
 		occupied = state;
 	}
 	
+	public int getID()
+	{
+		return blockID;
+	}
+
 	public boolean isOccupied(){
 		return occupied;
 	}
@@ -78,11 +87,17 @@ public abstract class Block {
   
   public Node getYardNode(){
     //return a yard node if it belongs to block else return null
-    
+        return startNode; //FOR THE LOVE OF GOD CHANGE THIS!!!
   }
   
-  public Node getNextNode(Node ){
+  public Node getNextNode(Node nextNode){
     //
+    return nextNode;
+  }
+
+  public ArrayList<Integer> getController(){
+    // Should return a list of the controller(s) that a block is under
+    return controller;
   }
   	
 }

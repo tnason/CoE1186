@@ -1,0 +1,10 @@
+package TLTTC;
+
+public enum OperatorStatus
+{
+	SHIFTNOTSTARTED,
+	SHIFTFIRSTHALF,
+	ONBREAK,
+	SHIFTSECONDHALF,
+	SHIFTENDED
+}
