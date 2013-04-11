@@ -53,6 +53,9 @@ public class Environment implements constData
 		Thread trmThread = new Thread(trm);
 		Thread ctcThread = new Thread(ctc);
 
+		((TrackModel)tkm).initTrack();
+		((TrackController)tkc).init(tkm);
+
 		mboThread.start();
 		schThread.start();
 		tkcThread.start();
@@ -66,6 +69,7 @@ public class Environment implements constData
 
 		ctc.send(begin);//w2.send();w3.send();w4.send();w5.send();
 
+		Thread t = new Thread();
 
 		while(true)
 		{
@@ -73,19 +77,24 @@ public class Environment implements constData
 			{
 				Message inbox = messageQ.poll();
 
+				System.out.println("\t"+ inbox.getSender() + " " + inbox.getDest());
+
 				if(modualOrder.indexOf(inbox.getSender()) < modualOrder.indexOf(inbox.getDest()))
 				{
 					Module right = modualOrder.get(modualOrder.indexOf(inbox.getSender()) + 1);
-					//System.out.println("To : " + modWorker.get(right));
+					System.out.print("right " + (modualOrder.indexOf(inbox.getSender())) + " " + (modualOrder.indexOf(inbox.getSender()) + 1));
 					modWorker.get(right).setMsg(inbox);
+					System.out.println(" " + (modualOrder.indexOf(right)));
+
 				}
 				else if(modualOrder.indexOf(inbox.getSender()) > modualOrder.indexOf(inbox.getDest()))
 				{
 					Module left = modualOrder.get(modualOrder.indexOf(inbox.getSender()) - 1);
-					//System.out.println("To : " + modWorker.get(left));
+					System.out.println("left " + (modualOrder.indexOf(inbox.getSender())) + " " + (modualOrder.indexOf(inbox.getSender()) - 1));
 					modWorker.get(left).setMsg(inbox);
 				}
 			}
+			try{t.sleep(1000);}catch(Exception e){}
 		}
     }
 

@@ -172,10 +172,10 @@ public class Scheduler extends Worker implements constData
 					}
 				}
 				else
-				{
+				{	System.out.println("in: " + message.getSender());
 					System.out.println("PASSING MSG ~ (source : " + message.getSource() + "), (step : " + name + "), (dest : "+message.getDest()+")");
-                    message.updateSender(name);
-					Environment.passMessage(message);
+                    message.updateSender(Module.scheduler);
+					Environment.passMessage(message);System.out.println("out: " + message.getSender());
 				}
 			}
 
@@ -277,6 +277,7 @@ public class Scheduler extends Worker implements constData
 	public void send(Message message)
 	{
    		System.out.println("SENDING MSG ~ (start : "+message.getSource() + "), (dest : "+message.getDest()+"), (type : " + message.getType()+ ")");
+        message.updateSender(name);
         Environment.passMessage(message);
 	}
 

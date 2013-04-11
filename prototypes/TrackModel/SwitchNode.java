@@ -1,5 +1,6 @@
 package TLTTC;
-public class SwitchNode extends Node{
+public class SwitchNode extends Node implements constData
+{
 	public SwitchNode(double x, double y, double z){
 		nodeType = NodeType.Switch;
 	}
