@@ -78,11 +78,11 @@ public abstract class Block {
 	}
 	
 	public double getPowerLimit(){
-		return 0;
+		return 10000;
 	}
 	
 	public double getSpeedLimit(){
-		return 0;
+		return 15; //meters per second
 	}
 	
 	public boolean isUnderground(){
