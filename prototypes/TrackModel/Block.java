@@ -1,9 +1,12 @@
 
 public abstract class Block {
+
 	/*unique identification number*/
 	protected int blockID;
 	
 	boolean occupied;
+  /*unique identification number*/
+	protected int blockID;
 	
 	/*keep track of nodes*/
 	protected Node startNode;
@@ -16,7 +19,9 @@ public abstract class Block {
 	 */
 	protected int allowedDirections;
 	
+
 	public void setOccupation(boolean state){
+
 		//TODO - bounds check state
 		occupied = state;
 	}
@@ -79,6 +84,5 @@ public abstract class Block {
   public Node getNextNode(Node ){
     //
   }
-  
-	
+  	
 }
