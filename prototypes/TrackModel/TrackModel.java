@@ -1,6 +1,7 @@
 package TLTTC;
 
 import java.util.*;
+import java.io.*;
 import java.util.concurrent.*;
 
 
@@ -46,6 +47,28 @@ public class TrackModel extends Worker implements Runnable, constData
     
     public void initTrack()
     {
+        try
+        {
+            Scanner s = new Scanner(new File("layout_new.txt"));
+
+            while(s.hasNextLine())
+            {
+                String line = s.nextLine();
+
+                if(line.startsWith("#"))
+                    continue;
+                if(line.equals("-1"))
+                    break;
+
+
+
+            }
+
+        } 
+        catch (Exception e)
+        {
+
+        }
     
     
     }
