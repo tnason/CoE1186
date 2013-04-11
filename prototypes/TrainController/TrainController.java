@@ -14,7 +14,6 @@ public class TrainController{
   public double power = 0; // Power of train
   public double histPower = 0; // Power command one step back
   public double trainMaxPower = 120000.0; // Maximum power of train (120 kW)
-  public double maxPower = 0; // Safest allowable power output given velocity setpoint and authority
   
   public double trainOperatorVelocity = 0; // Velocity sent from train operator
   public double ctcOperatorVelocity = 0; // Velocity sent from CTC operator
@@ -24,6 +23,8 @@ public class TrainController{
   public double movingBlockAuth = 0; // Moving block authority sent from MBO
   public double ctcMovingBlockAuth = 0; // Moving block authority sent from CTC operator
   public double authority = 0;  // Overall authority of train
+  public double histAuthority = 0; // Overall authority of train one time step back
+  public double trackLength = 1400; // Track length
   public double trackLimit = 0; // Track's speed limit
   public double trainLimit = 19.4444; // Train's speed limit (70 km/hr = 19.44 m/s)
   
@@ -45,7 +46,6 @@ public class TrainController{
     velocity = 4.744;
     ctcOperatorVelocity = 1000;
     histPower = 50000;
-    maxPower = 100000;
   }
   
   public double setPower()
@@ -57,11 +57,12 @@ public class TrainController{
       trainOperatorVelocity = Math.min(trackLimit, trainLimit); // Set to next highest allowable velocity
     }
     authority = Math.min(fixedBlockAuth, Math.min(ctcFixedBlockAuth, Math.min(movingBlockAuth, ctcMovingBlockAuth))); // Selects safest authority
-    // CONVERT AUTHORITY TO A MAXIMUM POWER OUTPUT HERE!!
-    maxPower = Math.min(maxPower, trainMaxPower); // Selects safest maximum power output
+    if (authority > trackLength){ // If authority is unsafe, set it to the last authority
+      authority = histAuthority;
+    }
     
     ek = trainOperatorVelocity - velocity; // kth sample of velocity error
-    if (histPower < maxPower)
+    if (histPower < trainMaxPower)
     {
       uk = histUk + (T/2)*(ek + histEk);
     }
@@ -71,6 +72,7 @@ public class TrainController{
     }
     power = ((KP*ek)+(KI*uk));
     
+    histAuthority = authority;
     histPower = power;
     histEk = ek;
     histUk = uk;
