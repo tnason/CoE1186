@@ -63,7 +63,7 @@ public abstract class Block {
 		double dy = stopNode.getY() - startNode.getY();
 		double dz = stopNode.getZ() - startNode.getZ();
 		
-		double dist = Math.sqrt(dx*dx * dy*dy);
+		double dist = Math.sqrt(dx*dx + dy*dy);
 		
 		return dz/dist;
 	}
