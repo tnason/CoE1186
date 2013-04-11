@@ -69,18 +69,28 @@ public class TrackModel extends Worker implements Runnable, constData
     
                 if(name == m.getDest())
                 {
-                    System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
-  
+                    System.out.println("TrackModel RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
+                    //System.out.println("Unhandled...");	
                 	//_---------------my handlers in here
-                
-                
+                    if(m.getType() == msg.TnCt_TcMd_Request_Track_Speed_Limit){
+                    	Hashtable<String, Object> mData = m.getData();
+                    	
+
+                    	Message response = new Message(Module.trackModel, Module.trackModel, Module.trainController, msg.TcMd_TnCt_Send_Track_Speed_Limit);
+                    	response.addData("speedLimit", new Integer(1));		//1 meter per second always
+                    	response.addData("trainID", mData.get("trainID"));
+                    	Environment.passMessage(response);
+                    	
+                    }
+                    
                 }
                 else
                 {
 
                     if(m.getType() == msg.CTC_TnMd_Request_Train_Creation)
                     {
-                        m.addData("yard",blocks.get(1)); // FIX THIS!
+                        m.addData("yardBlock",blocks.get(1)); // FIX THIS!
+                        m.addData("yardNode", nodes.get(1));
                     }
 
                     System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
@@ -131,6 +141,8 @@ public class TrackModel extends Worker implements Runnable, constData
             nodes.put(6, node6);
             nodes.put(7, node7);
             nodes.put(8, node8);            
+            
+            
             LinearBlock block1 = new LinearBlock(node1, node2, 1 , 0 );
             LinearBlock block2 = new LinearBlock(node2, node3, 2 , 0);
             LinearBlock block3 = new LinearBlock(node3, node4, 3 , 0 );
