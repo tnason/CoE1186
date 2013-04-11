@@ -19,6 +19,13 @@ public abstract class Node implements constData
 		return sb.toString();
 	}
 	
+	public void setInput(Block b){
+		input = b;
+	}
+	public void setOutput(Block b){
+		output = b;
+	}
+	
 	/*Unique identifier*/
 	protected int nodeID;
 	

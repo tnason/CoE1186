@@ -139,7 +139,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 								trainID = (int)(mine.getData().get("trainID"));
 								tm = trains.get(trainID);
 							
-								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, new String[] {"trainID","velocity"}, new Object[] {(Object)trainID, (Object)tm.getVelocity()});
+								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, new String[] {"trainID","velocity"}, new Object[] {trainID, tm.getVelocity()});
+								send(outgoingMessage);
 
 								break;
 							default:
@@ -154,7 +155,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 				}
 				else
 				{
-					System.out.println("PASSING MSG ~ (source : " + mine.getSource() + "), (step : " + name + "), (dest : "+mine.getDest()+")");
+					System.out.println("PASSING MSG ~ (source : " + mine.getSource() + "), (step : " + name + "), (dest : " + mine.getDest()+"), (type : " + mine.getType()+")");
           			mine.updateSender(name);
 					Environment.passMessage(mine);
 				}

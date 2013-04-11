@@ -26,6 +26,11 @@ public class TrainModel implements constData
 
 	private double currentBlockGrade; //for motion!
 
+<<<<<<< HEAD
+=======
+	private int stepCounter = 0;
+
+>>>>>>> 9185beb7e2617a68f6110c4a8acfe12fa2088537
 	private double time = 0; //in s
 
 	private double mass = 51437; //loaded train mass in kg
@@ -229,6 +234,13 @@ public class TrainModel implements constData
 		position = endPosition;
 		velocity = endVelocity;
 		acceleration = endAccel;
+	    
+        stepCounter++;
+		if(stepCounter % 500 == 0)
+		{
+			System.out.println("!!TRAIN  MOTION___: p: " + position + " v: " + velocity + " a: " + acceleration);
+		}
+
 
 		time += timeStep;
 
