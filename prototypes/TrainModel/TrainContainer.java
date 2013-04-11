@@ -157,7 +157,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 				{
 					System.out.println("PASSING MSG ~ (source : " + mine.getSource() + "), (step : " + name + "), (dest : " + mine.getDest()+"), (type : " + mine.getType()+")");
           			mine.updateSender(name);
-					Environment.passMessage(mine);
+					send(mine);
 				}
 			}
 		}
@@ -172,7 +172,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 	{
 		//Message outgoing = new Message(name, name, Module.trainController);
 		//System.out.println("SENDING MSG: start->"+outgoing.getSource() + " : dest->"+outgoing.getDest()+"\n");
-		//Environment.passMessage(outgoing);
+		//send(outgoing);
 	}
 
 	public void send(Message m)
