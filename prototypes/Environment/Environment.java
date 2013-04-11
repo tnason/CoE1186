@@ -70,6 +70,7 @@ public class Environment implements constData
 		ctc.send(begin);//w2.send();w3.send();w4.send();w5.send();
 
 		Thread t = new Thread();
+		try{t.sleep(7000);}catch(Exception e){}
 
 		while(true)
 		{
