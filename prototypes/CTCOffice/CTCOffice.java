@@ -2,7 +2,8 @@ package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class CTCOffice extends worker {
+public class CTCOffice extends Worker implements Runnable, constData
+{
     
     
     // ivars! Yay!
@@ -14,9 +15,9 @@ public class CTCOffice extends worker {
     // private ArrayList<TrainViewModel> _trainList;
     // 
     
-    CTCOffice (Module name) {
+    CTCOffice () {
         // Do any set-up needed, launch the GUI, and get it on!
-        super(name);
+        
         msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
         // generate a virtual model of the track, boi!
         
@@ -28,7 +29,7 @@ public class CTCOffice extends worker {
             if (msgs.peek() != null) {
                 
                 Message m = msgs.poll();
-                if (name = m.getDest()) { // hey, this was sent to me; let's do something
+                if (name == m.getDest()) { // hey, this was sent to me; let's do something
                     switch (m.getType()) {
                         case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
                             
@@ -54,6 +55,11 @@ public class CTCOffice extends worker {
                 }
             }
         }
+    }
+
+    public void setMsg(Message m)
+    {
+        msgs.add(m);
     }
     
     public void dispatchTrain (String line) { // probably other vars needed

@@ -10,7 +10,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 	private Module name;
 	private LinkedBlockingQueue<Message> msgs;
   
-	private HashTable<Integer, TrainModel> trains;
+	private Hashtable<Integer, TrainModel> trains;
   
 	private Timer motionTimer;
 

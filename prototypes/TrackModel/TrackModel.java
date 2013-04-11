@@ -1,12 +1,12 @@
 package TLTTC;
 
-import java.util.HashMap;
+import java.util.*;
 
 
-public class TrackModel extends Worker
+public class TrackModel extends Worker implements constData
 {
-    private HashMap<int, Block> blocks;
-    private HashMap<int, Node> nodes;
+    private HashMap<Integer, Block> blocks;
+    private HashMap<Integer, Node> nodes;
 
     public TrackModel()
     {
@@ -18,6 +18,8 @@ public class TrackModel extends Worker
     
     
     }
+
+    public void run(){}
     
 
     //handlers-----------------------------------
