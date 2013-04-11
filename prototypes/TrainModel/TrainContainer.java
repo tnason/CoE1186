@@ -154,7 +154,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 				}
 				else
 				{
-					System.out.println("PASSING MSG ~ (source : " + mine.getSource() + "), (step : " + name + "), (dest : "+mine.getDest()+")");
+					System.out.println("PASSING MSG ~ (source : " + mine.getSource() + "), (step : " + name + "), (dest : " + mine.getDest()+"), (type : " + mine.getType()+")");
           			mine.updateSender(name);
 					Environment.passMessage(mine);
 				}

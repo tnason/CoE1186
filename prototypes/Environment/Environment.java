@@ -70,7 +70,7 @@ public class Environment implements constData
 		ctc.send(begin);//w2.send();w3.send();w4.send();w5.send();
 
 		Thread t = new Thread();
-		try{t.sleep(7000);}catch(Exception e){}
+		try{Thread.sleep(7000);}catch(Exception e){}
 
 		while(true)
 		{
@@ -95,7 +95,7 @@ public class Environment implements constData
 					modWorker.get(left).setMsg(inbox);
 				}
 			}
-			try{t.sleep(1250);}catch(Exception e){}
+			try{Thread.sleep(1250);}catch(Exception e){}
 		}
     }
 

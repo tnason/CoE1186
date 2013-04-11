@@ -34,7 +34,7 @@ public class TrackController extends Worker implements constData, Runnable
               
             }
 
-         			System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+")");
+         			System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+"), (type : " + m.getType()+")");
               m.updateSender(name);
           		Environment.passMessage(m);
         	}
