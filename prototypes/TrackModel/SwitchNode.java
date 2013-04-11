@@ -1,5 +1,12 @@
 package TLTTC;
 public class SwitchNode extends Node{
+	public SwitchNode(double x, double y, double z){
+		nodeType = NodeType.Switch;
+		xPos = x;
+		yPos = y;
+		zPos = z;
+	}
+	
 	protected Block divergingOutput;
 	protected int   direction;
 	

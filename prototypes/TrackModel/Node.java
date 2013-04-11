@@ -1,6 +1,23 @@
 package TLTTC;
 
 public abstract class Node {
+	public Node(){
+		nodeType = NodeType.Node;
+	}
+	
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("Node x=");
+		sb.append(xPos);
+		sb.append(" y=");
+		sb.append(yPos);
+		sb.append(" z=");
+		sb.append(zPos);
+		
+		
+		return sb.toString();
+	}
+	
 	/*Unique identifier*/
 	protected int nodeID;
 	
@@ -13,6 +30,13 @@ public abstract class Node {
 	protected Block input;
 	/*block that exits this node*/
 	protected Block output;
+	
+	/*keep track of the type of node*/
+	protected NodeType nodeType;
+	public NodeType getNodeType(){
+		return nodeType;
+	}
+	
 	
 	/*getters for coordinates*/
 	public double getX(){

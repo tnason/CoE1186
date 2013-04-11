@@ -98,8 +98,7 @@ public class MovingBlockOverlay extends Worker implements constData
 
 				if(name == message.getDest())
 				{
-					System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
-
+					System.out.println("RECEIVED MESSAGE ~ (source : " + message.getSource() + "), (dest : " + message.getDest() + ")\n");
 					switch(message.getType())
 					{
 						/*case 86:
@@ -118,9 +117,9 @@ public class MovingBlockOverlay extends Worker implements constData
 				}
 				else
 				{
-					System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
-					message.updateSender(name);
-					Environment.passMessage(message);
+					System.out.println("PASSING MSG ~ (source : " + message.getSource() + "), (step : " + name + "), (dest : "+message.getDest()+")");
+                    message.updateSender(name);
+					send(message);
 				}
 			}
 
@@ -189,9 +188,10 @@ public class MovingBlockOverlay extends Worker implements constData
 			train.setStoppingDistanceValid(true);
 		}
 	}
-
+	@SuppressWarnings("unchecked")
 	private void receivedTrainUpdate(Message message)
 	{
+
 		trains = (MyLinkedList<Train>)message.getData().get("trainList");
 	}
 
@@ -199,10 +199,11 @@ public class MovingBlockOverlay extends Worker implements constData
 		Message Senders
 	*/
 
-	public void send(Message message)
+	public void send(Message m)
 	{
-		System.out.println("SENDING MSG: start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
-		Environment.passMessage(message);
+		//System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        m.updateSender(name);
+        Environment.passMessage(m);
 	}
 
 	public void sendMessages()
@@ -267,23 +268,35 @@ public class MovingBlockOverlay extends Worker implements constData
 	{
 		Message message;
 
+<<<<<<< HEAD
 		//message = new Message(name, name, Module.satellite);
 		//message.addData("trainID", trainNumber);
 		//send(message);
 
 		//locationOutbox.remove(trainNumber);
 		//locationOutbox.put(trainNumber, message);
+=======
+		message = new Message(name, name, Module.satellite,msg.placeHolder);
+		message.addData("Train Number", trainNumber);
+		send(message);
+>>>>>>> 3e34b24b82a3f0e958c0a0b0e367b4a715e532c4
 	}
 
 	private void requestStoppingDistance(int trainNumber)
 	{
 		Message message;
 
+<<<<<<< HEAD
 		//message = new Message(name, name, Module.trainModel);
 		//message.addData("trainID", trainNumber);
 		//send(message);
 
 		//distanceOutbox.remove(trainNumber);
 		//distanceOutbox.put(trainNumber, message);
+=======
+		message = new Message(name, name, Module.trainModel,msg.placeHolder);
+		message.addData("Train Number", trainNumber);
+		send(message);
+>>>>>>> 3e34b24b82a3f0e958c0a0b0e367b4a715e532c4
 	}
 }

@@ -100,6 +100,9 @@ public class TrainControllerGUI extends javax.swing.JFrame {
   
   private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
     velocity = Long.parseLong(jTextField1.getText());
+    if (velocity < 0){
+      velocity = 0;
+    }
     jLabel3.setText("Sent velocity of " + velocity + " mph.");
     tc.trainOperatorVelocity = velocity*0.44704;
     tc.setPower();
