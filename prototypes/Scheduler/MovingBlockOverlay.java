@@ -276,10 +276,10 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	private void requestStoppingDistance(int trainNumber)
 	{
-		Message message;
-		message = new Message(name, name, Module.trainModel,msg.placeHolder);
-		message.addData("Train Number", trainNumber);
-		send(message);
+		//Message message;
+		//message = new Message(name, name, Module.trainModel,msg.placeHolder);
+		//message.addData("Train Number", trainNumber);
+		//send(message);
 
 
 

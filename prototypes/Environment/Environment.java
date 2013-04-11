@@ -78,7 +78,7 @@ public class Environment implements constData
 			{
 				Message inbox = messageQ.poll();
 
-				System.out.println("\t"+ inbox.getSender() + " " + inbox.getDest());
+				//System.out.println("\t"+ inbox.getSender() + " " + inbox.getDest());
 
 				if(modualOrder.indexOf(inbox.getSender()) < modualOrder.indexOf(inbox.getDest()))
 				{
