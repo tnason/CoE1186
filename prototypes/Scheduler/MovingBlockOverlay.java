@@ -87,8 +87,7 @@ public class MovingBlockOverlay extends Worker implements constData
 
 				if(name == message.getDest())
 				{
-					System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
-
+					System.out.println("\nRECEIVED MESSAGE ~ (source : " + message.getSource() + "), (dest : " + message.getDest() + ")\n");
 					switch(message.getType())
 					{
 						/*case 86:
@@ -107,8 +106,8 @@ public class MovingBlockOverlay extends Worker implements constData
 				}
 				else
 				{
-					System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
-					message.updateSender(name);
+					System.out.println("PASSING MSG ~ (source : " + message.getSource() + "), (step : " + name + "), (dest : "+message.getDest()+")");
+                    message.updateSender(name);
 					Environment.passMessage(message);
 				}
 			}
@@ -161,9 +160,10 @@ public class MovingBlockOverlay extends Worker implements constData
 			train.setStoppingDistanceValid(true);
 		}
 	}
-
+	@SuppressWarnings("unchecked")
 	private void receivedTrainUpdate(Message message)
 	{
+
 		trains = (MyLinkedList<Train>)message.getData().get("trainList");
 	}
 

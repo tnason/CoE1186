@@ -31,10 +31,11 @@ public class CTCOffice extends Worker implements Runnable, constData {
                 Message m = msgs.poll();
                 if (name == m.getDest())
                 { // hey, this was sent to me; let's do something
+                    System.out.println("\nRECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
                     switch (m.getType()) {
 		    case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
-			// unpack the data from the message
-			m.getData().get("trainID");
+			     // unpack the data from the message
+			    m.getData().get("trainID");
                         break; // end Confirm train creation case
 		    case TnMd_CTC_Request_Train_Destruction: // Aw snap! Train's going away, better let everyone know
 			m.getData().get("trainID");
@@ -46,17 +47,17 @@ public class CTCOffice extends Worker implements Runnable, constData {
 		                /*
 		                 * Other cases will be implemented here in the future.
 		                 */
-		                default:// Well shit, somebody fucked up this one.
+		                default:// Well shit, 
 		                    
 		                System.out.println("Unknown message Type!");
 		                
 		                break;
                     }
                 }
-                else { // it ain't ours, get that shit outta here!
-                    System.out.println("PASSING MSG: step->"+name + " source->"+m.getSource()+ " dest->"+m.getDest());
-		    m.updateSender(name);
-		    Environment.passMessage(m);
+                else { // it ain't ours
+                    System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
+                    m.updateSender(name);
+                    Environment.passMessage(m);
                 }
             }
         }

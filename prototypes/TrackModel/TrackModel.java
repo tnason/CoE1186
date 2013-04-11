@@ -1,17 +1,18 @@
 package TLTTC;
 
-import java.util.HashMap;
+import java.util.*;
+import java.util.concurrent.*;
 
 
 public class TrackModel extends Worker implements Runnable, constData
 {
     private HashMap<Integer, Block> blocks;
     private HashMap<Integer, Node> nodes;
-    private java.util.concurrent.LinkedBlockingQueue<Message> msgs;
+    private LinkedBlockingQueue<Message> msgs;
     private Module name = Module.trackModel;
     
     public TrackModel () {
-        msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
+        msgs = new LinkedBlockingQueue<Message>();
     }
 
     public void run() {
@@ -23,11 +24,11 @@ public class TrackModel extends Worker implements Runnable, constData
     
                 if(name == m.getDest())
                 {
-
+                    System.out.println("\nRECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
                 }
                 else
                 {
-                    System.out.println("PASSING MSG: step->"+name + " source->"+m.getSource()+ " dest->"+m.getDest());
+                    System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
                     m.updateSender(name);
                     Environment.passMessage(m);
                 }

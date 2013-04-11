@@ -62,7 +62,7 @@ public class Environment implements constData
 		ctcThread.start();
 
 		Message begin = new Message(Module.CTC, Module.CTC, Module.trainModel, msg.CTC_TnMd_Request_Train_Creation,
-							new String [] {"trainID"}, new Object [] {1});
+							new String [] {"trainID"}, new Object [] {0});
 
 		ctc.setMsg(begin);//w2.send();w3.send();w4.send();w5.send();
 

@@ -68,7 +68,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 				if(name == mine.getDest())
 				{
 					
-					System.out.println("\nRECEIVED MSG: source->"+mine.getSource() + " : dest->"+mine.getDest()+"\n");
+					System.out.println("\nRECEIVED MESSAGE ~ (source : " + mine.getSource() + "), (dest : " + mine.getDest() + ")\n");
 
 					if(mine.getData() != null)
 					{
@@ -109,13 +109,13 @@ public class TrainContainer extends Worker implements Runnable, constData
 							case TnCt_TnMd_Send_Power:
 								//update power setting
 								trainID = (int)(mine.getData().get("trainID"));
-								tm = (TrainModel) trains.get(trainID);
+								tm = trains.get(trainID);
 
 								tm.setPower((double)mine.getData().get("power"));
 								break;
 							case TcMd_TnMd_Send_Yard_Node:
 								trainID = (int)(mine.getData().get("trainID"));
-								tm = (TrainModel) trains.get(trainID);
+								tm = trains.get(trainID);
 
 								tm.setYardNode((Node)mine.getData().get("yard"));
 								break;
@@ -138,8 +138,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 				}
 				else
 				{
-					System.out.println("PASSING MSG: step->"+name + " source->"+mine.getSource()+ " dest->"+mine.getDest());
-					mine.updateSender(name);
+					System.out.println("PASSING MSG ~ (source : " + mine.getSource() + "), (step : " + name + "), (dest : "+mine.getDest()+")");
+          			mine.updateSender(name);
 					Environment.passMessage(mine);
 				}
 			}

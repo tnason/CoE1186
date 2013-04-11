@@ -1,7 +1,10 @@
+
+
 package TLTTC;
 
 import javax.swing.*;
 
+@SuppressWarnings("serial")  // TrainControllerGUI has no definition of serialVersionUID
 public class TrainControllerGUI extends javax.swing.JFrame {
   private int trainID;
   private double velocity;

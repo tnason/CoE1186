@@ -26,7 +26,8 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         
         if(name == m.getDest())
         {
-          System.out.println("\nRECEIVED MSG: source->"+m.getSource() + " : dest->"+m.getDest()+"\n");
+          System.out.println("\nRECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
+
           if(m.getData() != null && m.getData().containsKey("trainID"))
           {
             trainID = (Integer)(m.getData().get("trainID"));
@@ -61,6 +62,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 break;
               case TnMd_TnCt_Request_Train_Controller_Creation: // Train controller creation
                 controllers.put(trainID, new TrainController(trainID));
+                break;
               case TnMd_TnCt_Request_Train_Controller_Destruction:
                 tc.closeGUI();
                 controllers.remove(trainID);
@@ -77,7 +79,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         }
         else
         {
-          System.out.println("PASSING MSG: step->"+name + " source->"+m.getSource()+ " dest->"+m.getDest());
+          System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
           m.updateSender(name);
           Environment.passMessage(m);
         }
