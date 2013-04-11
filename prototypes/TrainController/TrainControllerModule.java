@@ -1,8 +1,7 @@
 package TLTTC;
 import java.util.*;
 
-public class TrainControllerModule extends Worker implements Runnable, constData
-{
+public class TrainControllerModule extends Worker implements Runnable, constData{
   private Hashtable<Integer, TrainController> controllers;
   private Module name;
   private java.util.concurrent.LinkedBlockingQueue<Message> msgs;
@@ -10,8 +9,9 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   private int trainID;
   private TrainController tc;
   
-  public TrainControllerModule()
+  public TrainControllerModule(Module name)
   {
+    super(name);
     controllers = new Hashtable<Integer, TrainController>();
     name = Module.trainController;
     msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
@@ -37,7 +37,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
             }
             switch (m.getType())
             {
-              case MBO_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC
+              case CTC_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC
                 tc.movingBlockAuth = (Double)(m.getData().get("movingBlockAuthority"));
                 sendPower();
                 break;
@@ -102,6 +102,6 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     double powerCommand = tc.setPower();
     String[] keys = {"train_ID", "power"};
     Object[] data = {trainID, powerCommand};
-    send(new Message(name, name, Module.trainModel, tnCtTnMdSendPower, keys, data));
+    send(new Message(name, name, Module.trainModel, msg.tnCtTnMdSendPower, keys, data));
   }
 }
