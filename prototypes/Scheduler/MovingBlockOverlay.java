@@ -3,7 +3,7 @@ package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
 
-@suppressWarnings("unchecked")
+@SuppressWarnings("unchecked")
 public class MovingBlockOverlay extends Worker implements constData
 {
 	public static long DELIVERY_FREQUENCY = 1000; //milliseconds
@@ -279,7 +279,7 @@ public class MovingBlockOverlay extends Worker implements constData
 	{
 		Message message;
 
-		message = new Message(name, name, Module.scheduler, msg.MBO_TnCt_Send_Moving_Block_Authority);
+		message = new Message(name, name, Module.trainController, msg.MBO_TnCt_Send_Moving_Block_Authority);
 		message.addData("trainID", trainNumber);
 		message.addData("authority", authority);
 		//send(message);
