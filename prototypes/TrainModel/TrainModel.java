@@ -82,7 +82,7 @@ public class TrainModel implements constData
 	public void setPower(double pow) 
 	{
 		power = pow;
-		if(pow < 0) 
+		if(pow < 0.0) 
 		{
 			setBrake(true);
 		} 
