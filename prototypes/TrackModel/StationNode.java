@@ -1,6 +1,5 @@
 package TLTTC;
-public class StationNode extends Node implements constData
-{
+public class StationNode extends Node{
 	protected String name;
 	
 	public StationNode(double x, double y, double z){
@@ -8,6 +7,10 @@ public class StationNode extends Node implements constData
 		xPos = x;
 		yPos = y;
 		zPos = z;
+	}
+	
+	public String toString(){
+		return "Station" + super.toString();	
 	}
 	
 	public String getStationName(){

@@ -4,6 +4,9 @@ public class ArcBlock extends Block {
 		super(start, stop);
 	}
 	
+	public String toString(){
+		return "ArcBlock.toString not really implemented yet";
+	}
 	
 	protected double radius;
 	protected double centerX;
