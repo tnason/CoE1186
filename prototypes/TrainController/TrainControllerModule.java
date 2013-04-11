@@ -65,7 +65,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 sendPower();
                 break;
               case TnMd_TnCt_Request_Train_Controller_Creation: // Train controller creation
-                TrainController newTrainController = new TrainController(trainID);
+                TrainController newTrainController = new TrainController(trainID, this);
                 controllers.put(trainID, newTrainController);
                 break;
               case TnMd_TnCt_Request_Train_Controller_Destruction:
@@ -110,7 +110,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     send(new Message(name, name, Module.trainModel, msg.TnCt_TnMd_Request_Train_Velocity, keys, data));
   }
   
-  private void sendPower(){
+  public void sendPower(){
     requestVelocity();
     double powerCommand = tc.setPower();
     String[] keys = {"trainID", "power"};

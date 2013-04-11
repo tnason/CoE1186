@@ -6,6 +6,7 @@ public class TrainControllerGUI extends javax.swing.JFrame {
   private int trainID;
   private double velocity;
   private TrainController tc;
+  private TrainControllerModule module;
   private JButton jButton1;
   private JLabel jLabel1;
   private JLabel jLabel2;
@@ -13,9 +14,10 @@ public class TrainControllerGUI extends javax.swing.JFrame {
   private JLabel jLabel4;
   private JTextField jTextField1;
   
-  public TrainControllerGUI(int id, TrainController t) {
+  public TrainControllerGUI(int id, TrainController t, TrainControllerModule m) {
     initComponents();
     trainID = id;
+    module = m;
     tc = t;
     jLabel4.setText("Train " + id);
   }
@@ -105,7 +107,7 @@ public class TrainControllerGUI extends javax.swing.JFrame {
     }
     jLabel3.setText("Sent velocity of " + velocity + " m/s.");
     tc.trainOperatorVelocity = velocity;
-    tc.setPower();
+    module.sendPower();
   }
   
   private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {

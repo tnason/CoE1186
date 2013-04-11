@@ -33,10 +33,11 @@ public class TrainController{
   public double trackLength = 1400; // Track length
   
   public TrainControllerGUI gui; // GUI
+  public TrainControllerModule module;
   
-  public TrainController(int id)
+  public TrainController(int id, TrainControllerModule mod)
   {
-    gui = new TrainControllerGUI(id, this);
+    gui = new TrainControllerGUI(id, this, mod);
     gui.openGUI();
     trainID = id;
     
