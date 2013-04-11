@@ -7,7 +7,7 @@ public class Scheduler extends Worker implements constData
 {
 	public static int NEXT_TRAIN_NUMBER = 0;
 
-	private List listeners = new ArrayList();
+	private List<SchedulerListener> listeners;
 	private LinkedBlockingQueue<Message> messages;
 	private Module name;
 	private OperatorSchedule schedule;
@@ -25,12 +25,14 @@ public class Scheduler extends Worker implements constData
 
 	public Scheduler()
 	{
-		new SchedulerViewModel(this);
 		timetable = new Timetable();
 		schedule = new OperatorSchedule();
 		trains = new MyLinkedList<Train>();
+		listeners = new ArrayList<SchedulerListener>();
 		messages = new LinkedBlockingQueue<Message>();
 		this.name = Module.scheduler;
+
+		new SchedulerViewModel(this);
 	}
 
 	/*
@@ -160,7 +162,7 @@ public class Scheduler extends Worker implements constData
 							receivedTrainArrival(message);
 							break;	*/
 						case TnMd_Sch_Notify_Yard:
-							if((boolean)message.getData("entry"))
+							if((boolean)message.getData().get("entry"))
 							{
 								receivedTrainReturn(message);
 							}
@@ -224,7 +226,7 @@ public class Scheduler extends Worker implements constData
 		{
 			schedule.add("Train", "Operator", trainID, System.currentTimeMillis(), OperatorStatus.SHIFTFIRSTHALF);
 			operatorScheduleChanged();
-			updateTimetable();
+			//updateTimetable();
 		}
 		else
 		{
@@ -284,7 +286,7 @@ public class Scheduler extends Worker implements constData
 	{
 		Iterator<Operator> i;
 		Message message;
-
+/*
 		i = schedule.getIterator();
 
 		while(i.hasNext())
@@ -293,6 +295,7 @@ public class Scheduler extends Worker implements constData
 			message.addData("trainNumber", i.next().trainNumber);
 			send(message);
 		}
+*/
 	}
 
 	private void sendTrainUpdate()
@@ -330,7 +333,7 @@ public class Scheduler extends Worker implements constData
 
 	private synchronized void operatorScheduleChanged()
 	{
-		Iterator i;
+		Iterator<SchedulerListener> i;
 		SchedulerEvent e;
 
 		e = new SchedulerEvent(this);
@@ -338,13 +341,18 @@ public class Scheduler extends Worker implements constData
 
 		while(i.hasNext())
 		{
-			((SchedulerListener) i.next()).operatorScheduleChanged(e);
+			i.next().operatorScheduleChanged(e);
 		}
 	}
 
 	private synchronized void timetableChanged()
 	{
-		Iterator i;
+		Message m = new Message(Module.MBO, Module.MBO, Module.scheduler, msg.TnMd_Sch_Notify_Yard);
+		m.addData("trainID", 1);
+		m.addData("entry", true);
+		send(m);
+/*
+		Iterator<SchedulerListener> i;
 		SchedulerEvent e;
 
 		e = new SchedulerEvent(this);
@@ -352,7 +360,8 @@ public class Scheduler extends Worker implements constData
 
 		while(i.hasNext())
 		{
-			((SchedulerListener) i.next()).timetableChanged(e);
+			i.next().timetableChanged(e);
 		}
+*/
 	}
 }
