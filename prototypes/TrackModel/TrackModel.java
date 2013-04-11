@@ -7,16 +7,55 @@ import java.util.concurrent.*;
 
 public class TrackModel extends Worker implements Runnable, constData
 {
-	
+	public TrackModel(){
+		blocks = new HashMap<Integer, Block>();
+		nodes = new HashMap<Integer, Node>();
+	}
 
-    private HashMap<Integer, Block> blocks = new HashMap<Integer, Block>();
-    private HashMap<Integer, Node> nodes = new HashMap<Integer, Node>();
+    private HashMap<Integer, Block> blocks;
+    private HashMap<Integer, Node> nodes;
 
-    public  HashMap<Integer, Block> getBlocks(){
-    	return blocks;
+    private static HashMap<Integer, Block> staticBlocks;
+    public static HashMap<Integer, Block> getBlocks(){
+    	return staticBlocks;
+    }
+    
+    public String toString(){
+    	StringBuilder sb = new StringBuilder();
+  
+    	sb.append("Listing Nodes\n");
+    	for(Integer iObj : nodes.keySet()){
+    		sb.append("\t");
+    		sb.append(iObj);
+    		sb.append(": ");
+    		sb.append(nodes.get(iObj).toString());
+    		sb.append("\n");
+    		
+    	}
+    	
+    	sb.append("Listing Blocks\n");
+    	for(Integer iObj : blocks.keySet()){
+    		sb.append("\t");
+    		sb.append(iObj);
+    		sb.append(": ");
+    		sb.append(blocks.get(iObj).toString());
+    		sb.append("\n");    		
+    		
+    	}
+    	
+    	return sb.toString();
+    }
+    
+    public void setBlockMaintenanceByID(int blockID, boolean state){
+    	blocks.get(new Integer(blockID)).setMaintenance(state);
+    }
+    
+    public void setBlockOccupationByID(int blockID, boolean state){
+    	blocks.get(new Integer(blockID)).setOccupation(state);    	
     }
     
     
+///*    
     private LinkedBlockingQueue<Message> msgs;
     private Module name = Module.trackModel;
     
@@ -54,11 +93,14 @@ public class TrackModel extends Worker implements Runnable, constData
             }
         }
     }
-  
+//*/  
     public void initTrack()
     {
-        /*try
+    	/*
+        try
         {
+        */
+        	/*
             Scanner s = new Scanner(new File("layout_new.txt"));
 
             while(s.hasNextLine())
@@ -73,11 +115,8 @@ public class TrackModel extends Worker implements Runnable, constData
 
 
             }
-        } 
-        catch (Exception e)
-        {
-                //System.out.println(e);
-        }*/
+			*/
+        	
             Node node1 = new YardNode(0,0,0);
             Node node2 = new ConnectorNode(200,0,0);
             Node node3 = new ConnectorNode(400,0,1);
@@ -87,6 +126,7 @@ public class TrackModel extends Worker implements Runnable, constData
             Node node7 = new ConnectorNode(1200,0,0);
             Node node8 = new YardNode(1400,0,0);            
             
+<<<<<<< HEAD
             LinearBlock block1 = new LinearBlock(node1, node2, 1, 0);
             LinearBlock block2 = new LinearBlock(node2, node3, 2, 0);
             LinearBlock block3 = new LinearBlock(node3, node4, 3, 0);
@@ -96,6 +136,25 @@ public class TrackModel extends Worker implements Runnable, constData
             LinearBlock block7 = new LinearBlock(node7, node8, 7, 1);
 
             block4.addController(1);
+=======
+            nodes.put(1, node1);
+            nodes.put(2, node2);            
+            nodes.put(3, node3);
+            nodes.put(4, node4);
+            nodes.put(5, node5);
+            nodes.put(6, node6);
+            nodes.put(7, node7);
+            nodes.put(8, node8);            
+            
+            
+            LinearBlock block1 = new LinearBlock(node1, node2);
+            LinearBlock block2 = new LinearBlock(node2, node3);
+            LinearBlock block3 = new LinearBlock(node3, node4);
+            LinearBlock block4 = new LinearBlock(node4, node5);
+            LinearBlock block5 = new LinearBlock(node5, node6);
+            LinearBlock block6 = new LinearBlock(node6, node7);
+            LinearBlock block7 = new LinearBlock(node7, node8);
+>>>>>>> c6b087eb225ab2dddf2334f6c32cf7bcc744c436
             
             blocks.put(1, block1);
             blocks.put(2, block2);
@@ -104,11 +163,21 @@ public class TrackModel extends Worker implements Runnable, constData
             blocks.put(5, block5);
             blocks.put(6, block6);            
             blocks.put(7, block7);
-                
-            //assign to the static so anyone can get at this  
+
+            //assign to the static so anyone can get at this
+            staticBlocks = blocks;
+            
+        /*    
+        } 
+        catch (Exception e)
+        {
+        		System.out.println(e.getMessage());
+        }
+    `	*/
+    
     }
 
-    
+///*  
     public void setMsg(Message m) 
     {
         msgs.add(m);
@@ -117,7 +186,6 @@ public class TrackModel extends Worker implements Runnable, constData
     public void send(Message m)
     {
         System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
-        m.updateSender(name);
         Environment.passMessage(m);
     }
     
@@ -138,5 +206,5 @@ public class TrackModel extends Worker implements Runnable, constData
     {
     
     }
-
+//*/
 }

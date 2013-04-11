@@ -5,7 +5,11 @@ public class CrossingNode extends Node{
 		xPos = x;
 		yPos = y;
 		zPos = z;
-	}	
+	}
+	
+	public String toString(){
+		return "Crossing" + super.toString();	
+	}
 	
 	protected boolean opened;
 	

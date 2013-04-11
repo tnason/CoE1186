@@ -9,13 +9,17 @@ public abstract class Block {
 		controller.add(c);
 	}
 	
+	public String toString(){
+		return "Abstract Block Class";
+	}
+	
 	
 	
 	/*unique identification number*/
 	protected int blockID;
 	
 	boolean occupied;
-
+	boolean maintenance;
 	
 	/*keep track of nodes*/
 	protected Node startNode;
@@ -33,10 +37,12 @@ public abstract class Block {
 	
 
 	public void setOccupation(boolean state){
-
-		//TODO - bounds check state
 		occupied = state;
 	}
+	public void setMaintenance(boolean state){
+		maintenance = state;
+	}
+	
 	
 	public int getID()
 	{
