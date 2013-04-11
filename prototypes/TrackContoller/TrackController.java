@@ -2,8 +2,6 @@ package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
 
-import TLTTC.Environment;
-
 public class TrackController extends Worker implements constData, Runnable
 {
 
