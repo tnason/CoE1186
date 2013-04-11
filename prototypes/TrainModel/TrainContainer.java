@@ -16,7 +16,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 
 	private final double TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time!)
 
-	private long timerTrigger = 1; //real-time value (in ms) for triggering motionStep() calls
+	private long timerTrigger = 10; //real-time value (in ms) for triggering motionStep() calls
 
 	private int motionStepCount = 0;
 
