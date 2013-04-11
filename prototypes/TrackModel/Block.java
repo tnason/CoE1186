@@ -65,7 +65,7 @@ public abstract class Block {
 		
 		double dist = Math.sqrt(dx*dx + dy*dy);
 		
-		return dz/dist;
+		return dz/dist * 100;
 	}
 	
 	public double getLength(){
