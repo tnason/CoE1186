@@ -29,7 +29,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
           System.out.println("\nRECEIVED MSG: source->"+m.getSource() + " : dest->"+m.getDest()+"\n");
           if(m.getData() != null && m.getData().containsKey("trainID"))
           {
-            trainID = (Integer)(m.getData().get("trainID"));
+            trainID = (int)(m.getData().get("trainID"));
             if (controllers.containsKey(trainID))
             {
               tc = controllers.get(trainID); // Local TrainController
@@ -49,7 +49,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 sendPower();
                 break;
               case CTC_TnCt_Send_Manual_Speed: // Manual velocity from CTC
-                tc.ctcOperatorVelocity = (Double)(m.getData().get("velocity"));
+                tc.ctcOperatorVelocity = (double)(m.getData().get("velocity"));
                 sendPower();
                 break;
               case TcMd_TnCt_Send_Track_Speed_Limit: // Track speed limit from track model
@@ -57,7 +57,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 sendPower();
                 break;
               case TnMd_TnCt_Send_Train_Velocity: // Current train velocity from train model
-                tc.velocity = (Double)(m.getData().get("velocity"));
+                tc.velocity = (double)(m.getData().get("velocity"));
                 System.out.println("Got velocity of " + tc.velocity + " from train model.");
                 sendPower();
                 break;
