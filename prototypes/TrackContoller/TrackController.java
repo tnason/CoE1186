@@ -16,14 +16,15 @@ public class TrackController extends Worker implements constData, Runnable
 		}
 	}
 
-	 public void setMsg(Message m)
+	public void setMsg(Message m)
     {
 		msgs.add(m);
     }
 
     public void send()
     {
-
+    	Message m = new Message(name,name,name,msg.verify);
+    	Environment.passMessage(m);
     }
 
 	public static void main(String [] args)

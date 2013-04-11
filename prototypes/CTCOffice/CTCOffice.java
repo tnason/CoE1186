@@ -32,13 +32,14 @@ public class CTCOffice extends Worker implements Runnable, constData {
                 if (name == m.getDest())
                 { // hey, this was sent to me; let's do something
                     switch (m.getType()) {
-                        case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
-                           // unpack the data from the message
-                           m.getData().get("trainID");
+		    case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
+			// unpack the data from the message
+			m.getData().get("trainID");
                         break; // end Confirm train creation case
-                        case TnMd_CTC_Request_Train_Destruction: // Aw snap! Train's going away, better let everyone know
-                            m.getData().get("trainID");
+		    case TnMd_CTC_Request_Train_Destruction: // Aw snap! Train's going away, better let everyone know
+			m.getData().get("trainID");
                         break; // end train destruction case
+<<<<<<< HEAD
 		                case TnMd_CTC_Send_Block_Occupied: // Train has definitely moved to a new block; let e'rybody know
 		                
 		                break; // end block occupied case
@@ -54,8 +55,8 @@ public class CTCOffice extends Worker implements Runnable, constData {
                 }
                 else { // it ain't ours, get that shit outta here!
                     System.out.println("PASSING MSG: step->"+name + " source->"+m.getSource()+ " dest->"+m.getDest());
-          m.updateSender(name);
-          Environment.passMessage(m);
+		    m.updateSender(name);
+		    Environment.passMessage(m);
                 }
             }
         }

@@ -51,7 +51,7 @@ public class Environment implements constData
 		trmThread.start();
 		ctcThread.start();
 
-		ctcThread.send();//w2.send();w3.send();w4.send();w5.send();
+		//ctcThread.send();w2.send();w3.send();w4.send();w5.send();
 
 
 		while(true)

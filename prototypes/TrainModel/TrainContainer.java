@@ -10,11 +10,11 @@ public class TrainContainer extends Worker implements Runnable, constData
 	private Module name;
 	private LinkedBlockingQueue<Message> msgs;
   
-	private HashTable<Integer, TrainModel> trains;
+	private Hashtable<Integer, TrainModel> trains;
   
 	private Timer motionTimer;
 
-	private final TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time!)
+	private final double TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time!)
 
 	private int timerTrigger = 1; //real-time value (in ms) for triggering motionStep() calls
 	//For now, simulationSpeedup = (trainTimestep * 1000) / timerTrigger
@@ -30,7 +30,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 	{ 
   		this.name = Module.trainModel;
 		msgs  = new LinkedBlockingQueue<Message>();
-		trains = new HashTable<Integer, TrainModel>();
+		trains = new Hashtable<Integer, TrainModel>();
 		motionTimer = new Timer();
   		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every X ms
 	}
@@ -40,7 +40,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 	{
  		public void run()
 		{
-  			Enumeration<int> enumKey = trains.keys();
+  			Enumeration<Integer> enumKey = trains.keys();
   			while(enumKey.hasMoreElements())
   			{
   				trains.get(enumKey.nextElement()).motionStep(); //move the trains!
@@ -50,7 +50,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 
 	public void newTrain(int TrainID, Block start)
 	{
-		trains.add(new TrainModel(TrainID, start, trainTimestep));
+		trains.put(TrainID, new TrainModel(TrainID, start, TIME_STEP));
 		//send a message to TrainControllerModule to make a new, linked TrainController
 
 	}
@@ -78,52 +78,52 @@ public class TrainContainer extends Worker implements Runnable, constData
 						switch (mine.getType())
 						{
 							case CTC_TnMd_Request_Train_Creation:
-								bl = (Block)mine.getData.get("yard");
+								bl = (Block)mine.getData().get("yard");
 								if(bl.isOccupied())
 								{
 									//fail silently
 								} 
 								else
 								{
-									tm = new TrainModel((int)mine.getData.get("trainID"), bl, TIME_STEP);
+									tm = new TrainModel((int)mine.getData().get("trainID"), bl, TIME_STEP);
 
 									//send associated messages!!!
 									
 									//send TnMd_CTC_Confirm_Train_Creation
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Confirm_Train_Creation, ["trainID"], [mine.getData.get("trainID")]);
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Confirm_Train_Creation, new String[] {"trainID"}, new Object[] {mine.getData().get("trainID")});
 									Environment.passMessage(outgoingMessage);
 
 									//send TnMd_TcMd_Request_Yard_Node
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackModel, msg.TnMd_TcMd_Request_Yard_Node, ["trainID", "blockID"], [mine.getData.get("trainID"), (Object)(bl.getID())]);
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackModel, msg.TnMd_TcMd_Request_Yard_Node, new String[] {"trainID", "blockID"}, new Object[] {mine.getData().get("trainID"), (Object)(bl.getID())});
 									Environment.passMessage(outgoingMessage);
 
 									//send TnMd_TnCt_Request_Train_Controller_Creation
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Request_Train_Controller_Creation, ["trainID"], [mine.getData.get("trainID")]);
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Request_Train_Controller_Creation, new String[] {"trainID"}, new Object[] {mine.getData().get("trainID")});
 									Environment.passMessage(outgoingMessage);
 
 									//send TnMd_Sch_Notify_Yard
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, ["entry","trainID","blockID"], [(Object)false, mine.getData.get("trainID"), (Object)(bl.getID())]);
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID","blockID"}, new Object[] {(Object)false, mine.getData().get("trainID"), (Object)(bl.getID())});
 									Environment.passMessage(outgoingMessage);
 								}
 								break;
 							case TnCt_TnMd_Send_Power:
 								//update power setting
-								trainID = (int)(mine.getData.get("trainID"));
-								tm = trains.get(trainID);
+								trainID = (int)(mine.getData().get("trainID"));
+								tm = (TrainModel) trains.get(trainID);
 
-								tm.setPower(mine.getData.get("power"));
+								tm.setPower((double)mine.getData().get("power"));
 								break;
 							case TcMd_TnMd_Send_Yard_Node:
-								trainID = (int)(mine.getData.get("trainID"));
-								tm = trains.get(trainID);
+								trainID = (int)(mine.getData().get("trainID"));
+								tm = (TrainModel) trains.get(trainID);
 
-								tm.setYardNode((Node)mine.getData.get("yard"));
+								tm.setYardNode((Node)mine.getData().get("yard"));
 								break;
 							case TnCt_TnMd_Request_Train_Velocity:
-								trainID = (int)(mine.getData.get("trainID"));
+								trainID = (int)(mine.getData().get("trainID"));
 								tm = trains.get(trainID);
 							
-								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, ["trainID","velocity"], [(Object)trainID, (Object)tm.getVelocity()]);
+								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, new String[] {"trainID","velocity"}, new Object[] {(Object)trainID, (Object)tm.getVelocity()});
 
 								break;
 							default:
@@ -153,16 +153,17 @@ public class TrainContainer extends Worker implements Runnable, constData
 
 	public void send()
 	{
-		Message outgoing = new Message(name, name, Module.trainController);
-		System.out.println("SENDING MSG: start->"+outgoing.getSource() + " : dest->"+outgoing.getDest()+"\n");
-		Environment.passMessage(outgoing);
+		//Message outgoing = new Message(name, name, Module.trainController);
+		//System.out.println("SENDING MSG: start->"+outgoing.getSource() + " : dest->"+outgoing.getDest()+"\n");
+		//Environment.passMessage(outgoing);
 	}
 
 	public void send(Message m)
 	{
-   		System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+"\n");
-		Environment.passMessage(m);
+   		//System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+"\n");
+		//Environment.passMessage(m);
 	}
+
   
   //methods to send messages go here
 }
