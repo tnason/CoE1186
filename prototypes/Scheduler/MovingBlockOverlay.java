@@ -3,6 +3,7 @@ package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
 
+@suppressWarnings("unchecked")
 public class MovingBlockOverlay extends Worker implements constData
 {
 	public static long DELIVERY_FREQUENCY = 1000; //milliseconds
@@ -42,6 +43,8 @@ public class MovingBlockOverlay extends Worker implements constData
 		Methods
 	*/
 
+	//Find train in linked list
+
 	private Train findTrain(int trainNumber)
 	{
 		Train t;
@@ -70,6 +73,8 @@ public class MovingBlockOverlay extends Worker implements constData
 
 		return value;
 	}
+
+	//Calculate moving block between trains
 
 	private double calculateMovingBlock(double trainLocation, double trainSpeed, double forwardTrainLocation, double forwardTrainSpeed)
 	{
@@ -124,6 +129,8 @@ public class MovingBlockOverlay extends Worker implements constData
 				}
 			}
 
+			//Send messages in outboxes after 1 second has elapsed
+
 			if(nextDelivery < System.currentTimeMillis())
 			{
 				sendMessages();
@@ -138,12 +145,17 @@ public class MovingBlockOverlay extends Worker implements constData
 				forwardTrain = trains.previous(); //returns selected train, then goes backwards
 				train = trains.selected();
 
+				//If conditions are correct to calcuate moving block, do it
+
 				if(forwardTrain.isLocationValid() && train.isLocationValid() && train.isStoppingDistanceValid())
 				{
 					sendAuthority(train.trainNumber, calculateMovingBlock(train.getLocation(), train.getStoppingDistance(), forwardTrain.getLocation(), 0));
 					forwardTrain.setLocationValid(false);
 					train.setStoppingDistanceValid(false);
 				}
+
+				//If not, create messages to send to trains
+
 				else
 				{
 					if(!forwardTrain.isLocationValid())
@@ -177,6 +189,8 @@ public class MovingBlockOverlay extends Worker implements constData
 		
 	}
 
+	//Update train information in linked list
+
 	private void receivedStoppingDistance(Message message)
 	{
 		Train train;
@@ -189,6 +203,8 @@ public class MovingBlockOverlay extends Worker implements constData
 			train.setStoppingDistanceValid(true);
 		}
 	}
+
+	//When train is added/removed from track, update object
 
 	private void receivedTrainUpdate(Message message)
 	{
@@ -205,6 +221,8 @@ public class MovingBlockOverlay extends Worker implements constData
 		Environment.passMessage(message);
 	}
 
+	//Send messages from outboxes
+
 	public void sendMessages()
 	{
 		Enumeration<Integer> keys;
@@ -212,6 +230,8 @@ public class MovingBlockOverlay extends Worker implements constData
 		Message m;
 
 		keys = authorityOutbox.keys();
+
+		//Send authorites to trains
 
 		while(keys.hasMoreElements())
 		{
@@ -226,6 +246,8 @@ public class MovingBlockOverlay extends Worker implements constData
 
 		keys = locationOutbox.keys();
 
+		//Request train locations from satellite
+
 		while(keys.hasMoreElements())
 		{
 			trainNumber = (int)keys.nextElement();
@@ -238,6 +260,8 @@ public class MovingBlockOverlay extends Worker implements constData
 		}
 
 		keys = distanceOutbox.keys();
+
+		//Request train stopping distance from trains
 
 		while(keys.hasMoreElements())
 		{
@@ -255,7 +279,7 @@ public class MovingBlockOverlay extends Worker implements constData
 	{
 		Message message;
 
-		message = new Message(name, name, Module.trainController, msg.MBO_TnCt_Send_Moving_Block_Authority);
+		message = new Message(name, name, Module.scheduler, msg.MBO_TnCt_Send_Moving_Block_Authority);
 		message.addData("trainID", trainNumber);
 		message.addData("authority", authority);
 		//send(message);
