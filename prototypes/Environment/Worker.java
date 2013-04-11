@@ -7,5 +7,7 @@ public abstract class Worker implements Runnable
 
     public abstract void run();
 
+    public abstract void send(Message m);
+
     //public void send();
 }
