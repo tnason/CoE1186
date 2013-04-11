@@ -274,10 +274,10 @@ public class TrainModel implements constData
 				occupiedBlocks.get(0).setOccupation(true);
 				currentNode = nextNode;
 
-				if(currentNode.getNodeType() == NodeType.Yard) //yard entry
-				{
+				//if(currentNode.getNodeType() == NodeType.Yard) //yard entry
+				//{
 					//destruct 
-				}
+				//}
 			}
 			
 			if(occupiedBlocks.size() == 2)

@@ -14,7 +14,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
     private HashMap<Integer, BlockViewModel> _blockList = new HashMap<Integer, BlockViewModel>();
     
     private int _trainCount = 0;
-    private CTCOfficeView view = new CTCOfficeView();
+    private CTCOfficeView view = new CTCOfficeView(this);
     
     CTCOffice () {
         // Do any set-up needed, launch the GUI, and get it on!
