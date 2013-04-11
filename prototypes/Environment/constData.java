@@ -18,6 +18,8 @@ public interface constData
 		TnCt_TnMd_Send_Power,
 		TcMd_TnCt_Send_Track_Speed_Limit,
 		TnMd_TnCt_Send_Train_Velocity,
-		TnMd_CTC_Confirm_Train_Creation
+		TnMd_CTC_Confirm_Train_Creation,
+		TnMd_CTC_Request_Train_Destruction,
+		TnMd_CTC_Send_Block_Occupied
 	}
 }
