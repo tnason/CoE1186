@@ -1,7 +1,8 @@
 package TLTTC;
 import java.util.*;
 
-public class TrainControllerModule extends Worker implements Runnable, constData{
+public class TrainControllerModule extends Worker implements Runnable, constData
+{
   private Hashtable<Integer, TrainController> controllers;
   private Module name;
   private java.util.concurrent.LinkedBlockingQueue<Message> msgs;

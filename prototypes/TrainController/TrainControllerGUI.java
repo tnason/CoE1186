@@ -2,7 +2,8 @@ package TLTTC;
 
 import javax.swing.*;
 
-public class TrainControllerGUI extends javax.swing.JFrame {
+public class TrainControllerGUI extends javax.swing.JFrame
+{
   private int trainID;
   private double velocity;
   private TrainController tc;
