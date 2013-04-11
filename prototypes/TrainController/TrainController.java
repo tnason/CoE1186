@@ -1,8 +1,7 @@
 package TLTTC;
 
 
-public class TrainController
-{
+public class TrainController{
   public int trainID;
   
   public double T = 0.1; // Sample period of train model (0.1 seconds)
