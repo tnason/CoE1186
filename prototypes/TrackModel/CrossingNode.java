@@ -1,5 +1,12 @@
 package TLTTC;
 public class CrossingNode extends Node{
+	public CrossingNode(double x, double y, double z){
+		nodeType = NodeType.Crossing;
+		xPos = x;
+		yPos = y;
+		zPos = z;
+	}	
+	
 	protected boolean opened;
 	
 	public boolean isOpen(){
