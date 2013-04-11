@@ -1,6 +1,7 @@
 package TLTTC;
 
-public abstract class Node {
+public abstract class Node implements constData
+ {
 	public Node(){
 		nodeType = NodeType.Node;
 	}
