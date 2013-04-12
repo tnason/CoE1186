@@ -8,6 +8,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   
   private int trainID;
   private TrainController tc;
+  private TrainContainer trainModel;
   
   public TrainControllerModule()
   {
@@ -117,5 +118,9 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     String[] keys = {"trainID", "power"};
     Object[] data = {trainID, powerCommand};
     send(new Message(name, name, Module.trainModel, msg.TnCt_TnMd_Send_Power, keys, data));
+  }
+  
+  public void init(TrainContainer t){
+    trainModel = t;
   }
 }
