@@ -155,15 +155,11 @@ public class TrainContainer extends Worker implements Runnable, constData
 	}
 
 	//methods called by TrainControllerModule!
-	double getVelocity(int trainID)
+	TrainModel getTrain(int trainID)
 	{
-		return trains.get(trainID).getVelocity();
+		return trains.get(trainID);
 	}
 
-	void setPower(int trainID, double power)
-	{
-		trains.get(trainID).setPower(power);
-	}
 
 	public void setMsg(Message m)
 	{
