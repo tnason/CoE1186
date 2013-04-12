@@ -11,7 +11,7 @@ public class SchedulerViewModel
 {
 	private Container myContainer;
 	private OperatorScheduleTableModel mySchedule;
-	private DefaultTableModel myTimetable;
+	private TimetableTableModel myTimetable;
 	private JFrame myFrame;
 	private JTable myScheduleGrid;
 	private JTable myTimetableGrid;
