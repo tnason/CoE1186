@@ -103,13 +103,10 @@ public class TrackModel extends Worker implements Runnable, constData
     }
 //*/  
     public void initTrack()
-    {
-    	
+    {	
         try
         {
-        
-        	
-            Scanner s = new Scanner(new File("layout_new.txt"));
+            Scanner s = new Scanner(new File("_layout_new.txt"));
             int i = 0;
 
             while(s.hasNextLine())
@@ -122,18 +119,19 @@ public class TrackModel extends Worker implements Runnable, constData
                     break;
 
                 String [] nodeAttr = line.split(" ");
+                int id = Integer.parseInt(nodeAttr[1]);
 
                 if(nodeAttr[0].equals("yard"))
                 {
-                    nodes.put(i, YardNode(Double.parseDouble(nodeAttr[1]),
-                                          Double.parseDouble(nodeAttr[2]),
-                                          Double.parseDouble(nodeAttr[3])));
+                    nodes.put(id, new YardNode(Double.parseDouble(nodeAttr[1]),
+                                               Double.parseDouble(nodeAttr[2]),
+                                               Double.parseDouble(nodeAttr[3])));
                 }
                 else if (nodeAttr[0].equals("connection"))
                 {
-                    nodes.put(i, ConnectorNode(Double.parseDouble(nodeAttr[1]),
-                                               Double.parseDouble(nodeAttr[2]),
-                                               Double.parseDouble(nodeAttr[3])));
+                    nodes.put(id, new ConnectorNode(Double.parseDouble(nodeAttr[1]),
+                                                    Double.parseDouble(nodeAttr[2]),
+                                                    Double.parseDouble(nodeAttr[3])));
                 }
                 i++;
             }
@@ -151,10 +149,11 @@ public class TrackModel extends Worker implements Runnable, constData
                 int id    = Integer.parseInt(blockAttr[1]);
                 int start = Integer.parseInt(blockAttr[2]);
                 int stop  = Integer.parseInt(blockAttr[3]);
+                Block block = null;
 
                 if(blockAttr[0].equals("linear"))
                 {
-                    Block block = new LinearBlock(nodes.get(start), nodes.get(stop), id)
+                    block = new LinearBlock(nodes.get(start), nodes.get(stop), id);
 
                     String [] ctrl = blockAttr[4].split(",");
 
@@ -172,7 +171,7 @@ public class TrackModel extends Worker implements Runnable, constData
                     // TO DO
                 }
 
-                if(nodes.get(end).getNodeType() != constData.NodeType.Yard)
+                if(nodes.get(stop).getNodeType() != constData.NodeType.Yard)
                 {
                     // TO DO
                 }
