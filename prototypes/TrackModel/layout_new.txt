@@ -1,21 +1,23 @@
 #node num type x y z
 #block type num start stop controller(s)
-yard 1 0 0 0
-connection 2 200 0 0
-connection 3 400 0 0
-connection 4 600 0 2
-connection 5 800 0 2
-connection 6 1000 0 1
-connection 7 1200 0 0
-yard 8 1400 0 0	
+yard 0 0 0 0
+connection 1 200 0 0
+connection 2 400 0 0
+connection 3 600 0 2
+connection 4 800 0 2
+connection 5 1000 0 1
+connection 6 1200 0 0
+yard 7 1400 0 0	
 -1
+#
+# type id start stop
+linear 0 0 1 0
 linear 1 1 2 0
 linear 2 2 3 0
-linear 3 3 4 0
-linear 4 4 5 0,1
-linear 5 5 6 1	
+linear 3 3 4 0,1
+linear 4 4 5 1	
+linear 5 5 6 1
 linear 6 6 7 1
-linear 7 7 8 1
 	
 	
 	
