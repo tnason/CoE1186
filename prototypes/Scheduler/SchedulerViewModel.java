@@ -10,13 +10,14 @@ import javax.swing.table.*;
 public class SchedulerViewModel
 {
 	private Container myContainer;
-	private DefaultTableModel mySchedule;
+	private OperatorScheduleTableModel mySchedule;
 	private DefaultTableModel myTimetable;
 	private JFrame myFrame;
 	private JTable myScheduleGrid;
 	private JTable myTimetableGrid;
 	private JPanel myPanel;
-
+	private RowSorter<TableModel> myScheduleSorter;
+	private RowSorter<TableModel> myTimetableSorter;
 	private JButton myScheduleButton;
 	private JButton myTimetableButton;
 
@@ -36,31 +37,20 @@ public class SchedulerViewModel
 
 	public void initUI()
 	{
-		myFrame = new JFrame();
+		myFrame = new JFrame("Marcus Hayes - Scheduler");
 		myContainer = myFrame.getContentPane();
 
-		mySchedule = new DefaultTableModel();
-		myTimetable = new DefaultTableModel();
+		mySchedule = new OperatorScheduleTableModel();
+		myTimetable = new TimetableTableModel();
 
 		myScheduleGrid = new JTable(mySchedule);
-		myTimetableGrid = new JTable(myTimetable);
-
-		mySchedule.addColumn("First Name");
-		mySchedule.addColumn("Last Name");
-		mySchedule.addColumn("Train Number");
-		mySchedule.addColumn("Shift Start");
-		mySchedule.addColumn("Break Start");
-		mySchedule.addColumn("Break End");
-		mySchedule.addColumn("Shift End");
-		mySchedule.addColumn("Status");
-
+		myScheduleGrid.setRowSorter(new TableRowSorter<TableModel>(mySchedule));
+		myScheduleGrid.setPreferredScrollableViewportSize(new Dimension(200, myScheduleGrid.getRowHeight() * 5));
 		myScheduleGrid.setFillsViewportHeight(true);
 
-		myTimetable.addColumn("Station Name");
-		myTimetable.addColumn("Train Number");
-		myTimetable.addColumn("Arrival Time");
-		myTimetable.addColumn("Status");
-
+		myTimetableGrid = new JTable(myTimetable);
+		myTimetableGrid.setRowSorter(new TableRowSorter<TableModel>(myTimetable));
+		myTimetableGrid.setPreferredScrollableViewportSize(new Dimension(200, myTimetableGrid.getRowHeight() * 5));
 		myTimetableGrid.setFillsViewportHeight(true);
 
 		myScheduleButton = new JButton("Update Operator Schedule");
@@ -96,6 +86,8 @@ public class SchedulerViewModel
 	{
 		public void timetableChanged(SchedulerEvent e)
 		{
+			myTimetable.update(scheduler.getTimetable());
+			/*
 			Iterator<TimesObject> i;
 			TimesObject t;
 
@@ -106,20 +98,24 @@ public class SchedulerViewModel
 				t = i.next();
 				myTimetable.addRow(new Object[]{t.stationName, t.trainNumber, new Time(t.time), t.status.toString()});
 			}
+			*/
 		}
 
 		public void operatorScheduleChanged(SchedulerEvent e)
 		{
+			mySchedule.update(scheduler.getOperatorSchedule());
+/*
 			Iterator<Operator> i;
 			Operator s;
 
-			i = scheduler.getOperatorSchedule().getIterator();
+			i = myScheduler.getOperatorSchedule().getIterator();
 
 			while(i.hasNext())
 			{
 				s = i.next();
 				mySchedule.addRow(new Object[]{s.firstName, s.lastName, s.trainNumber, new Time(s.shiftStart), new Time(s.breakStart), new Time(s.breakEnd), new Time(s.shiftEnd), s.status.toString()});
 			}
+*/
 		}
 	}
 
@@ -129,12 +125,10 @@ public class SchedulerViewModel
 		{
 			if(e.getSource() == myTimetableButton)
 			{
-				System.out.println("timetable");
 				scheduler.updateTimetable();
 			}
 			else if(e.getSource() == myScheduleButton)
 			{
-				System.out.println("schedule");
 				scheduler.updateOperatorSchedule();
 			}
 		}
