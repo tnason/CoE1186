@@ -84,7 +84,7 @@ public class SchedulerViewModel
 	{
 		public void timetableChanged(SchedulerEvent e)
 		{
-			mySchedule.update(scheduler.getTimetable());
+			myTimetable.update(scheduler.getTimetable());
 			/*
 			Iterator<TimesObject> i;
 			TimesObject t;
