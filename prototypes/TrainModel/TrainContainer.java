@@ -83,7 +83,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 				if(name == mine.getDest())
 				{
 					
-					//System.out.println("RECEIVED MESSAGE ~ (source : " + mine.getSource() + "), (dest : " + mine.getDest() + ")\n");
+					System.out.println("RECEIVED MESSAGE ~ (source : " + mine.getSource() + "), (dest : " + mine.getDest() + ")\n");
 
 					if(mine.getData() != null)
 					{
@@ -127,15 +127,14 @@ public class TrainContainer extends Worker implements Runnable, constData
 								trainID = (int)(mine.getData().get("trainID"));
 								tm = trains.get(trainID);
 								double power = (double)mine.getData().get("power");
-								System.out.println("	!!!!!!!!!!!!!!!!!!!!Getting power: " + power + " for train: " + trainID);
+								System.out.println("	!!!!!!!!!!!!!!!!!!!!Getting new power: " + power);
 								tm.setPower(power);
 								break;
 							case TnCt_TnMd_Request_Train_Velocity:
 								System.out.println("	!!!!!!!!!!!!!!!!!!!!Request velocity");
 								trainID = (int)(mine.getData().get("trainID"));
 								tm = trains.get(trainID);
-						
-								System.out.println("	Sending: " + tm.getVelocity());	
+							
 								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, new String[] {"trainID","velocity"}, new Object[] {trainID, tm.getVelocity()});
 								send(outgoingMessage);
 
@@ -152,7 +151,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 				}
 				else
 				{
-					//System.out.println("PASSING MSG ~ (source : " + mine.getSource() + "), (step : " + name + "), (dest : " + mine.getDest()+"), (type : " + mine.getType()+")");
+					System.out.println("PASSING MSG ~ (source : " + mine.getSource() + "), (step : " + name + "), (dest : " + mine.getDest()+"), (type : " + mine.getType()+")");
           			mine.updateSender(name);
 					send(mine);
 				}
@@ -174,7 +173,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 
 	public void send(Message m)
 	{
-   		//System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+   		System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
         m.updateSender(name);
         Environment.passMessage(m);
 	}

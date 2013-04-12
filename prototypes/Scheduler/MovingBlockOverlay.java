@@ -6,7 +6,7 @@ import java.util.concurrent.*;
 @SuppressWarnings("unchecked")
 public class MovingBlockOverlay extends Worker implements constData
 {
-	public static long DELIVERY_FREQUENCY = 500; //milliseconds
+	public static long DELIVERY_FREQUENCY = 1000; //milliseconds
 
 	private long nextDelivery;
 	private LinkedBlockingQueue<Message> messages;
@@ -217,7 +217,7 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	public void send(Message message)
 	{
-		//System.out.println("SENDING MSG: start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
+		System.out.println("SENDING MSG: start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
 		Environment.passMessage(message);
 	}
 

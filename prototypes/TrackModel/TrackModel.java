@@ -68,7 +68,7 @@ public class TrackModel extends Worker implements Runnable, constData
     
                 if(name == m.getDest())
                 {
-                    //System.out.println("TrackModel RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
+                    System.out.println("TrackModel RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
                     //System.out.println("Unhandled...");	
                 	//_---------------my handlers in here
 
@@ -94,7 +94,7 @@ public class TrackModel extends Worker implements Runnable, constData
                         m.addData("yardNode", nodes.get(1));
                     }
 
-                    //System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
+                    System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
                     m.updateSender(name);
                     Environment.passMessage(m);
                 }
@@ -262,7 +262,7 @@ public class TrackModel extends Worker implements Runnable, constData
 
     public void send(Message m)
     {
-        //System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
         Environment.passMessage(m);
     }
     

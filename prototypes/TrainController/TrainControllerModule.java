@@ -27,7 +27,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         
         if(name == m.getDest())
         {
-          //System.out.println("\nRECEIVED MSG: source->"+m.getSource() + " : dest->"+m.getDest()+"\n");
+          System.out.println("\nRECEIVED MSG: source->"+m.getSource() + " : dest->"+m.getDest()+"\n");
           if(m.getData() != null && m.getData().containsKey("trainID"))
           {
             trainID = (int)(m.getData().get("trainID"));
@@ -86,7 +86,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         }
         else
         {
-          //System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+"), (type : " + m.getType()+")");
+          System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+"), (type : " + m.getType()+")");
           m.updateSender(name);
           Environment.passMessage(m);
         }
@@ -102,7 +102,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   
   public void send(Message m)
   {
-    //System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+" " + m.getType() + "\n");
+    System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+" " + m.getType() + "\n");
     Environment.passMessage(m);
   }
   
