@@ -24,12 +24,12 @@ public interface constData
 		TnMd_CTC_Request_Train_Destruction,
 		TnMd_CTC_Send_Block_Occupied,
 		TnMd_TcCt_Update_Block_Occupancy,
-		TnMd_TnCt_Request_Train_Controller_Creation,
-		TnMd_TnCt_Request_Train_Controller_Destruction,
-		TnMd_TnCt_Send_Train_Velocity,
-		TnCt_TnMd_Send_Power,
+		TnMd_TnCt_Request_Train_Controller_Creation, //deprecated 
+		TnMd_TnCt_Request_Train_Controller_Destruction, //deprecated
+		TnMd_TnCt_Send_Train_Velocity, //deprecated
+		TnCt_TnMd_Send_Power, //deprecated
 		verify,
-		TnCt_TnMd_Request_Train_Velocity,
+		TnCt_TnMd_Request_Train_Velocity, //deprecated
 		TnCt_TcMd_Request_Track_Speed_Limit,
 		TnMd_TcMd_Request_Track_Speed_Limit,
 		placeHolder

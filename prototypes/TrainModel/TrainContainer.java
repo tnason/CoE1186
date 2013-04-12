@@ -20,6 +20,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 
 	private int motionStepCount = 0;
 
+	private TrainControllerModule trc;
+
 	//For now, simulationSpeedup = (trainTimestep * 1000) / timerTrigger
 
 	//for message sending/receiving
@@ -70,6 +72,11 @@ public class TrainContainer extends Worker implements Runnable, constData
 		return n;
 	}
 
+	public void init(TrainControllerModule other)
+	{
+		trc = other;
+	}
+
 	public void run()
 	{
 		//Thread t = new Thread();
@@ -114,8 +121,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 									send(outgoingMessage); 
 
 									//send TnMd_TnCt_Request_Train_Controller_Creation
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Request_Train_Controller_Creation, new String[] {"trainID"}, new Object[] {mine.getData().get("trainID")});
-									send(outgoingMessage);
+									//deprecated
 
 									//send TnMd_Sch_Notify_Yard
 									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID","blockID"}, new Object[] {(Object)false, mine.getData().get("trainID"), (Object)(bl.getID())});
@@ -123,21 +129,10 @@ public class TrainContainer extends Worker implements Runnable, constData
 								}
 								break;
 							case TnCt_TnMd_Send_Power:
-								//update power setting
-								trainID = (int)(mine.getData().get("trainID"));
-								tm = trains.get(trainID);
-								double power = (double)mine.getData().get("power");
-								System.out.println("	!!!!!!!!!!!!!!!!!!!!Getting new power: " + power);
-								tm.setPower(power);
+								//deprecated
 								break;
 							case TnCt_TnMd_Request_Train_Velocity:
-								System.out.println("	!!!!!!!!!!!!!!!!!!!!Request velocity");
-								trainID = (int)(mine.getData().get("trainID"));
-								tm = trains.get(trainID);
-							
-								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, new String[] {"trainID","velocity"}, new Object[] {trainID, tm.getVelocity()});
-								send(outgoingMessage);
-
+								//deprecated
 								break;
 							default:
 								//stuff
@@ -157,6 +152,17 @@ public class TrainContainer extends Worker implements Runnable, constData
 				}
 			}
 		}
+	}
+
+	//methods called by TrainControllerModule!
+	double getVelocity(int trainID)
+	{
+		return trains.get(trainID).getVelocity();
+	}
+
+	void setPower(int trainID, double power)
+	{
+		trains.get(trainID).setPower(power);
 	}
 
 	public void setMsg(Message m)
