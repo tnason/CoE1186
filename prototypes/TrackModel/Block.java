@@ -8,7 +8,13 @@ public abstract class Block {
 		stopNode = stop;
 		controller.add(c);
 	}
-	
+
+	public Block(Node start, Node stop)
+	{
+		startNode = start;
+		stopNode = stop;
+	}
+
 	public String toString(){
 		return "Abstract Block Class";
 	}

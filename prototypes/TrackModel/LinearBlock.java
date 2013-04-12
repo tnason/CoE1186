@@ -6,6 +6,12 @@ public class LinearBlock extends Block{
 		super(start, stop, c);
 		super.setID(id);
 	}
+
+	public LinearBlock(Node start, Node stop, int id)
+	{
+		super(start, stop);
+		super.setID(id);
+	}
 	
 	public String toString(){
 		StringBuffer sb = new StringBuffer();
