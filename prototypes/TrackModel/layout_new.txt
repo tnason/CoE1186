@@ -10,13 +10,8 @@ connection 6 1200 0 0
 yard 7 1400 0 0	
 -1
 #
-<<<<<<< HEAD
 # type id start stop in out
 linear 0 0 1 0 
-=======
-# type id start stop
-linear 0 0 1 0
->>>>>>> Allow verbose output again.
 linear 1 1 2 0
 linear 2 2 3 0
 linear 3 3 4 0,1
