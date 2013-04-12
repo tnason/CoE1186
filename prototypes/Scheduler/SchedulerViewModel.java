@@ -16,8 +16,6 @@ public class SchedulerViewModel
 	private JTable myScheduleGrid;
 	private JTable myTimetableGrid;
 	private JPanel myPanel;
-	private RowSorter<TableModel> myScheduleSorter;
-	private RowSorter<TableModel> myTimetableSorter;
 	private JButton myScheduleButton;
 	private JButton myTimetableButton;
 
@@ -86,7 +84,7 @@ public class SchedulerViewModel
 	{
 		public void timetableChanged(SchedulerEvent e)
 		{
-			myTimetable.update(scheduler.getTimetable());
+			mySchedule.update(scheduler.getTimetable());
 			/*
 			Iterator<TimesObject> i;
 			TimesObject t;
