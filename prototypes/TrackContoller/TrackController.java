@@ -9,9 +9,12 @@ public class TrackController extends Worker implements constData, Runnable
 
   private Hashtable<Integer, ArrayList<Block>> blockUnderController = new Hashtable<Integer, ArrayList<Block>>();
 
+  TrackControllerView gui;
+
   public TrackController()
   {
-
+      gui = new TrackControllerView();
+      gui.startGUI();
   }
 
 	public void run()
