@@ -54,10 +54,11 @@ public class Environment implements constData
 		Thread ctcThread = new Thread(ctc);
 
 		((TrackModel)tkm).init();
-		((TrackController)tkc).init(tkm);
+		
 		((TrainControllerModule)trc).init((TrainContainer)trm);
 		((TrainContainer)trm).init((TrainControllerModule)trc);
-
+		((TrackController)tkc).init(tkm);
+		
 		mboThread.start();
 		schThread.start();
 		tkcThread.start();
