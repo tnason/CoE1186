@@ -1,14 +1,11 @@
 package TLTTC;
 import java.text.SimpleDateFormat;
-import javaa.util.Calendar;
+import java.util.*; //Date,Calendar
 
 public class SystemClock
 {
-
 	private Calendar epoch;
 	private long startTime;
-	private Calendar now;
-	private SimpleDateFormat sdf;
 
 	//start time in "simulation world" set here
 	//for now, let's use May 1, 2013, 7 AM
@@ -24,10 +21,9 @@ public class SystemClock
 	public SystemClock()
 	{
 		epoch = Calendar.getInstance();
-		now = Calendar.getInstance();
 
 		//internal realtime epoch is now!
-		startTime = System.getTimeInMillis();
+		startTime = System.currentTimeMillis();
 
 		//use epoch for the artifical epoch
 		epoch.set(	START_YEAR,
@@ -41,20 +37,20 @@ public class SystemClock
 	//last call to motionStep()
 	public long timeSince(long beginTime)
 	{
-		return now.getTimeInMillis() - beginTime;
+		return System.currentTimeMillis() - beginTime;
 	}
 
 	//This method is for calling by the CTC/Scheduler
 	//This will return a Date object indicating the current simulation time
 	public Date getSimulationTime()
 	{
-		Calendar temp;
+		Calendar temp = Calendar.getInstance();
 		long timeDiff;
 		long artificalEpoch = epoch.getTimeInMillis();
 
-		timeDiff = System.getTimeInMillis() - startTime;
+		timeDiff = System.currentTimeMillis() - startTime;
 
-		temp.setTimeInMillis(artificialEpoch + (timeDiff * SIMULATION_SPEEDUP));
+		temp.setTimeInMillis(artificalEpoch + (timeDiff * SIMULATION_SPEEDUP));
 		return temp.getTime();
 	}
 
@@ -62,5 +58,58 @@ public class SystemClock
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		System.out.println(sdf.format(getSimulationTime()));
+	}
 
+	public void printSystemTime()
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		System.out.println(sdf.format(new java.util.Date()));
+	}
+	
+	//Really stupid driver program that shows features of clock
+	public static void main(String args[])
+	{
+		SystemClock s = new SystemClock();
+		long test = System.currentTimeMillis();
+		int j = 0;
+
+		s.printSimulationTime();
+		s.printSystemTime();		
+
+		System.out.println(s.timeSince(test));
+		s.printSimulationTime();
+		s.printSystemTime();		
+
+		System.out.println(s.timeSince(test));
+		s.printSimulationTime();
+		s.printSystemTime();		
+
+		System.out.println(s.timeSince(test));
+	
+		for(int m = 5000000; m > 1; m /= 2) 
+		{	
+			s.printSimulationTime();
+			s.printSystemTime();		
+
+			for(int i = 0; i < 500000; i++)
+			{
+				j++;
+				double h = Math.pow(j,j);
+			}
+		}
+
+		s.printSimulationTime();
+		s.printSystemTime();		
+		
+		System.out.println(j);
+		System.out.println(s.timeSince(test));
+		s.printSimulationTime();
+		s.printSystemTime();		
+
+		System.out.println(s.timeSince(test));
+		s.printSimulationTime();
+		s.printSystemTime();		
+
+		System.out.println(s.timeSince(test));
+	}
 }
