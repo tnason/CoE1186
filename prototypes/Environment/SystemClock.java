@@ -16,7 +16,7 @@ public class SystemClock
 	private final int START_MIN = 0;
 
 
-	private final int SIMULATION_SPEEDUP = 5; //rate of simulation speedup
+	public final int SIMULATION_SPEEDUP = 5; //rate of simulation speedup
 
 	public SystemClock()
 	{

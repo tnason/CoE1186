@@ -14,9 +14,12 @@ public class TrainContainer extends Worker implements Runnable, constData
   
 	private Timer motionTimer;
 
-	private final double TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time!)
+	private SystemClock clock;
 
-	private long timerTrigger = 20; //real-time value (in ms) for triggering motionStep() calls
+	//This value is just a suggestion for integration's sake!
+	private final double TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time)
+
+	private long timerTrigger; //real-time value (in ms) for triggering motionStep() calls
 
 	private int motionStepCount = 0;
 
@@ -38,7 +41,6 @@ public class TrainContainer extends Worker implements Runnable, constData
 		msgs  = new LinkedBlockingQueue<Message>();
 		trains = new Hashtable<Integer, TrainModel>();
 		motionTimer = new Timer();
-  		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every X ms
 	}
   
 	//Driver for timed motion!
@@ -58,7 +60,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 				}
 				else
 				{
-					tm.motionStep(); //move the trains!
+					tm.motionStep(clock); //move the trains!
 				}
 	  		}
 			motionStepCount++;
@@ -72,9 +74,12 @@ public class TrainContainer extends Worker implements Runnable, constData
 		return n;
 	}
 
-	public void init(TrainControllerModule other)
+	public void init(TrainControllerModule other, SystemClock sys)
 	{
 		trc = other;
+		clock = sys;
+		timerTrigger = (TIME_STEP * 1000.0)/(double)clock.SIMULATION_SPEEDUP;
+  		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every X ms
 	}
 
 	public void run()
