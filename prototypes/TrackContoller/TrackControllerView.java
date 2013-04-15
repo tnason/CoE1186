@@ -2,6 +2,7 @@ package TLTTC;
 
 import java.util.*;
 import javax.swing.table.*;
+import java.util.concurrent.*;
 
 public class trackControllerView extends javax.swing.JFrame 
 {
@@ -26,7 +27,7 @@ public class trackControllerView extends javax.swing.JFrame
         }
     }
 
-    @SuppressWarnings("unchecked")                        
+     @SuppressWarnings("unchecked")                        
     private void initComponents() 
     {
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -93,7 +94,7 @@ public class trackControllerView extends javax.swing.JFrame
         });
 
         tcList.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] { 
+            new Object [][] {
             },
             new String [] {
                 "Available Track Controllers"
@@ -143,6 +144,11 @@ public class trackControllerView extends javax.swing.JFrame
         tcProp.setOpaque(false);
         tcProp.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tcProp.getTableHeader().setReorderingAllowed(false);
+        tcProp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                blockSelected(evt);
+            }
+        });
         jScrollPane3.setViewportView(tcProp);
         tcProp.getColumnModel().getColumn(0).setResizable(false);
         tcProp.getColumnModel().getColumn(0).setHeaderValue("Block Number");
@@ -152,10 +158,25 @@ public class trackControllerView extends javax.swing.JFrame
         tcProp.getAccessibleContext().setAccessibleParent(this);
 
         enableCrossing.setText("Enable Crossing");
+        enableCrossing.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                enableCrossing(evt);
+            }
+        });
 
         toggleSwitch.setText("Toggle Switch");
+        toggleSwitch.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                toggleSwitchClicked(evt);
+            }
+        });
 
         putMaintenance.setText("Maintenance");
+        putMaintenance.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                putMaintenanceClicked(evt);
+            }
+        });
 
         jScrollPane5.setOpaque(false);
 
@@ -265,7 +286,7 @@ public class trackControllerView extends javax.swing.JFrame
         curLine.getAccessibleContext().setAccessibleName("curLine");
 
         pack();
-    }                      
+    }                
                   
     private void changeLine(java.awt.event.MouseEvent evt) 
     {
@@ -298,7 +319,36 @@ public class trackControllerView extends javax.swing.JFrame
 
         controllerInfoModel.addRow(new Object [] { controller.get(selectedController).size(),
                                                    "num Trains 0"});
-    }  
+    }                                                  
+
+    private void enableCrossing(java.awt.event.MouseEvent evt) {                                
+       long start = System.currentTimeMillis();
+
+       //put block in maintenance
+       ScheduledThreadPoolExecutor delayReset = new ScheduledThreadPoolExecutor(1);
+
+       System.out.println("HERE start");
+
+       delayReset.schedule(new Runnable() 
+                           {
+                                public void run()
+                                {
+                                    //take block out of maintenance
+                                }
+                            }, 10, TimeUnit.SECONDS);
+    }                               
+
+    private void putMaintenanceClicked(java.awt.event.MouseEvent evt) {                                       
+        // TODO add your handling code here:
+    }                                      
+
+    private void toggleSwitchClicked(java.awt.event.MouseEvent evt) {                                     
+        // TODO add your handling code here:
+    }                                    
+
+    private void blockSelected(java.awt.event.MouseEvent evt) {                               
+        // TODO add your handling code here:
+    }     
 
     private javax.swing.JButton closeTC;
     private javax.swing.JTable controllerInfo;

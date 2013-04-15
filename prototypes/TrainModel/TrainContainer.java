@@ -78,7 +78,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 	{
 		trc = other;
 		clock = sys;
-		timerTrigger = (TIME_STEP * 1000.0)/(double)clock.SIMULATION_SPEEDUP;
+		timerTrigger = (long)(TIME_STEP * 1000.0)/(long)clock.SIMULATION_SPEEDUP;
   		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every X ms
 	}
 

@@ -16,7 +16,7 @@ public class Environment implements constData
     private static LinkedBlockingQueue<Message> messageQ = new LinkedBlockingQueue<Message>();
     private static Scanner s = new Scanner(System.in);
 
-	private SystemClock sysClk; 
+	private static SystemClock sysClk; 
 
     public static void main(String [] args)
     {
