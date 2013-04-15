@@ -95,7 +95,7 @@ public class Environment implements constData
 					modWorker.get(left).setMsg(inbox);
 				}
 			}
-		//	try{Thread.sleep(1250);}catch(Exception e){}
+		    try{Thread.sleep(1250);}catch(Exception e){}
 		}
     }
 
