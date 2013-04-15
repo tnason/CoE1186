@@ -4,6 +4,7 @@ import java.util.*;
 import javax.swing.table.*;
 import java.util.concurrent.*;
 
+@SuppressWarnings("serial")  
 public class trackControllerView extends javax.swing.JFrame 
 {
 
@@ -27,7 +28,7 @@ public class trackControllerView extends javax.swing.JFrame
         }
     }
 
-     @SuppressWarnings("unchecked")                        
+    @SuppressWarnings("unchecked")                        
     private void initComponents() 
     {
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -333,6 +334,7 @@ public class trackControllerView extends javax.swing.JFrame
                            {
                                 public void run()
                                 {
+                                    System.out.println("HERE done");
                                     //take block out of maintenance
                                 }
                             }, 10, TimeUnit.SECONDS);
@@ -340,14 +342,17 @@ public class trackControllerView extends javax.swing.JFrame
 
     private void putMaintenanceClicked(java.awt.event.MouseEvent evt) {                                       
         // TODO add your handling code here:
+        System.out.println("HERE maintenance");
     }                                      
 
     private void toggleSwitchClicked(java.awt.event.MouseEvent evt) {                                     
         // TODO add your handling code here:
+        System.out.println("HERE switch");
     }                                    
 
     private void blockSelected(java.awt.event.MouseEvent evt) {                               
         // TODO add your handling code here:
+        System.out.println("HERE block");
     }     
 
     private javax.swing.JButton closeTC;
