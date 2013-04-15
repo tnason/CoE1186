@@ -1,3 +1,4 @@
+/*
 package TLTTC;
 public class StationNode extends Node{
 	protected String name;
@@ -17,3 +18,4 @@ public class StationNode extends Node{
 		return name;
 	}
 }
+*/
