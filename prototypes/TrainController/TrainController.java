@@ -52,6 +52,7 @@ public class TrainController{
     //gui = new TrainControllerGUI(mod);
     //gui.openGUI();
     trainID = id;
+    module = mod;
     tm = t;
     // Todo: connect to GPS here
     
