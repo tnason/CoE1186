@@ -35,16 +35,16 @@ public class TrainControllerModule extends Worker implements Runnable, constData
             if (controllers.containsKey(trainID))
             {
               tc = controllers.get(trainID); // Local TrainController
-  		  tm = trainContainer.getTrain(trainID); // Local TrainModel
+              tm = trainContainer.getTrain(trainID); // Local TrainModel
             }
             switch (m.getType())
             {
-				case Sat_TnCnt_Request_Traversed_Block_Stats: //???????????
-					
-				break;
-				case Sat_TnCt_ReceiptConfirm_Traversed_Block_Stats: //??????????
-				
-				break;
+              case Sat_TnCnt_Request_Traversed_Block_Stats: //???????????
+                
+                break;
+              case Sat_TnCt_ReceiptConfirm_Traversed_Block_Stats: //??????????
+                
+                break;
               case MBO_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC
                 tc.movingBlockAuth = (double)(m.getData().get("authority"));
                 sendPower();
@@ -53,12 +53,12 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 tc.fixedBlockAuth = (double)(m.getData().get("authority"));
                 sendPower();
                 break;
-				case TcMd_TnCt_Confirm_Occupancy_Return_Block_Stats: //????????????
-				
-				break;
-				case TcMd_TnCt_Confirm_Depopulation: //???????????
-				
-				break;	
+              case TcMd_TnCt_Confirm_Occupancy_Return_Block_Stats: //????????????
+                
+                break;
+              case TcMd_TnCt_Confirm_Depopulation: //???????????
+                
+                break; 
               case CTC_TnCt_Send_Manual_FixedBlock: // Manual fixed block from CTC
                 tc.ctcFixedBlockAuth = (double)(m.getData().get("authority"));
                 sendPower();
@@ -67,15 +67,16 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 tc.ctcOperatorVelocity = (double)(m.getData().get("velocity"));
                 sendPower();
                 break;
-				case TcMd_TnCt_Send_Track_Gnd_State: // Underground state from track model
-				tc.underground = (boolean)(m.getData().get("state");
-				tc.setLights();
-				break;
-				case TcMd_TnCt_Send_Station_Name: // Next station name from track model
-					tc.nextStation = (String)(m.getData().get("stationName");
-					tc.stationAnnounced = false;
-					tc.announceStation();
-				break;
+              case TcMd_TnCt_Send_Track_Gnd_State: // Underground state from track model
+                tc.underground = (boolean)(m.getData().get("state"));
+                tc.setLights();
+                break;
+                
+              case TcMd_TnCt_Send_Station_Name: // Next station name from track model
+                tc.nextStation = (String)(m.getData().get("stationName"));
+                tc.stationAnnounced = false;
+                tc.announceStation();
+                break;
               case TcMd_TnCt_Send_Track_Speed_Limit: // Track speed limit from track model
                 tc.trackLimit = (double)(m.getData().get("speedLimit"));
                 sendPower();
@@ -87,7 +88,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
               default:
                 
                 break;
-				// get station status from track model
+                // get station status from track model
             }
           }
           else
@@ -129,17 +130,17 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   
   // Methods for TrainContainer
   public TrainController getTrainController(int trainID){
-	return controllers.get(trainID);
+    return controllers.get(trainID);
   }
   
   public TrainController createTrainController(int trainID){
-	TrainController newTrainController = new TrainController(trainID, this, trainContainer.getTrain(trainID));
+    TrainController newTrainController = new TrainController(trainID, this, trainContainer.getTrain(trainID));
     controllers.put(trainID, newTrainController);
-	return newTrainController;
+    return newTrainController;
   }
   
   public void destroyTrainController(int trainID){
-	// Todo: remove from dropdown list of trains in GUI here
-	controllers.remove(trainID);
+    // Todo: remove from dropdown list of trains in GUI here
+    controllers.remove(trainID);
   }
-  }
+}
