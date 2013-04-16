@@ -48,7 +48,7 @@ public class TrainController{
   
   public TrainController(int id, TrainControllerModule mod, TrainModel t)
   {
-    gui = new TrainControllerGUI(mod);
+    //gui = new TrainControllerGUI(mod);
     //gui.openGUI();
     trainID = id;
   tm = t;
