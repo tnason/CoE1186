@@ -8,10 +8,14 @@ import java.util.concurrent.*;
 public class trackControllerView extends javax.swing.JFrame 
 {
 
-    private Hashtable<Integer, ArrayList<Block>> controller;
+    private Hashtable<Integer, Hashtable<Integer, Block>> controller;
     private DefaultTableModel tcListModel, tcPropModel, controllerInfoModel;
 
-    public trackControllerView(Hashtable<Integer, ArrayList<Block>> allControllers) 
+    private int selectedController = -1;
+    private int userSelectedBlock  = -1;
+    private Block currentBlock     = null;
+
+    public trackControllerView(Hashtable<Integer, Hashtable<Integer, Block>> allControllers) 
     {
         initComponents();
 
@@ -31,49 +35,24 @@ public class trackControllerView extends javax.swing.JFrame
     @SuppressWarnings("unchecked")                        
     private void initComponents() 
     {
+        jScrollPane1 = new javax.swing.JScrollPane();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        
         closeTC = new javax.swing.JButton();
         curLine = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tcList = new javax.swing.JTable();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tcProp = new javax.swing.JTable();
         enableCrossing = new javax.swing.JButton();
         toggleSwitch = new javax.swing.JButton();
         putMaintenance = new javax.swing.JButton();
-        jScrollPane5 = new javax.swing.JScrollPane();
+
+    
+        tcList = new javax.swing.JTable();
+        tcProp = new javax.swing.JTable();
         trainInfo = new javax.swing.JTable();
-        jScrollPane6 = new javax.swing.JScrollPane();
         controllerInfo = new javax.swing.JTable();
-
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane2.setViewportView(jTable2);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane4.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cameron Dashti - Track Controller");
@@ -286,6 +265,10 @@ public class trackControllerView extends javax.swing.JFrame
         closeTC.getAccessibleContext().setAccessibleName("closeTC");
         curLine.getAccessibleContext().setAccessibleName("curLine");
 
+        enableCrossing.setEnabled(false);
+        putMaintenance.setEnabled(false);
+        toggleSwitch.setEnabled(false);
+
         pack();
     }                
                   
@@ -300,8 +283,9 @@ public class trackControllerView extends javax.swing.JFrame
     }
 
     private void tcSelected(java.awt.event.MouseEvent evt) 
-    {                            
-        int selectedController = controller.size() - tcList.getSelectedRow() - 1;
+    {             
+        String tcString = (String) tcList.getValueAt(tcList.getSelectedRow(), 0);
+        selectedController = Integer.parseInt(tcString.split(" ")[2]);
 
         while(tcPropModel.getRowCount() > 0)
         {
@@ -313,9 +297,20 @@ public class trackControllerView extends javax.swing.JFrame
             controllerInfoModel.removeRow(0);
         }
             
-        for(Block b : controller.get(selectedController))
+        for(Block b : controller.get(selectedController).values())
         {
-            tcPropModel.addRow(new Object [] {b.getID(), "good", b.getID()+1});
+            try
+            {
+                tcPropModel.addRow(new Object [] { b.getID(), 
+                                                   b.isOccupied(),
+                                                   b.getNextBlock(b.getStopNode()).getID()});
+            }
+            catch(Exception e)
+            {
+                tcPropModel.addRow(new Object [] { b.getID(), 
+                                                   b.isOccupied(),
+                                                   "none"});
+            }
         }
 
         controllerInfoModel.addRow(new Object [] { controller.get(selectedController).size(),
@@ -323,8 +318,6 @@ public class trackControllerView extends javax.swing.JFrame
     }                                                  
 
     private void enableCrossing(java.awt.event.MouseEvent evt) {                                
-       long start = System.currentTimeMillis();
-
        //put block in maintenance
        ScheduledThreadPoolExecutor delayReset = new ScheduledThreadPoolExecutor(1);
 
@@ -340,36 +333,73 @@ public class trackControllerView extends javax.swing.JFrame
                             }, 10, TimeUnit.SECONDS);
     }                               
 
-    private void putMaintenanceClicked(java.awt.event.MouseEvent evt) {                                       
-        // TODO add your handling code here:
-        System.out.println("HERE maintenance");
+    private void putMaintenanceClicked(java.awt.event.MouseEvent evt) {    
+
+        System.out.println("HERE " + currentBlock.getID()+ " " + userSelectedBlock + " " + selectedController);                                   
+        if(!currentBlock.isOccupied())
+        {
+            currentBlock.setMaintenance(true);
+            tcProp.setValueAt((Object) currentBlock.isOccupied(), tcProp.getSelectedRow(), 1);
+            putMaintenance.setEnabled(false);   
+        }
     }                                      
 
     private void toggleSwitchClicked(java.awt.event.MouseEvent evt) {                                     
         // TODO add your handling code here:
+        if(toggleSwitch.isEnabled())
         System.out.println("HERE switch");
     }                                    
 
     private void blockSelected(java.awt.event.MouseEvent evt) {                               
-        // TODO add your handling code here:
-        System.out.println("HERE block");
+        int choosenBlockNum = (int) tcProp.getValueAt(tcProp.getSelectedRow(), 0);
+
+        currentBlock = controller.get(selectedController).get(choosenBlockNum);
+
+        userSelectedBlock = choosenBlockNum;
+
+        System.out.println("HERE " + currentBlock.getID()+ " " + userSelectedBlock + " " + selectedController + " "+currentBlock.isOccupied());                                   
+        
+        if(currentBlock.isCrossing())
+        {
+            enableCrossing.setEnabled(true);
+        }
+        else
+        {
+            enableCrossing.setEnabled(false);
+        }
+
+        /* Something about switches.
+        if(currentBlock.isCrossing())
+        {
+            enableCrossing.setEnabled(true);
+        }*/
+
+        if(!currentBlock.isOccupied())
+        {
+            putMaintenance.setEnabled(true);
+        }
+        else
+        {
+            putMaintenance.setEnabled(false);
+        }
     }     
 
     private javax.swing.JButton closeTC;
-    private javax.swing.JTable controllerInfo;
     private javax.swing.JButton curLine;
     private javax.swing.JButton enableCrossing;
+    private javax.swing.JButton putMaintenance;
+    private javax.swing.JButton toggleSwitch;
+
+    private javax.swing.JTable controllerInfo;
+    private javax.swing.JTable tcList;
+    private javax.swing.JTable tcProp;
+    private javax.swing.JTable trainInfo;
+
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JButton putMaintenance;
-    private javax.swing.JTable tcList;
-    private javax.swing.JTable tcProp;
-    private javax.swing.JButton toggleSwitch;
-    private javax.swing.JTable trainInfo;
-}
+}    
+    

@@ -7,7 +7,7 @@ public class TrackController extends Worker implements constData, Runnable
 	private Module name = Module.trackController;
   private LinkedBlockingQueue<Message> msgs = new LinkedBlockingQueue<Message>();
 
-  private Hashtable<Integer, ArrayList<Block>> blockUnderController = new Hashtable<Integer, ArrayList<Block>>();
+  private Hashtable<Integer, Hashtable<Integer, Block>> blockUnderController = new Hashtable<Integer, Hashtable<Integer, Block>>();
 
   trackControllerView gui;
 
@@ -56,16 +56,16 @@ public class TrackController extends Worker implements constData, Runnable
       {
         if(!blockUnderController.containsKey(c))
         {
-            blockUnderController.put(c, new ArrayList<Block>());
+            blockUnderController.put(c, new Hashtable<Integer, Block>());
         }
         
-        blockUnderController.get(c).add(b);
+        blockUnderController.get(c).put(b.getID(), b);
       }
     }
 
     for(int i : blockUnderController.keySet())
     {
-        for(Block blk : blockUnderController.get(i))
+        for(Block blk : blockUnderController.get(i).values())
         {
           System.out.println("Controller " + i + " block " + blk.getID() );
        }
