@@ -71,7 +71,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 tc.underground = (boolean)(m.getData().get("state"));
                 tc.setLights();
                 break;
-                
+              // NEED TO GET IN OR OUT OF STATION STATUS FROM TRACK MODEL TO SET DOORS -- NEW MESSAGE/CASE
               case TcMd_TnCt_Send_Station_Name: // Next station name from track model
                 tc.nextStation = (String)(m.getData().get("stationName"));
                 tc.stationAnnounced = false;
@@ -88,7 +88,6 @@ public class TrainControllerModule extends Worker implements Runnable, constData
               default:
                 
                 break;
-                // get station status from track model
             }
           }
           else
