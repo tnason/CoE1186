@@ -4,6 +4,16 @@ package TLTTC;
 public class TrainController{
   public int trainID;
   
+  public boolean underground = false;
+  public boolean inStation = false;
+  public String nextStation = "";
+  public boolean stationAnnounced = false;
+  public boolean daytime = false; // True = day, False = night
+  public boolean doorsOpen = false;
+  public boolean engineFail = false;
+  public boolean signalPickupFail = false;
+  public boolean brakeFail = false;
+  
   public double KP = 5000; // Proportional gain
   public double ek = 0; // Proportional error
   public double histEk = 0; // Proportional error one time step back
@@ -34,12 +44,15 @@ public class TrainController{
   
   public TrainControllerGUI gui; // GUI
   public TrainControllerModule module;
+  public TrainModel tm;
   
-  public TrainController(int id, TrainControllerModule mod)
+  public TrainController(int id, TrainControllerModule mod, TrainModel t)
   {
-    gui = new TrainControllerGUI(id, this, mod);
-    gui.openGUI();
+    gui = new TrainControllerGUI(mod);
+    //gui.openGUI();
     trainID = id;
+  tm = t;
+	// Todo: connect to GPS here
     
     // Test variables -- Remove later
     velocity = 5;
@@ -53,8 +66,14 @@ public class TrainController{
     movingBlockAuth = 1400;
   }
   
-  public double setPower()
+  public double setPower() // this method is called whenever an authority or new speed limit is received
   {
+   // get failure flags and update UI
+   // get time for UI 
+	if (engineFail || signalPickupFail || brakeFail){
+		return 0.0;
+	}
+ 
     System.out.println("Current velocity = " + velocity + " m/s.");
     System.out.println("Current setpoint = " + trainOperatorVelocity + " m/s.");
     trainOperatorVelocity = Math.min(trainOperatorVelocity, ctcOperatorVelocity); // Selects safer of two velocities.
@@ -86,7 +105,38 @@ public class TrainController{
     return power;
   }
   
-  public void closeGUI(){
-    gui.closeGUI();    
+  
+  public void setDoors(){ // this method is called every time the train enters a new block
+	velocity = tm.getVelocity();
+	// get door status from train model
+	
+	if (velocity == 0 && inStation && !doorsOpen){
+		// open doors
+	}
+	else if (velocity != 0 && doorsOpen){
+		// close doors
+	}
+  }
+  
+  public void setLights(){ // this method is called every time the train enters a new block
+	// get time from train model and set daytime variable
+	
+	if (!daytime || underground){
+		// turn on lights
+		// change UI
+	}
+	else if (daytime && !underground){
+		// turn off lights
+		// change UI
+	}
+  }
+  
+  
+  public void announceStation(){ // this method is called whenever a station name is sent to the train controller
+	if (!stationAnnouced){
+		// announce station on train model
+		// update UI so that button cannot be pressed
+		stationAnnounced = true;
+	}
   }
 }
