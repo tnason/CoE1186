@@ -16,7 +16,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     name = Module.trainController;
     msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
   }
-  
+
   public void run()
   {
     while(true)

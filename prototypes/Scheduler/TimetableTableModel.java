@@ -7,6 +7,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
+@SuppressWarnings("serial")  
 public class TimetableTableModel extends DefaultTableModel
 {
   public TimetableTableModel()

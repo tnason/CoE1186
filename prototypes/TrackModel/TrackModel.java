@@ -102,7 +102,7 @@ public class TrackModel extends Worker implements Runnable, constData
         }
     }
 //*/  
-    public void initTrack()
+    public void init()
     {	
         try
         {
@@ -149,7 +149,7 @@ public class TrackModel extends Worker implements Runnable, constData
                 int id    = Integer.parseInt(blockAttr[1]);
                 int start = Integer.parseInt(blockAttr[2]);
                 int stop  = Integer.parseInt(blockAttr[3]);
-                Block block = nu;
+                Block block = null;
 
                 if(blockAttr[0].equals("linear"))
                 {

@@ -16,6 +16,8 @@ public class Environment implements constData
     private static LinkedBlockingQueue<Message> messageQ = new LinkedBlockingQueue<Message>();
     private static Scanner s = new Scanner(System.in);
 
+	private static SystemClock sysClk; 
+
     public static void main(String [] args)
     {
     	ArrayList<Module> modualOrder = new ArrayList<Module>();
@@ -53,11 +55,16 @@ public class Environment implements constData
 		Thread trmThread = new Thread(trm);
 		Thread ctcThread = new Thread(ctc);
 
-		((TrackModel)tkm).init();
-		((TrackController)tkc).init(tkm);
-		((TrainControllerModule)trc).init((TrainContainer)trm);
-		((TrainContainer)trm).init((TrainControllerModule)trc);
+		//Initialize the system clock here
+		//Pass it to your module through your init()
+		sysClk = new SystemClock();
 
+		((TrackModel)tkm).init();
+		
+		((TrainControllerModule)trc).init((TrainContainer)trm);
+		((TrainContainer)trm).init((TrainControllerModule)trc, sysClk);
+		((TrackController)tkc).init(tkm);
+		
 		mboThread.start();
 		schThread.start();
 		tkcThread.start();
