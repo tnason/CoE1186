@@ -51,7 +51,7 @@ public class TrainController{
     //gui = new TrainControllerGUI(mod);
     //gui.openGUI();
     trainID = id;
-  tm = t;
+    tm = t;
 	// Todo: connect to GPS here
     
     // Test variables -- Remove later
