@@ -1,7 +1,36 @@
 package TLTTC;
 import java.util.*;
 
+
+//notice-
+//I have to clean this class up a lot, I'll be refactoring a lot over the next few days
+
+
+
 public abstract class Block {
+	/*updates from 4/16/13*/
+	boolean isCrossing = false;
+	boolean isStation = false;
+	String stationName;
+	
+	public boolean isCrossing()
+	{
+		return isCrossing;	
+	}
+	
+	public boolean isStation()
+	{
+		return isStation;
+	}
+	
+	public String getStationName()
+	{
+		return stationName;
+	}
+	
+	
+	
+	
 	
 	public Block(Node start, Node stop, int c){
 		startNode = start;
