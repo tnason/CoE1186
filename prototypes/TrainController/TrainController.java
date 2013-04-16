@@ -10,6 +10,7 @@ public class TrainController{
   public boolean stationAnnounced = false;
   public boolean daytime = false; // True = day, False = night
   public boolean doorsOpen = false;
+  public boolean lightsOn = false;
   public boolean engineFail = false;
   public boolean signalPickupFail = false;
   public boolean brakeFail = false;
@@ -121,11 +122,11 @@ public class TrainController{
   public void setLights(){ // this method is called every time the train enters a new block
 	// get time from train model and set daytime variable
 	
-	if (!daytime || underground){
+	if (!daytime || underground && !lightsOn){
 		// turn on lights
 		// change UI
 	}
-	else if (daytime && !underground){
+	else if (daytime && !underground && lightsOn){
 		// turn off lights
 		// change UI
 	}
