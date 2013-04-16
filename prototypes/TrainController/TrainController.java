@@ -53,7 +53,7 @@ public class TrainController{
     //gui.openGUI();
     trainID = id;
     tm = t;
-	// Todo: connect to GPS here
+    // Todo: connect to GPS here
     
     // Test variables -- Remove later
     velocity = 5;
@@ -69,12 +69,12 @@ public class TrainController{
   
   public double setPower() // this method is called whenever an authority or new speed limit is received
   {
-   // get failure flags and update UI
-   // get time for UI 
-	if (engineFail || signalPickupFail || brakeFail){
-		return 0.0;
-	}
- 
+    // get failure flags and update UI
+    // get time for UI 
+    if (engineFail || signalPickupFail || brakeFail){
+      return 0.0;
+    }
+    
     System.out.println("Current velocity = " + velocity + " m/s.");
     System.out.println("Current setpoint = " + trainOperatorVelocity + " m/s.");
     trainOperatorVelocity = Math.min(trainOperatorVelocity, ctcOperatorVelocity); // Selects safer of two velocities.
@@ -108,36 +108,36 @@ public class TrainController{
   
   
   public void setDoors(){ // this method is called every time the train enters a new block
-	velocity = tm.getVelocity();
-	// get door status from train model
-	
-	if (velocity == 0 && inStation && !doorsOpen){
-		// open doors
-	}
-	else if (velocity != 0 && doorsOpen){
-		// close doors
-	}
+    velocity = tm.getVelocity();
+    // get door status from train model
+    
+    if (velocity == 0 && inStation && !doorsOpen){
+      // open doors
+    }
+    else if (velocity != 0 && doorsOpen){
+      // close doors
+    }
   }
   
   public void setLights(){ // this method is called every time the train enters a new block
-	// get time from train model and set daytime variable
-	
-	if (!daytime || underground && !lightsOn){
-		// turn on lights
-		// change UI
-	}
-	else if (daytime && !underground && lightsOn){
-		// turn off lights
-		// change UI
-	}
+    // get time from train model and set daytime variable
+    
+    if (!daytime || underground && !lightsOn){
+      // turn on lights
+      // change UI
+    }
+    else if (daytime && !underground && lightsOn){
+      // turn off lights
+      // change UI
+    }
   }
   
   
   public void announceStation(){ // this method is called whenever a station name is sent to the train controller
-	if (!stationAnnouced){
-		// announce station on train model
-		// update UI so that button cannot be pressed
-		stationAnnounced = true;
-	}
+    if (!stationAnnouced){
+      // announce station on train model
+      // update UI so that button cannot be pressed
+      stationAnnounced = true;
+    }
   }
 }
