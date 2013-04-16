@@ -19,6 +19,10 @@ public interface constData
 		CTC_TnCt_Send_Manual_Speed,
 		TcCt_TnCt_Send_Fixed_Block_Authority,
 		TcMd_TnCt_Send_Track_Speed_Limit,
+		TcMd_TnCt_Confirm_Occupancy_Return_Block_Stats,
+		TcMd_TnCt_Confirm_Depopulation,
+		TcMd_TnCt_Send_Track_Gnd_State,
+		TcMd_TnCt_Send_Station_Name,
 		TnMd_Sch_Notify_Yard,
 		TnMd_CTC_Confirm_Train_Creation,
 		TnMd_CTC_Request_Train_Destruction,
@@ -32,6 +36,8 @@ public interface constData
 		TnCt_TnMd_Request_Train_Velocity, //deprecated
 		TnCt_TcMd_Request_Track_Speed_Limit,
 		TnMd_TcMd_Request_Track_Speed_Limit,
+		Sat_TnCnt_Request_Traversed_Block_Stats,
+		Sat_TnCt_ReceiptConfirm_Traversed_Block_Stats
 		placeHolder
 	}
 
