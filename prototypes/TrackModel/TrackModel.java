@@ -104,6 +104,8 @@ public class TrackModel extends Worker implements Runnable, constData
 //*/  
     public void init()
     {	
+	TrackModelUI userInterface = new TrackModelUI();
+
         try
         {
             Scanner s = new Scanner(new File("_layout_new.txt"));
