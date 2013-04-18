@@ -106,6 +106,8 @@ public class TrackModel extends Worker implements Runnable, constData
     {	
 	TrackModelUI userInterface = new TrackModelUI();
 
+
+
         try
         {
             Scanner s = new Scanner(new File("_layout_new.txt"));
@@ -117,69 +119,78 @@ public class TrackModel extends Worker implements Runnable, constData
 
                 if(line.startsWith("#"))
                     continue;
-                if(line.equals("-1"))
+                if(line.equals("endlayout"))				//--end layout files with "endlayout" on a new line
                     break;
+		
+		//assume the line structure starts with <string type> <int id> <...>
 
                 String [] nodeAttr = line.split(" ");
                 int id = Integer.parseInt(nodeAttr[1]);
 
+
                 if(nodeAttr[0].equals("yard"))
                 {
-                    nodes.put(id, new YardNode(Double.parseDouble(nodeAttr[1]),
-                                               Double.parseDouble(nodeAttr[2]),
-                                               Double.parseDouble(nodeAttr[3])));
+		    //read <x> <y> <z>
+                    nodes.put(id, new YardNode(Double.parseDouble(nodeAttr[2]),
+                                               Double.parseDouble(nodeAttr[3]),
+                                               Double.parseDouble(nodeAttr[4])));
                 }
                 else if (nodeAttr[0].equals("connection"))
                 {
-                    nodes.put(id, new ConnectorNode(Double.parseDouble(nodeAttr[1]),
-                                                    Double.parseDouble(nodeAttr[2]),
-                                                    Double.parseDouble(nodeAttr[3])));
+		    //read <x> <y> <z>
+                    nodes.put(id, new ConnectorNode(Double.parseDouble(nodeAttr[2]),
+                                                    Double.parseDouble(nodeAttr[3]),
+                                                    Double.parseDouble(nodeAttr[4])));
                 }
+		else if (nodeAttr[0].equals("switch"))
+		{
+		    //read <x> <y> <z>
+		    nodes.put(id, new SwitchNode(Double.parseDouble(nodeAttr[2]),
+                                                 Double.parseDouble(nodeAttr[3]),
+                                                 Double.parseDouble(nodeAttr[4])));
+		}
+		/*
+			BE SURE TO DECLARE ALL NODES BEFORE BLOCKS!!!!!!!!
+		*/
+
+		else if (nodeAttr[0].equals("linearblock"))
+		{
+		    //read <startID> <stopID> <controllerID comma seperated list>
+		    Node start = nodes.get(nodeAttr[2]);
+		    Node stop  = nodes.get(nodeAttr[3]);
+		    
+		    String[] controllerIDStrings = nodeAttr[4].split(",");
+		    int[] controllerIDNumbers = new int[controllerIDStrings.length];
+
+		    for(int idx=0;idx<controllerIDStrings.length;idx++)
+		    {
+			controllerIDNumbers[idx] = Integer.parseInt(controllerIDStrings[idx]);
+		    }
+
+		    LinearBlock newBlock = new LinearBlock(start, stop, id, controllerIDNumbers[0]);
+		    for(int idx=1; idx < controllerIDNumbers.length; idx++)
+			newBlock.addController(controllerIDNumbers[idx]);
+
+		    start.setOutput(newBlock);
+		    stop.setInput(newBlock);
+
+		    blocks.add(id, newBlock);
+	
+		}
+		else if (nodeAttr[0].equals("arcblock"))
+		{
+		    //blocks.put(id, new ArcBlock())
+
+		}
+		else
+		{
+		    //this should never happen!!!!!!!
+		}
+
                 i++;
             }
 
-		    while(s.hasNextLine())
-            {
-                String line = s.nextLine();
 
-                if(line.startsWith("#"))
-                    continue;
-                if(line.equals("-1"))
-                    break;
-
-                String [] blockAttr = line.split(" ");
-                int id    = Integer.parseInt(blockAttr[1]);
-                int start = Integer.parseInt(blockAttr[2]);
-                int stop  = Integer.parseInt(blockAttr[3]);
-                Block block = null;
-
-                if(blockAttr[0].equals("linear"))
-                {
-                    block = new LinearBlock(nodes.get(start), nodes.get(stop), id);
-
-                    String [] ctrl = blockAttr[4].split(",");
-
-                    for(String oneController : ctrl)
-                    {
-                        block.addController(Integer.parseInt(oneController));
-                    }
-                }
-                else if (blockAttr[0].equals("arc"))
-                {
-                }
-
-                if(nodes.get(start).getNodeType() != constData.NodeType.Yard)
-                {
-                    // TO DO
-                }
-
-                if(nodes.get(stop).getNodeType() != constData.NodeType.Yard)
-                {
-                    // TO DO
-                }
-
-                blocks.put(id, block);
-            }
         	
             
 
