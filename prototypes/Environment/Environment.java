@@ -1,15 +1,7 @@
 package TLTTC;
+
 import java.util.*;
 import java.util.concurrent.*;
-
-/*
-public enum Module
-	{
-		satellite, scheduler, MBO, CTC, trackController,
-		trackModel, trainModel, trainController
-	}
-
-*/
 
 public class Environment implements constData
 {
@@ -60,7 +52,6 @@ public class Environment implements constData
 		sysClk = new SystemClock();
 
 		((TrackModel)tkm).init();
-		
 		((TrainControllerModule)trc).init((TrainContainer)trm);
 		((TrainContainer)trm).init((TrainControllerModule)trc, sysClk);
 		((TrackController)tkc).init(tkm);
@@ -76,10 +67,9 @@ public class Environment implements constData
 		Message begin = new Message(Module.CTC, Module.CTC, Module.trainModel, msg.CTC_TnMd_Request_Train_Creation,
 							new String [] {"trainID"}, new Object [] {0});
 
-		ctc.send(begin);//w2.send();w3.send();w4.send();w5.send();
+		ctc.send(begin);
 
 		Thread t = new Thread();
-		//try{Thread.sleep(7000);}catch(Exception e){}
 
 		while(true)
 		{
@@ -87,24 +77,17 @@ public class Environment implements constData
 			{
 				Message inbox = messageQ.poll();
 
-				//System.out.println("\t"+ inbox.getSender() + " " + inbox.getDest());
-
 				if(modualOrder.indexOf(inbox.getSender()) < modualOrder.indexOf(inbox.getDest()))
 				{
 					Module right = modualOrder.get(modualOrder.indexOf(inbox.getSender()) + 1);
-					//System.out.print("right " + (modualOrder.indexOf(inbox.getSender())) + " " + (modualOrder.indexOf(inbox.getSender()) + 1));
 					modWorker.get(right).setMsg(inbox);
-					//System.out.println(" " + (modualOrder.indexOf(right)));
-
 				}
 				else if(modualOrder.indexOf(inbox.getSender()) > modualOrder.indexOf(inbox.getDest()))
 				{
 					Module left = modualOrder.get(modualOrder.indexOf(inbox.getSender()) - 1);
-					//System.out.println("left " + (modualOrder.indexOf(inbox.getSender())) + " " + (modualOrder.indexOf(inbox.getSender()) - 1));
 					modWorker.get(left).setMsg(inbox);
 				}
 			}
-		//	try{Thread.sleep(1250);}catch(Exception e){}
 		}
     }
 
