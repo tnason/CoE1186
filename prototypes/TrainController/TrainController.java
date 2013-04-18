@@ -49,8 +49,9 @@ public class TrainController{
   
   public TrainController(int id, TrainControllerModule mod, TrainModel t)
   {
-    //gui = new TrainControllerGUI(mod);
+    gui = new TrainControllerGUI(mod);
     //gui.openGUI();
+    gui.setVisible(true);
     trainID = id;
     module = mod;
     tm = t;
@@ -135,7 +136,7 @@ public class TrainController{
   
   
   public void announceStation(){ // this method is called whenever a station name is sent to the train controller
-    if (!stationAnnouced){
+    if (!stationAnnounced){
       // announce station on train model
       // update UI so that button cannot be pressed
       stationAnnounced = true;

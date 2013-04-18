@@ -1,6 +1,9 @@
-import *;
+package TLTTC;
 
-+@SuppressWarnings("serial") 
+import java.util.*;
+import javax.swing.*;
+
+@SuppressWarnings("serial") 
 public class TrainControllerGUI extends JFrame {
   TrainControllerModule module;
 
@@ -462,13 +465,13 @@ public class TrainControllerGUI extends JFrame {
             java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 		
-		final TrainControllerGUI g = this;
+		/*final TrainControllerGUI g = this;
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                g.setVisible(true);
+                super.setVisible(true);
             }
-        });
+        });*/
     }
 
     private javax.swing.JButton accelerateButton;

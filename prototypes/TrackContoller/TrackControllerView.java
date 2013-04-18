@@ -5,7 +5,7 @@ import javax.swing.table.*;
 import java.util.concurrent.*;
 
 @SuppressWarnings("serial")  
-public class trackControllerView extends javax.swing.JFrame 
+public class TrackControllerView extends javax.swing.JFrame 
 {
 
     private Hashtable<Integer, Hashtable<Integer, Block>> controller;
@@ -15,7 +15,7 @@ public class trackControllerView extends javax.swing.JFrame
     private int userSelectedBlock  = -1;
     private Block currentBlock     = null;
 
-    public trackControllerView(Hashtable<Integer, Hashtable<Integer, Block>> allControllers) 
+    public TrackControllerView(Hashtable<Integer, Hashtable<Integer, Block>> allControllers) 
     {
         initComponents();
 
@@ -303,7 +303,7 @@ public class trackControllerView extends javax.swing.JFrame
             {
                 tcPropModel.addRow(new Object [] { b.getID(), 
                                                    b.isOccupied(),
-                                                   b.getNextBlock(b.getStopNode()).getID()});
+                                                   b.getNextBlock(b.getStartNode()).getID()});
             }
             catch(Exception e)
             {
@@ -330,7 +330,7 @@ public class trackControllerView extends javax.swing.JFrame
                                     System.out.println("HERE done");
                                     //take block out of maintenance
                                 }
-                            }, 10, TimeUnit.SECONDS);
+                            }, 30, TimeUnit.SECONDS);
     }                               
 
     private void putMaintenanceClicked(java.awt.event.MouseEvent evt) {    

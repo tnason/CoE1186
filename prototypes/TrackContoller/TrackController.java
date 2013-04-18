@@ -9,7 +9,7 @@ public class TrackController extends Worker implements constData, Runnable
 
   private Hashtable<Integer, Hashtable<Integer, Block>> blockUnderController = new Hashtable<Integer, Hashtable<Integer, Block>>();
 
-  trackControllerView gui;
+  TrackControllerView gui;
 
   public TrackController()
   {
@@ -72,7 +72,7 @@ public class TrackController extends Worker implements constData, Runnable
       System.out.println();
     }
 
-    gui = new trackControllerView(blockUnderController);
+    gui = new TrackControllerView(blockUnderController);
     gui.setVisible(true);
 	}
 
