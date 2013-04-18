@@ -28,10 +28,6 @@ public abstract class Block {
 		return stationName;
 	}
 	
-	
-	
-	
-	
 	public Block(Node start, Node stop, int c){
 		startNode = start;
 		stopNode = stop;
@@ -89,7 +85,7 @@ public abstract class Block {
 	}
 
 	public boolean isOccupied(){
-		return occupied;
+		return occupied || maintenance;
 	}
 	
 	public double getGrade(){
