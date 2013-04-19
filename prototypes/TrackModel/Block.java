@@ -8,6 +8,20 @@ import java.util.*;
 
 
 public abstract class Block {
+
+	/* Cameron: able to toggle crossing? For drawing too.*/
+
+	boolean crossingEnabled = false;
+	public void setCrossing(boolean crossingState)
+	{
+		crossingEnabled = crossingState;
+	}
+
+	public boolean getCrossing()
+	{
+		return crossingEnabled;
+	}
+
 	/*updates from 4/16/13*/
 	boolean isCrossing = false;
 	boolean isStation = false;
@@ -70,8 +84,14 @@ public abstract class Block {
 	public void setOccupation(boolean state){
 		occupied = state;
 	}
+
 	public void setMaintenance(boolean state){
 		maintenance = state;
+	}
+
+	public boolean getMaintenance()
+	{
+		return maintenance;
 	}
 	
 	public void setID(int id)
