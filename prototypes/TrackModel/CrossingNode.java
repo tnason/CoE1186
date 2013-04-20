@@ -1,3 +1,6 @@
+/*
+	****depricated - crossings are now blocks****
+
 package TLTTC;
 public class CrossingNode extends Node{
 	public CrossingNode(double x, double y, double z){
@@ -25,3 +28,4 @@ public class CrossingNode extends Node{
 		opened = false;
 	}
 }
+*/
