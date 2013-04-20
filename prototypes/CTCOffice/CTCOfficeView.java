@@ -24,12 +24,12 @@ public class CTCOfficeView extends JFrame{
     
     public CTCOfficeView (CTCOffice office) {
         this._office = office;
-        setTitle("CTC Office - Sean Moore");
+       
+        initComponents();
+         setTitle("CTC Office - Sean Moore");
         setSize(400,400);
         setLocation(10,10);
         setVisible(true);
-        initComponents();
-        
     }
     
     private void initComponents() {

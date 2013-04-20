@@ -26,9 +26,11 @@ public class TrainModel implements constData
 
 	private double currentBlockGrade; //for motion!
 
+	private long lastMotionCalc = 0;
 
 	private int stepCounter = 0;
 
+	//deprecated?
 	private double time = 0; //in s
 
 	private double mass = 51437; //loaded train mass in kg
@@ -40,6 +42,7 @@ public class TrainModel implements constData
 	private boolean trainBrakeOn = false;
 	private boolean trainEmergencyBrakeOn = false;
 
+	//This is only an ideal!
 	private final double timeStep; //in s
 
 	private final double maxPower = 120000.0; //in W (120kW)
@@ -111,8 +114,9 @@ public class TrainModel implements constData
 		System.out.format("t: %.3f, p: %.1e, x: %.6f, v: %.6f, a: %.3f %d %d%n", time, power, position, velocity, acceleration, forceRegime, accelRegime);
 	}
 
-	public void motionStep() 
+	public void motionStep(SystemClock clock) 
 	{
+
 		double rollingFrictionForce;
 		double hillResistanceForce;
 		double engineForce;
@@ -121,9 +125,23 @@ public class TrainModel implements constData
 		double endVelocity; //v(t+dt) 
 		double endAccel = 0;//a(t+dt)
 
+		double actualTimeStep;
 
 		double trackAngle;
 		trackAngle = Math.toDegrees(Math.atan(currentBlockGrade/100.0));
+
+		if(lastMotionCalc == 0) 
+		{
+			actualTimeStep = timeStep; //use ideal for first step
+		} 
+		else 
+		{
+			//calculate time since last function call in seconds
+			actualTimeStep = (double)clock.timeSince(lastMotionCalc)/1000.0; 
+		}
+		
+		//store this time
+		lastMotionCalc = System.currentTimeMillis();
 
 		if(power > maxPower) 
 		{
@@ -150,7 +168,7 @@ public class TrainModel implements constData
 		//Step 3: Determine x(t+dt)
 		//	x(t+dt) = x(t) + .5(v(t)+v(t+dt))*dt + .25(a(t)+a(t+dt))*dt^2
 
-		endVelocity = velocity + acceleration*timeStep;
+		endVelocity = velocity + acceleration*actualTimeStep;
 
 		//apply brakes
 		if(trainBrakeOn || trainEmergencyBrakeOn) 
@@ -166,7 +184,7 @@ public class TrainModel implements constData
 			}
 			//calculates current position from last step velocity and acceleration
 			//x(t+dt) = x(t) + .5(v(t)+v(t+dt))*dt + .25(a(t)+a(t+dt))*dt^2
-			endPosition = position + .5*(velocity+endVelocity)*timeStep + .25*(acceleration+endAccel)*timeStep*timeStep;
+			endPosition = position + .5*(velocity+endVelocity)*actualTimeStep + .25*(acceleration+endAccel)*actualTimeStep*actualTimeStep;
 		} 
 		else 
 		{
@@ -225,7 +243,7 @@ public class TrainModel implements constData
 
 			//calculates current position from last step velocity and acceleration
 			//x(t+dt) = x(t) + .5(v(t)+v(t+dt))*dt + .25(a(t)+a(t+dt))*dt^2
-			endPosition = position + .5*(velocity+endVelocity)*timeStep + .25*(acceleration+endAccel)*timeStep*timeStep;
+			endPosition = position + .5*(velocity+endVelocity)*actualTimeStep + .25*(acceleration+endAccel)*actualTimeStep*actualTimeStep;
 
 		}	
 
@@ -234,13 +252,13 @@ public class TrainModel implements constData
 		acceleration = endAccel;
 	    
         stepCounter++;
-		if(stepCounter % 50 == 0)
-		{
-			System.out.println("!!TRAIN  MOTION___: p: " + position + " v: " + velocity + " a: " + acceleration);
-		}
+//		if(stepCounter % 50 == 0)
+//		{
+//			System.out.println("!!TRAIN  MOTION___: p: " + position + " v: " + velocity + " a: " + acceleration);
+//		}
 
 
-		time += timeStep;
+		time += actualTimeStep;
 
 		updateOccupancy();	
 	}
@@ -278,7 +296,7 @@ public class TrainModel implements constData
 				Environment.passMessage(outgoingMessage);
 
 				//send TnMd_TcCt_Update_Block_Occupancy
-				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlocks.get(0)});
+				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackController, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlocks.get(0)});
 				Environment.passMessage(outgoingMessage);
 			}
 
@@ -287,7 +305,7 @@ public class TrainModel implements constData
 				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() - trLength/2.0)) //if the back of the train has left the old block
 				{
 					//send TnMd_TcCt_Update_Block_Occupancy
-					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlocks.get(1)});
+					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackController, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlocks.get(1)});
 					Environment.passMessage(outgoingMessage);
 
 					fromYard = false;
@@ -344,7 +362,7 @@ public class TrainModel implements constData
 				Environment.passMessage(outgoingMessage);
 
 				//send TnMd_TcCt_Update_Block_Occupancy
-				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlocks.get(0)});
+				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackController, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlocks.get(0)});
 				Environment.passMessage(outgoingMessage);
 
 			}
@@ -354,7 +372,7 @@ public class TrainModel implements constData
 				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() + trLength)) //if the back of the train has left the old block
 				{
 					//send TnMd_TcCt_Update_Block_Occupancy
-					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlocks.get(0)});
+					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackController, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlocks.get(0)});
 					Environment.passMessage(outgoingMessage);
 
 					occupiedBlocks.get(1).setOccupation(false);

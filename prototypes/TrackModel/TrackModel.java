@@ -16,9 +16,8 @@ public class TrackModel extends Worker implements Runnable, constData
     private HashMap<Integer, Block> blocks;
     private HashMap<Integer, Node> nodes;
 
-    private static HashMap<Integer, Block> staticBlocks;
-    public static HashMap<Integer, Block> getBlocks(){
-    	return staticBlocks;
+    public HashMap<Integer, Block> getBlocks(){
+    	return blocks;
     }
     
     public String toString(){
@@ -69,7 +68,7 @@ public class TrackModel extends Worker implements Runnable, constData
     
                 if(name == m.getDest())
                 {
-                    System.out.println("TrackModel RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
+                    //System.out.println("TrackModel RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
                     //System.out.println("Unhandled...");	
                 	//_---------------my handlers in here
 
@@ -79,7 +78,7 @@ public class TrackModel extends Worker implements Runnable, constData
                     	
 
                     	Message response = new Message(Module.trackModel, Module.trackModel, Module.trainController, msg.TcMd_TnCt_Send_Track_Speed_Limit);
-                    	response.addData("speedLimit", new Integer(15));		//1 meter per second always
+                    	response.addData("speedLimit", new Double(15.0));		//1 meter per second always
                     	response.addData("trainID", mData.get("trainID"));
                     	Environment.passMessage(response);
                     	
@@ -95,7 +94,7 @@ public class TrackModel extends Worker implements Runnable, constData
                         m.addData("yardNode", nodes.get(1));
                     }
 
-                    System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
+                    //System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
                     m.updateSender(name);
                     Environment.passMessage(m);
                 }
@@ -103,14 +102,12 @@ public class TrackModel extends Worker implements Runnable, constData
         }
     }
 //*/  
-    public void initTrack()
-    {
-    	/*
+    public void init()
+    {	
         try
         {
-        */
-        	/*
-            Scanner s = new Scanner(new File("layout_new.txt"));
+            Scanner s = new Scanner(new File("_layout_new.txt"));
+            int i = 0;
 
             while(s.hasNextLine())
             {
@@ -121,11 +118,77 @@ public class TrackModel extends Worker implements Runnable, constData
                 if(line.equals("-1"))
                     break;
 
+                String [] nodeAttr = line.split(" ");
+                int id = Integer.parseInt(nodeAttr[1]);
 
-
+                if(nodeAttr[0].equals("yard"))
+                {
+                    nodes.put(id, new YardNode(Double.parseDouble(nodeAttr[1]),
+                                               Double.parseDouble(nodeAttr[2]),
+                                               Double.parseDouble(nodeAttr[3])));
+                }
+                else if (nodeAttr[0].equals("connection"))
+                {
+                    nodes.put(id, new ConnectorNode(Double.parseDouble(nodeAttr[1]),
+                                                    Double.parseDouble(nodeAttr[2]),
+                                                    Double.parseDouble(nodeAttr[3])));
+                }
+                i++;
             }
-			*/
+
+		    while(s.hasNextLine())
+            {
+                String line = s.nextLine();
+
+                if(line.startsWith("#"))
+                    continue;
+                if(line.equals("-1"))
+                    break;
+
+                String [] blockAttr = line.split(" ");
+                int id    = Integer.parseInt(blockAttr[1]);
+                int start = Integer.parseInt(blockAttr[2]);
+                int stop  = Integer.parseInt(blockAttr[3]);
+                Block block = null;
+
+                if(blockAttr[0].equals("linear"))
+                {
+                    block = new LinearBlock(nodes.get(start), nodes.get(stop), id);
+
+                    String [] ctrl = blockAttr[4].split(",");
+
+                    for(String oneController : ctrl)
+                    {
+                        block.addController(Integer.parseInt(oneController));
+                    }
+                }
+                else if (blockAttr[0].equals("arc"))
+                {
+                }
+
+                if(nodes.get(start).getNodeType() != constData.NodeType.Yard)
+                {
+                    // TO DO
+                }
+
+                if(nodes.get(stop).getNodeType() != constData.NodeType.Yard)
+                {
+                    // TO DO
+                }
+
+                blocks.put(id, block);
+            }
         	
+            
+
+            //assign to the static so anyone can get at this
+            
+            
+          
+        } 
+        catch (Exception e)
+        {
+        	System.out.println(e.getMessage());
             Node node1 = new YardNode(0,0,0);
             Node node2 = new ConnectorNode(200,0,0);
             Node node3 = new ConnectorNode(400,0,1);
@@ -153,27 +216,27 @@ public class TrackModel extends Worker implements Runnable, constData
             LinearBlock block6 = new LinearBlock(node6, node7, 6 , 1 );
             LinearBlock block7 = new LinearBlock(node7, node8, 7 , 1 );
 
-node1.setOutput(block1);
+            node1.setOutput(block1);
 
-node2.setInput(block1);
-node2.setOutput(block2);
+            node2.setInput(block1);
+            node2.setOutput(block2);
 
-node3.setInput(block2);
-node3.setOutput(block3);
+            node3.setInput(block2);
+            node3.setOutput(block3);
 
-node4.setInput(block3);
-node4.setOutput(block4);
+            node4.setInput(block3);
+            node4.setOutput(block4);
 
-node5.setInput(block4);
-node5.setOutput(block5);
+            node5.setInput(block4);
+            node5.setOutput(block5);
 
-node6.setInput(block5);
-node6.setOutput(block6);
+            node6.setInput(block5);
+            node6.setOutput(block6);
 
-node7.setInput(block6);
-node7.setOutput(block7);
+            node7.setInput(block6);
+            node7.setOutput(block7);
 
-node8.setInput(block7);
+            node8.setInput(block7);
 
 
 
@@ -186,17 +249,8 @@ node8.setInput(block7);
             blocks.put(5, block5);
             blocks.put(6, block6);            
             blocks.put(7, block7);
-
-            //assign to the static so anyone can get at this
-            staticBlocks = blocks;
-            
-        /*    
-        } 
-        catch (Exception e)
-        {
-        		System.out.println(e.getMessage());
         }
-    `	*/
+    
     
     }
 
@@ -208,7 +262,7 @@ node8.setInput(block7);
 
     public void send(Message m)
     {
-        System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        //System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
         Environment.passMessage(m);
     }
     

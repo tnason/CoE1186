@@ -8,6 +8,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   
   private int trainID;
   private TrainController tc;
+  private TrainContainer trainModel;
   
   public TrainControllerModule()
   {
@@ -15,7 +16,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     name = Module.trainController;
     msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
   }
-  
+
   public void run()
   {
     while(true)
@@ -29,7 +30,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
           System.out.println("\nRECEIVED MSG: source->"+m.getSource() + " : dest->"+m.getDest()+"\n");
           if(m.getData() != null && m.getData().containsKey("trainID"))
           {
-            trainID = (Integer)(m.getData().get("trainID"));
+            trainID = (int)(m.getData().get("trainID"));
             if (controllers.containsKey(trainID))
             {
               tc = controllers.get(trainID); // Local TrainController
@@ -57,7 +58,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 sendPower();
                 break;
               case TnMd_TnCt_Send_Train_Velocity: // Current train velocity from train model
-                tc.velocity = (Double)(m.getData().get("velocity"));
+                tc.velocity = (double)(m.getData().get("velocity"));
                 System.out.println("Got velocity of " + tc.velocity + " from train model.");
                 sendPower();
                 break;
@@ -117,5 +118,9 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     String[] keys = {"trainID", "power"};
     Object[] data = {trainID, powerCommand};
     send(new Message(name, name, Module.trainModel, msg.TnCt_TnMd_Send_Power, keys, data));
+  }
+  
+  public void init(TrainContainer t){
+    trainModel = t;
   }
 }

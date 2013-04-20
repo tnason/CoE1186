@@ -14,11 +14,16 @@ public class TrainContainer extends Worker implements Runnable, constData
   
 	private Timer motionTimer;
 
-	private final double TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time!)
+	private SystemClock clock;
 
-	private long timerTrigger = 1; //real-time value (in ms) for triggering motionStep() calls
+	//This value is just a suggestion for integration's sake!
+	private final double TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time)
+
+	private long timerTrigger; //real-time value (in ms) for triggering motionStep() calls
 
 	private int motionStepCount = 0;
+
+	private TrainControllerModule trc;
 
 	//For now, simulationSpeedup = (trainTimestep * 1000) / timerTrigger
 
@@ -36,7 +41,6 @@ public class TrainContainer extends Worker implements Runnable, constData
 		msgs  = new LinkedBlockingQueue<Message>();
 		trains = new Hashtable<Integer, TrainModel>();
 		motionTimer = new Timer();
-  		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every X ms
 	}
   
 	//Driver for timed motion!
@@ -56,11 +60,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 				}
 				else
 				{
-					tm.motionStep(); //move the trains!
-					if(motionStepCount % 250 == 0) 
-					{
-						tm.printState();
-					}
+					tm.motionStep(clock); //move the trains!
 				}
 	  		}
 			motionStepCount++;
@@ -72,6 +72,14 @@ public class TrainContainer extends Worker implements Runnable, constData
 		TrainModel n = new TrainModel(TrainID, start, step);
 		trains.put(TrainID, n);
 		return n;
+	}
+
+	public void init(TrainControllerModule other, SystemClock sys)
+	{
+		trc = other;
+		clock = sys;
+		timerTrigger = (long)(TIME_STEP * 1000.0)/(long)clock.SIMULATION_SPEEDUP;
+  		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every X ms
 	}
 
 	public void run()
@@ -118,8 +126,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 									send(outgoingMessage); 
 
 									//send TnMd_TnCt_Request_Train_Controller_Creation
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Request_Train_Controller_Creation, new String[] {"trainID"}, new Object[] {mine.getData().get("trainID")});
-									send(outgoingMessage);
+									//deprecated
 
 									//send TnMd_Sch_Notify_Yard
 									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID","blockID"}, new Object[] {(Object)false, mine.getData().get("trainID"), (Object)(bl.getID())});
@@ -127,21 +134,10 @@ public class TrainContainer extends Worker implements Runnable, constData
 								}
 								break;
 							case TnCt_TnMd_Send_Power:
-								//update power setting
-								trainID = (int)(mine.getData().get("trainID"));
-								tm = trains.get(trainID);
-								double power = (double)mine.getData().get("power");
-								System.out.println("	!!!!!!!!!!!!!!!!!!!!Getting new power: " + power);
-								tm.setPower(power);
+								//deprecated
 								break;
 							case TnCt_TnMd_Request_Train_Velocity:
-								System.out.println("	!!!!!!!!!!!!!!!!!!!!Request velocity");
-								trainID = (int)(mine.getData().get("trainID"));
-								tm = trains.get(trainID);
-							
-								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, new String[] {"trainID","velocity"}, new Object[] {trainID, tm.getVelocity()});
-								send(outgoingMessage);
-
+								//deprecated
 								break;
 							default:
 								//stuff
@@ -162,6 +158,13 @@ public class TrainContainer extends Worker implements Runnable, constData
 			}
 		}
 	}
+
+	//methods called by TrainControllerModule!
+	TrainModel getTrain(int trainID)
+	{
+		return trains.get(trainID);
+	}
+
 
 	public void setMsg(Message m)
 	{
