@@ -31,28 +31,23 @@ public class TrackControllerView extends javax.swing.JFrame
         }
     }
 
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    @SuppressWarnings("unchecked")                        
     private void initComponents() {
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jScrollPane6 = new javax.swing.JScrollPane();
-
         closeTC = new javax.swing.JButton();
         curLine = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tcList = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tcProp = new javax.swing.JTable();
         enableCrossing = new javax.swing.JButton();
         toggleSwitch = new javax.swing.JButton();
         putMaintenance = new javax.swing.JButton();
-        loadPLC = new javax.swing.JButton();
-        
-        tcList = new javax.swing.JTable();
-        tcProp = new javax.swing.JTable();
+        jScrollPane5 = new javax.swing.JScrollPane();
         trainInfo = new javax.swing.JTable();
+        jScrollPane6 = new javax.swing.JScrollPane();
         controllerInfo = new javax.swing.JTable();
-       
+        loadPLC = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cameron Dashti - Track Controller");
         setBackground(new java.awt.Color(255, 255, 255));
@@ -109,11 +104,11 @@ public class TrackControllerView extends javax.swing.JFrame
 
             },
             new String [] {
-                "Block Number", "Track State", "Next Block"
+                "Block Number", "Next Block", "Occupied", "Maintenance", "Crossing"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -130,9 +125,10 @@ public class TrackControllerView extends javax.swing.JFrame
         });
         jScrollPane3.setViewportView(tcProp);
         tcProp.getColumnModel().getColumn(0).setResizable(false);
-        tcProp.getColumnModel().getColumn(0).setHeaderValue("Block Number");
         tcProp.getColumnModel().getColumn(1).setResizable(false);
         tcProp.getColumnModel().getColumn(2).setResizable(false);
+        tcProp.getColumnModel().getColumn(3).setResizable(false);
+        tcProp.getColumnModel().getColumn(4).setResizable(false);
         tcProp.getAccessibleContext().setAccessibleName("tcProp");
         tcProp.getAccessibleContext().setAccessibleParent(this);
 
@@ -280,7 +276,8 @@ public class TrackControllerView extends javax.swing.JFrame
         toggleSwitch.setEnabled(false);
 
         pack();
-    }                   
+    }                     
+                
        
     private void changeLine(java.awt.event.MouseEvent evt) 
     {
@@ -294,7 +291,6 @@ public class TrackControllerView extends javax.swing.JFrame
 
     private void tcSelected(java.awt.event.MouseEvent evt) 
     {             
-
         enableCrossing.setEnabled(false);
         putMaintenance.setEnabled(false);
         toggleSwitch.setEnabled(false);
@@ -302,34 +298,14 @@ public class TrackControllerView extends javax.swing.JFrame
         String tcString = (String) tcList.getValueAt(tcList.getSelectedRow(), 0);
         selectedController = Integer.parseInt(tcString.split(" ")[2]);
 
-        while(tcPropModel.getRowCount() > 0)
-        {
-            tcPropModel.removeRow(0);
-        }
-
         while(controllerInfoModel.getRowCount() > 0)
         {
             controllerInfoModel.removeRow(0);
         }
-            
-        for(Block b : controller.get(selectedController).values())
-        {
-            try
-            {
-                tcPropModel.addRow(new Object [] { b.getID(), 
-                                                   b.isOccupied(),
-                                                   b.getNextBlock(b.getStartNode()).getID()});
-            }
-            catch(Exception e)
-            {
-                tcPropModel.addRow(new Object [] { b.getID(), 
-                                                   b.isOccupied(),
-                                                   "none"});
-            }
-        }
 
         controllerInfoModel.addRow(new Object [] { controller.get(selectedController).size(),
                                                    "num Trains 0"});
+        refresh();
     } 
 
     private void blockSelected(java.awt.event.MouseEvent evt) 
@@ -339,8 +315,6 @@ public class TrackControllerView extends javax.swing.JFrame
         currentBlock = controller.get(selectedController).get(choosenBlockNum);
 
         userSelectedBlock = choosenBlockNum;
-
-        System.out.println("HERE " + currentBlock.getID()+ " " + userSelectedBlock + " " + selectedController + " "+currentBlock.isOccupied());                                   
         
         //putMaintenance.setEnabled(!currentBlock.isOccupied());
         putMaintenance.setEnabled(true);
@@ -367,7 +341,6 @@ public class TrackControllerView extends javax.swing.JFrame
        {
             ScheduledThreadPoolExecutor delayReset = new ScheduledThreadPoolExecutor(1);
 
-            System.out.println("HERE start: sleep " + currentBlock.getID());
             currentBlock.setCrossing(true);
 
             delayReset.schedule(new Runnable() 
@@ -383,13 +356,11 @@ public class TrackControllerView extends javax.swing.JFrame
 
     private void putMaintenanceClicked(java.awt.event.MouseEvent evt) 
     {    
-        System.out.println("HERE " +currentBlock.getID() + " " + currentBlock.getMaintenance() +
-                             " " +tcProp.getSelectedRow()+ " " + currentBlock.isOccupied());
       if(putMaintenance.isEnabled())
-        //&& !currentBlock.isOccupied())
         {
             currentBlock.setMaintenance(!currentBlock.getMaintenance());
-            tcProp.setValueAt((Object) currentBlock.isOccupied(), tcProp.getSelectedRow(), 1);
+            tcProp.setValueAt((Object) currentBlock.isOccupied(), tcProp.getSelectedRow(), 2);
+            tcProp.setValueAt((Object) currentBlock.getMaintenance(), tcProp.getSelectedRow(), 3);
         }  
     }                                      
 
@@ -407,6 +378,46 @@ public class TrackControllerView extends javax.swing.JFrame
     {                          
         // TODO add your handling code here:
     }       
+
+    public void refresh()
+    {
+        while(tcPropModel.getRowCount() > 0)
+        {
+            tcPropModel.removeRow(0);
+        }
+
+        if(selectedController == -1)
+        {
+            return;
+        }
+
+        for(Block b : controller.get(selectedController).values())
+        {
+            String crossing = (b.isCrossing()) ? (""+ b.getCrossing()) : "-";
+            try
+            {
+                tcPropModel.addRow(new Object [] { b.getID(), 
+                                                   b.getNextBlock(b.getStartNode()).getID(),
+                                                   b.isOccupied(),
+                                                   b.getMaintenance(),
+                                                   crossing
+                                                   });
+            }
+            catch(Exception e)
+            {
+                tcPropModel.addRow(new Object [] { b.getID(), 
+                                                   "yard",
+                                                   b.isOccupied(),
+                                                   b.getMaintenance(),
+                                                   crossing
+                                                   });
+            }
+        }
+
+        enableCrossing.setEnabled(false);
+        putMaintenance.setEnabled(false);
+        toggleSwitch.setEnabled(false);
+    }
 
     private javax.swing.JButton closeTC;
     private javax.swing.JButton curLine;

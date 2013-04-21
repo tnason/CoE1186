@@ -22,21 +22,27 @@ public class TrackController extends Worker implements constData, Runnable
 		{
 			if(msgs.peek() != null)
      		{
-        		Message m = msgs.poll();
-        
+        	Message m = msgs.poll();
+          if(m.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority)
+          System.out.println("THROUGH: " +m.getType()+" "+ m.getData().toString());
           if(name == m.getDest())
 			    {
-			    	System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
+			    	//System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
           }
 			    else
           {
-            if(m.getType() == constData.msg.MBO_TnCt_Send_Moving_Block_Authority)
+
+            if(m.getType() == msg.MBO_TnCt_Send_Moving_Block_Authority)
             {
               
-              
             }
+            else if(m.getType() == msg.TnMd_CTC_Send_Block_Occupied)
+            {
+              gui.refresh();
+            }
+            
 
-         			System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+"), (type : " + m.getType()+")");
+         			//System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+"), (type : " + m.getType()+")");
               m.updateSender(name);
           		Environment.passMessage(m);
         	}
@@ -89,7 +95,7 @@ public class TrackController extends Worker implements constData, Runnable
 
   public void send(Message m)
   {
-      System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+      //System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
       m.updateSender(name);
       Environment.passMessage(m);
   }

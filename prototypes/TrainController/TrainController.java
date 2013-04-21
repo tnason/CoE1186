@@ -77,8 +77,8 @@ public class TrainController{
       return 0.0;
     }
     
-    System.out.println("Current velocity = " + velocity + " m/s.");
-    System.out.println("Current setpoint = " + trainOperatorVelocity + " m/s.");
+    //System.out.println("Current velocity = " + velocity + " m/s.");
+    //System.out.println("Current setpoint = " + trainOperatorVelocity + " m/s.");
     trainOperatorVelocity = Math.min(trainOperatorVelocity, ctcOperatorVelocity); // Selects safer of two velocities.
     if ((trainOperatorVelocity > trackLimit) || (trainOperatorVelocity > trainLimit)) // If the operator sends a dangerous velocity
     {
@@ -104,7 +104,7 @@ public class TrainController{
     histPower = power;
     histEk = ek;
     histUk = uk;
-    System.out.println("Power command of " + power + " Watts sent.");
+    //System.out.println("Power command of " + power + " Watts sent.");
     return power;
   }
   

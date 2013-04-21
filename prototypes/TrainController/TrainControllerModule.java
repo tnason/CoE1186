@@ -28,7 +28,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         
         if(name == m.getDest())
         {
-          System.out.println("\nRECEIVED MSG: source->"+m.getSource() + " : dest->"+m.getDest()+"\n");
+          //System.out.println("\nRECEIVED MSG: source->"+m.getSource() + " : dest->"+m.getDest()+"\n");
           if(m.getData() != null && m.getData().containsKey("trainID"))
           {
             trainID = (int)(m.getData().get("trainID"));
@@ -37,6 +37,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
               tc = controllers.get(trainID); // Local TrainController
               tm = trainContainer.getTrain(trainID); // Local TrainModel
             }
+        
             switch (m.getType())
             {
               case Sat_TnCnt_Request_Traversed_Block_Stats: //???????????
@@ -45,7 +46,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
               case Sat_TnCt_ReceiptConfirm_Traversed_Block_Stats: //??????????
                 
                 break;
-              case MBO_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC
+              case MBO_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC 
                 tc.movingBlockAuth = (double)(m.getData().get("authority"));
                 sendPower();
                 break;
@@ -97,7 +98,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         }
         else
         {
-          System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+"), (type : " + m.getType()+")");
+          //System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+"), (type : " + m.getType()+")");
           m.updateSender(name);
           Environment.passMessage(m);
         }
@@ -113,7 +114,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   
   public void send(Message m)
   {
-    System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+" " + m.getType() + "\n");
+    //System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+" " + m.getType() + "\n");
     Environment.passMessage(m);
   }
   
