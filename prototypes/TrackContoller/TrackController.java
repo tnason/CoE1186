@@ -82,9 +82,9 @@ public class TrackController extends Worker implements constData, Runnable
     gui = new TrackControllerView(blockUnderController);
     gui.setVisible(true);
 
-    while(gui.getPLC() == null);
+    //while(gui.getPLC() == null);
 
-    myPLC = gui.getPLC();
+    //myPLC = gui.getPLC();
   }
 	public void setMsg(Message m)
   {
