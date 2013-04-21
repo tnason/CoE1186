@@ -1,8 +1,11 @@
 package TLTTC;
 
 import java.util.*;
+import java.io.*;
+import javax.swing.*;
 import javax.swing.table.*;
 import java.util.concurrent.*;
+import java.lang.reflect.*;
 
 @SuppressWarnings("serial")  
 public class TrackControllerView extends javax.swing.JFrame 
@@ -11,9 +14,13 @@ public class TrackControllerView extends javax.swing.JFrame
     private Hashtable<Integer, Hashtable<Integer, Block>> controller;
     private DefaultTableModel tcListModel, tcPropModel, controllerInfoModel;
 
-    private int selectedController = -1;
-    private int userSelectedBlock  = -1;
-    private Block currentBlock     = null;
+    private int   selectedController = -1;
+    private int   userSelectedBlock  = -1;
+    private Block currentBlock       = null;
+
+    private Object   plcObject = null;
+    private Class<?> plcClass;
+    private boolean  plcLoaded = false;
 
     public TrackControllerView(Hashtable<Integer, Hashtable<Integer, Block>> allControllers) 
     {
@@ -277,8 +284,12 @@ public class TrackControllerView extends javax.swing.JFrame
 
         pack();
     }                     
+
+    public Object getPLC ()
+    {
+        return plcObject;
+    }
                 
-       
     private void changeLine(java.awt.event.MouseEvent evt) 
     {
         
@@ -286,7 +297,7 @@ public class TrackControllerView extends javax.swing.JFrame
 
     private void closeTC(java.awt.event.MouseEvent evt) 
     {
-        this.dispose();
+        this.setVisible(false);
     }
 
     private void tcSelected(java.awt.event.MouseEvent evt) 
@@ -315,8 +326,7 @@ public class TrackControllerView extends javax.swing.JFrame
         currentBlock = controller.get(selectedController).get(choosenBlockNum);
 
         userSelectedBlock = choosenBlockNum;
-        
-        //putMaintenance.setEnabled(!currentBlock.isOccupied());
+
         putMaintenance.setEnabled(true);
 
         if(currentBlock.isCrossing() && !currentBlock.getCrossing())
@@ -377,6 +387,40 @@ public class TrackControllerView extends javax.swing.JFrame
     private void loadProg(java.awt.event.MouseEvent evt) 
     {                          
         // TODO add your handling code here:
+       String className = "";
+        try
+        {   
+            JFileChooser choosePLC = new JFileChooser();
+            int returnVal = choosePLC.showOpenDialog(null);
+
+            if(returnVal != JFileChooser.APPROVE_OPTION)
+            {
+                return;
+            }
+
+            className = choosePLC.getSelectedFile().getName();
+
+            plcClass = Class.forName("TLTTC."+className.split("\\.")[0]);
+                                                                                       
+            plcObject = plcClass.newInstance();  
+
+            plcClass.getMethod("doMethod", int.class).invoke(plcObject, 5);
+        } 
+        catch (ClassNotFoundException cnfe)
+        {
+            JOptionPane.showMessageDialog(null, className + " is not a valid class file!");
+            return;
+        }
+        catch (Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.toString());
+            return;
+        }
+        plcLoaded = true;
+        loadPLC.setEnabled(false);
+
+        for(Method m : plcClass.getMethods())
+            System.out.println(m);
     }       
 
     public void refresh()
@@ -438,4 +482,3 @@ public class TrackControllerView extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
 }    
-    
