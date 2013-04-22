@@ -7,7 +7,8 @@ package TLTTC;
 import java.util.*;
 
 
-public class CTCController {
+public class CTCController implements constData
+{
     
     private CTCMessageServer _msgServer;
     private TrainList _trainList;
@@ -48,9 +49,7 @@ public class CTCController {
     }
     
     public void updateOccupancy ( Integer bID )
-    {
-        Integer tID;
-        
+    {   
         // determine which train this "block" belongs to
         Integer tID = _trainList.nextBlocksForTrains().get(bID);
         
@@ -59,7 +58,7 @@ public class CTCController {
     
     public void updateOccupancy( Integer bID, Integer tID )
     {
-        Integer vacantBlockID = _trainList.getTrain.getCurrentBlock();
+        Integer vacantBlockID = _trainList.getTrain(tID).getCurrentBlock();
         _blockList.getBlock(bID).setVacant();
         _trainList.getTrain(tID).setCurrentBlock(bID);
         _blockList.getBlock(bID).setCurrentTrain(tID);
@@ -71,8 +70,8 @@ public class CTCController {
         Hashtable<String, Object> data = new Hashtable<String, Object>();
         data.put("velocity", speed);
         data.put("trainID", tID);
-        Module destination = trainController;
-        msg type = CTC_TnTc_Send_Manual_Speed;
+        Module destination = Module.trainController;
+        msg type = msg.CTC_TnCt_Send_Manual_Speed;
         _msgServer.composeMessage(destination, type, data);
     }
     
@@ -81,8 +80,8 @@ public class CTCController {
         Hashtable<String, Object> data = new Hashtable<String, Object>();
         data.put("authority", authority);
         data.put("trainID", tID);
-        Module destination = trainController;
-        msg type = CTC_TnTc_Send_Manual_MovingBlock;
+        Module destination = Module.trainController;
+        msg type = msg.CTC_TnCt_Send_Manual_MovingBlock;
         _msgServer.composeMessage(destination, type, data);
     }
     
@@ -91,8 +90,8 @@ public class CTCController {
         Hashtable<String, Object> data = new Hashtable<String, Object>();
         data.put("authority", authority);
         data.put("trainID", tID);
-        Module destination = trainController;
-        msg type = CTC_TnTc_Send_Manual_MovingBlock;
+        Module destination = Module.trainController;
+        msg type = msg.CTC_TnCt_Send_Manual_FixedBlock;
         _msgServer.composeMessage(destination, type, data);
     }
     
@@ -100,9 +99,9 @@ public class CTCController {
     {
         Hashtable<String, Object> data = new Hashtable<String, Object>();
         data.put("trainID", _trainCount);
-        data.put("line" line);
-        Module destination = trainModel;
-        msg type = CTC_TnMd_Request_Train_Creation;
+        data.put("line", line);
+        Module destination = Module.trainModel;
+        msg type = msg.CTC_TnMd_Request_Train_Creation;
         _msgServer.composeMessage(destination, type, data);
         _trainList.addTrain(_trainCount, line);
         _trainCount++;
@@ -114,9 +113,27 @@ public class CTCController {
         String line = _trainList.getTrain(tID).getLine();
         data.put("trainID", tID);
         data.put("line", line);
-        Module destination = scheduler;
-        msg type = CTC_Sch_Generate_Schedule;
-        _msgServer.composeMessage(destingation, type, data);
+        Module destination = Module.scheduler;
+        msg type = msg.CTC_Sch_Generate_Schedule;
+        _msgServer.composeMessage(destination, type, data);
         
+    }
+    
+    public void closeTrackSections ( ArrayList<Integer> bIDs )
+    {
+        Hashtable<String, Object> data = new Hashtable<String, Object>();
+        data.put("blockIDs", bIDs);
+        Module destination = Module.trackModel;
+        msg type = msg.CTC_TcMd_Send_Track_Closing;
+        _msgServer.composeMessage(destination, type, data);   
+    }
+    
+    public void openTrackSections ( ArrayList<Integer> bIDs )
+    {
+        Hashtable<String, Object> data = new Hashtable<String, Object>();
+        data.put("blockIDs", bIDs);
+        Module destination = Module.trackModel;
+        msg type = msg.CTC_TcMd_Send_Track_Opening;
+        _msgServer.composeMessage(destination, type, data);
     }
 }

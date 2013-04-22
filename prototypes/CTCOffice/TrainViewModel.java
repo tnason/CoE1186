@@ -7,17 +7,20 @@ public class TrainViewModel
 {
     // ivars
     private Integer _trainID;
-    private Integer _fixedBlockAuthority = 1;
-    private Double _movingBlockAuthority = 0;
+    private Integer _fixedBlockAuthority = (Integer) 1;
+    private Double _movingBlockAuthority = (Double) 0.0;
     private Integer _currentBlock;
-    private Double _speed = 0;
+    private Double _speed = (Double) 0.0;
     private String _line;
     private Integer _nextBlock;
+    private boolean _active = false;
+    private RouteViewModel _route;
     
     TrainViewModel ( Integer tID, String line )
     {
         _trainID = tID;
         _line = line;
+        _route = new RouteViewModel(this);
         
         if (line == "green")
         {
@@ -41,7 +44,7 @@ public class TrainViewModel
     
     public Integer getNextBlock ()
     {
-        return nextBlock;
+        return _nextBlock;
     }
     
     public Double getSpeed ()
@@ -83,7 +86,7 @@ public class TrainViewModel
         }
     }
     
-    public Integer getLine ()
+    public String getLine ()
     {
         return _line;
     }
@@ -91,5 +94,15 @@ public class TrainViewModel
     public Integer getTrainID ()
     {
         return _trainID;
+    }
+    
+    public void setActive ()
+    {
+        _active = true;
+    }
+    
+    public boolean isActive ()
+    {
+        return _active;
     }
 }

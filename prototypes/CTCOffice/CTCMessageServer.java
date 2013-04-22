@@ -16,7 +16,7 @@ public class CTCMessageServer extends Worker implements Runnable, constData
     // ivars
     private java.util.concurrent.LinkedBlockingQueue<Message> msgs;
     private Module name = Module.CTC; 
-    private CTCController controller = CTCController(this);
+    private CTCController controller = new CTCController(this);
     
     CTCMessageServer ()
     {
@@ -60,7 +60,7 @@ public class CTCMessageServer extends Worker implements Runnable, constData
         
         for ( String key : data.keySet() )
         {
-            m.addData( key, m.get(key) ); // adding all the data
+            m.addData( key, data.get(key) ); // adding all the data
         }
         send(m);
     }
@@ -76,27 +76,34 @@ public class CTCMessageServer extends Worker implements Runnable, constData
             // messages from Train Model
             case TnMd_CTC_Confirm_Train_Creation:
                 // begin confirm train creation case
-                tID = m.getData().get("trainID");
+                tID = (Integer) m.getData().get("trainID");
                 controller.addTrain(tID);
                 
             break; // end confirm train creation case
             case TnMd_CTC_Request_Train_Destruction:
                 // begin train destruction case
-                tID = m.getData().get("trainID");
+                tID = (Integer) m.getData().get("trainID");
                 controller.removeTrain(tID);
                 
             break; // end request train destruction case
             case TnMd_CTC_Send_Block_Occupied:
                 // begin block occupied case
-                bID = m.getData().get("blockID");
+                bID = (Integer) m.getData().get("blockID");
                 try 
                 {
-                    tID = m.getData().get("blockID");
-                    controller.updateOccupancy(bID, tID);
+                    tID = (Integer) m.getData().get("trainID");
+                    if (tID != null)
+                    {
+                        controller.updateOccupancy(bID, tID);
+                    }
+                    else
+                    {
+                        controller.updateOccupancy(bID);
+                    }
                 }
                 catch (Exception e)
                 {
-                    updateOccupancy(bID);
+                    controller.updateOccupancy(bID);
                 }
             break; // end block occupied case
             
@@ -107,7 +114,7 @@ public class CTCMessageServer extends Worker implements Runnable, constData
             // messages from Scheduler
             case Sch_CTC_Send_Schedule:
                 // begin send schedule case
-                controller.updateSchedules(m.getData().get("schedule"));
+                controller.updateSchedules((Timetable) m.getData().get("schedule"));
             break; // end send schedule case
         }
     }

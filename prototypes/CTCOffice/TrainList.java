@@ -8,19 +8,19 @@ import java.util.*;
  public class TrainList
  {
     
-    HashMap<Integer, TrainViewModel> _trainList;
+    Hashtable<Integer, TrainViewModel> _trainList;
     
     CTCController _controller;
     
     TrainList(CTCController controller)
     {
         _controller = controller;
-        _trainList = new HashMap<Integer, Object>();
+        _trainList = new Hashtable<Integer, TrainViewModel>();
     }
     
     public boolean contains ( Integer tID )
     {
-        return _trainList.getKeys().contains(tID);
+        return _trainList.containsKey(tID);
     }
     
     public void addTrain ( Integer tID, String line )
@@ -60,10 +60,11 @@ import java.util.*;
         }
     }
     
-    public HashTable<Integer, Integer> nextBlocksForTrains ()
+    public Hashtable<Integer, Integer> nextBlocksForTrains ()
     {
-        HashTable<Integer, Integer> blocks = new HashTable<Integer, Integer>();
-        Enumeration trains = _trainList.elements();
+        Hashtable<Integer, Integer> blocks = new Hashtable<Integer, Integer>();
+        @SuppressWarnings("unchecked")
+        ArrayList<TrainViewModel> trains = (ArrayList<TrainViewModel>) _trainList.elements();
         
         for (TrainViewModel train : trains)
         {
