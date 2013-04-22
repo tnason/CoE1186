@@ -74,9 +74,9 @@ public class TrainController
 		double authorityVelocityLimit = ((authority - 13.657)/5.281);
 		
 		double velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
-		if (velocitySetpoint > Math.min((trackLimit, trainLimit), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
+		if (velocitySetpoint > Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
 		{
-		  velocitySetpoint = Math.min((trackLimit, trainLimit), authorityVelocityLimit); // set to next highest allowable velocity
+		  velocitySetpoint = Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit); // set to next highest allowable velocity
 		}
 
 		if (power < trainMaxPower)
@@ -87,6 +87,7 @@ public class TrainController
 		power = ((KP*ek)+(KI*uk));
 		tm.setPower(power);
 	}
+  return 0.0;
   }
   
   
@@ -132,49 +133,56 @@ public class TrainController
   public void setMovingBlockAuth(double m)
   {
 	movingBlockAuth = m;
-	sendPower();
+	//sendPower();
+  setPower();
   }
   
   
   public void setCtcMovingBlockAuth(double m)
   {
 	ctcMovingBlockAuth = m;
-	sendPower();
+	//sendPower();
+  setPower();
   }
   
   
   public void setFixedBlockAuth(double f)
   {
 	fixedBlockAuth = f;
-	sendPower();
+	//sendPower();
+  setPower();
   }
   
   
   public void setCtcFixedBlockAuth(double f)
   {
 	ctcFixedBlockAuth = f;
-	sendPower();
+	//sendPower();
+  setPower();
   }
   
   
   public void setCtcOperatorVelocity(double v)
   {
 	ctcOperatorVelocity = v;
-	sendPower();
+	//sendPower();
+  setPower();
   }
   
   
   public void setTrainOperatorVelocity(double v)
   {
 	trainOperatorVelocity = v;
-	sendPower();
+	//sendPower();
+  setPower();
   }
  
   
   public void setTrackLimit(double v)
   {
 	trackLimit = v;
-	sendPower();
+	//sendPower();
+  setPower();
   }
   
   
