@@ -33,7 +33,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
                 Message m = msgs.poll();
                 if (name == m.getDest())
                 { // hey, this was sent to me; let's do something
-                    System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + "), (type: " + m.getType() + ")");
+                    //System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + "), (type: " + m.getType() + ")");
                     switch (m.getType()) {
 		                case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
 			                // unpack the data from the message
@@ -63,7 +63,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
                     }
                 }
                 else { // it ain't ours
-                    System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+"), (type : " + m.getType()+")");
+                    //System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+"), (type : " + m.getType()+")");
                     m.updateSender(name);
                     Environment.passMessage(m);
                 }
@@ -77,7 +77,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
     
     public void send(Message m)
     {
-        System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        //System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
         Environment.passMessage(m);
     }
     

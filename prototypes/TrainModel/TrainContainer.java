@@ -95,12 +95,10 @@ public class TrainContainer extends Worker implements Runnable, constData
 				if(name == mine.getDest())
 				{
 					
-					System.out.println("RECEIVED MESSAGE ~ (source : " + mine.getSource() + "), (dest : " + mine.getDest() + ")\n");
+					//System.out.println("RECEIVED MESSAGE ~ (source : " + mine.getSource() + "), (dest : " + mine.getDest() + ")\n");
 
 					if(mine.getData() != null)
-					{
-						//System.out.println(mine.getData().get("check")); ????
-						
+					{	
 						//handling incoming messages
 						switch (mine.getType())
 						{
@@ -119,6 +117,9 @@ public class TrainContainer extends Worker implements Runnable, constData
 									
 									tm.setYardNode(n);
 									//send associated messages!!!
+
+									// Cameron: Does this ever happen? Does it need to happen?
+									trc.createTrainController((int)mine.getData().get("trainID"));
 									
 									// Send will pass message to environment. Notify to console of msg send.
 									//send TnMd_CTC_Confirm_Train_Creation
@@ -151,7 +152,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 				}
 				else
 				{
-					System.out.println("PASSING MSG ~ (source : " + mine.getSource() + "), (step : " + name + "), (dest : " + mine.getDest()+"), (type : " + mine.getType()+")");
+					//System.out.println("PASSING MSG ~ (source : " + mine.getSource() + "), (step : " + name + "), (dest : " + mine.getDest()+"), (type : " + mine.getType()+")");
           			mine.updateSender(name);
 					send(mine);
 				}
@@ -180,7 +181,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 
 	public void send(Message m)
 	{
-   		System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+   		//System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
         m.updateSender(name);
         Environment.passMessage(m);
 	}

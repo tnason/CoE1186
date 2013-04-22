@@ -25,6 +25,11 @@ public class OperatorSchedule
 		return schedule.values().iterator();
 	}
 
+	public Operator getOperator(int trainNumber)
+	{
+		return schedule.get(trainNumber);
+	}
+
 	public static void main(String[] args)
 	{
 		OperatorSchedule testSchedule;

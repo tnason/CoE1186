@@ -1,8 +1,11 @@
 package TLTTC;
 
 import java.util.*;
+import java.io.*;
+import javax.swing.*;
 import javax.swing.table.*;
 import java.util.concurrent.*;
+import java.lang.reflect.*;
 
 @SuppressWarnings("serial")  
 public class TrackControllerView extends javax.swing.JFrame 
@@ -11,9 +14,13 @@ public class TrackControllerView extends javax.swing.JFrame
     private Hashtable<Integer, Hashtable<Integer, Block>> controller;
     private DefaultTableModel tcListModel, tcPropModel, controllerInfoModel;
 
-    private int selectedController = -1;
-    private int userSelectedBlock  = -1;
-    private Block currentBlock     = null;
+    private int   selectedController = -1;
+    private int   userSelectedBlock  = -1;
+    private Block currentBlock       = null;
+
+    private Object   plcObject = null;
+    private Class<?> plcClass;
+    private boolean  plcLoaded = false;
 
     public TrackControllerView(Hashtable<Integer, Hashtable<Integer, Block>> allControllers) 
     {
@@ -25,7 +32,6 @@ public class TrackControllerView extends javax.swing.JFrame
 
         controller = allControllers;
         
-
         for(int tcNum : controller.keySet())
         {
             tcListModel.addRow(new Object [] {"Track Controller " + tcNum});
@@ -33,26 +39,21 @@ public class TrackControllerView extends javax.swing.JFrame
     }
 
     @SuppressWarnings("unchecked")                        
-    private void initComponents() 
-    {
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        
+    private void initComponents() {
         closeTC = new javax.swing.JButton();
         curLine = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tcList = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tcProp = new javax.swing.JTable();
         enableCrossing = new javax.swing.JButton();
         toggleSwitch = new javax.swing.JButton();
         putMaintenance = new javax.swing.JButton();
-
-    
-        tcList = new javax.swing.JTable();
-        tcProp = new javax.swing.JTable();
+        jScrollPane5 = new javax.swing.JScrollPane();
         trainInfo = new javax.swing.JTable();
+        jScrollPane6 = new javax.swing.JScrollPane();
         controllerInfo = new javax.swing.JTable();
+        loadPLC = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cameron Dashti - Track Controller");
@@ -110,11 +111,11 @@ public class TrackControllerView extends javax.swing.JFrame
 
             },
             new String [] {
-                "Block Number", "Track State", "Next Block"
+                "Block Number", "Next Block", "Occupied", "Maintenance", "Crossing"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -131,9 +132,10 @@ public class TrackControllerView extends javax.swing.JFrame
         });
         jScrollPane3.setViewportView(tcProp);
         tcProp.getColumnModel().getColumn(0).setResizable(false);
-        tcProp.getColumnModel().getColumn(0).setHeaderValue("Block Number");
         tcProp.getColumnModel().getColumn(1).setResizable(false);
         tcProp.getColumnModel().getColumn(2).setResizable(false);
+        tcProp.getColumnModel().getColumn(3).setResizable(false);
+        tcProp.getColumnModel().getColumn(4).setResizable(false);
         tcProp.getAccessibleContext().setAccessibleName("tcProp");
         tcProp.getAccessibleContext().setAccessibleParent(this);
 
@@ -213,6 +215,13 @@ public class TrackControllerView extends javax.swing.JFrame
         controllerInfo.getColumnModel().getColumn(0).setResizable(false);
         controllerInfo.getColumnModel().getColumn(1).setResizable(false);
 
+        loadPLC.setText("Load PLC");
+        loadPLC.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                loadProg(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -223,6 +232,8 @@ public class TrackControllerView extends javax.swing.JFrame
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(loadPLC)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(curLine)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(closeTC))
@@ -258,20 +269,27 @@ public class TrackControllerView extends javax.swing.JFrame
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(curLine)
-                    .addComponent(closeTC))
+                    .addComponent(closeTC)
+                    .addComponent(loadPLC))
                 .addGap(20, 20, 20))
         );
 
         closeTC.getAccessibleContext().setAccessibleName("closeTC");
         curLine.getAccessibleContext().setAccessibleName("curLine");
+        loadPLC.getAccessibleContext().setAccessibleName("loadPLC");
 
         enableCrossing.setEnabled(false);
         putMaintenance.setEnabled(false);
         toggleSwitch.setEnabled(false);
 
         pack();
-    }                
-                  
+    }                     
+
+    public Object getPLC ()
+    {
+        return plcObject;
+    }
+                
     private void changeLine(java.awt.event.MouseEvent evt) 
     {
         
@@ -279,87 +297,39 @@ public class TrackControllerView extends javax.swing.JFrame
 
     private void closeTC(java.awt.event.MouseEvent evt) 
     {
-        this.dispose();
+        this.setVisible(false);
     }
 
     private void tcSelected(java.awt.event.MouseEvent evt) 
     {             
+        enableCrossing.setEnabled(false);
+        putMaintenance.setEnabled(false);
+        toggleSwitch.setEnabled(false);
+
         String tcString = (String) tcList.getValueAt(tcList.getSelectedRow(), 0);
         selectedController = Integer.parseInt(tcString.split(" ")[2]);
-
-        while(tcPropModel.getRowCount() > 0)
-        {
-            tcPropModel.removeRow(0);
-        }
 
         while(controllerInfoModel.getRowCount() > 0)
         {
             controllerInfoModel.removeRow(0);
         }
-            
-        for(Block b : controller.get(selectedController).values())
-        {
-            try
-            {
-                tcPropModel.addRow(new Object [] { b.getID(), 
-                                                   b.isOccupied(),
-                                                   b.getNextBlock(b.getStartNode()).getID()});
-            }
-            catch(Exception e)
-            {
-                tcPropModel.addRow(new Object [] { b.getID(), 
-                                                   b.isOccupied(),
-                                                   "none"});
-            }
-        }
 
         controllerInfoModel.addRow(new Object [] { controller.get(selectedController).size(),
                                                    "num Trains 0"});
-    }                                                  
+        refresh();
+    } 
 
-    private void enableCrossing(java.awt.event.MouseEvent evt) {                                
-       //put block in maintenance
-       ScheduledThreadPoolExecutor delayReset = new ScheduledThreadPoolExecutor(1);
-
-       System.out.println("HERE start");
-
-       delayReset.schedule(new Runnable() 
-                           {
-                                public void run()
-                                {
-                                    System.out.println("HERE done");
-                                    //take block out of maintenance
-                                }
-                            }, 30, TimeUnit.SECONDS);
-    }                               
-
-    private void putMaintenanceClicked(java.awt.event.MouseEvent evt) {    
-
-        System.out.println("HERE " + currentBlock.getID()+ " " + userSelectedBlock + " " + selectedController);                                   
-        if(!currentBlock.isOccupied())
-        {
-            currentBlock.setMaintenance(true);
-            tcProp.setValueAt((Object) currentBlock.isOccupied(), tcProp.getSelectedRow(), 1);
-            putMaintenance.setEnabled(false);   
-        }
-    }                                      
-
-    private void toggleSwitchClicked(java.awt.event.MouseEvent evt) {                                     
-        // TODO add your handling code here:
-        if(toggleSwitch.isEnabled())
-        System.out.println("HERE switch");
-    }                                    
-
-    private void blockSelected(java.awt.event.MouseEvent evt) {                               
+    private void blockSelected(java.awt.event.MouseEvent evt) 
+    {                               
         int choosenBlockNum = (int) tcProp.getValueAt(tcProp.getSelectedRow(), 0);
 
         currentBlock = controller.get(selectedController).get(choosenBlockNum);
 
         userSelectedBlock = choosenBlockNum;
 
-        System.out.println("HERE " + currentBlock.getID()+ " " + userSelectedBlock + " " + selectedController + " "+currentBlock.isOccupied());                                   
-        
-        if(currentBlock.isCrossing())
+        putMaintenance.setEnabled(true);
+
+        if(currentBlock.isCrossing() && !currentBlock.getCrossing())
         {
             enableCrossing.setEnabled(true);
         }
@@ -373,22 +343,133 @@ public class TrackControllerView extends javax.swing.JFrame
         {
             enableCrossing.setEnabled(true);
         }*/
+    }                                                    
 
-        if(!currentBlock.isOccupied())
+    private void enableCrossing(java.awt.event.MouseEvent evt) 
+    {                                
+       if(currentBlock.isCrossing() && enableCrossing.isEnabled())
+       {
+            ScheduledThreadPoolExecutor delayReset = new ScheduledThreadPoolExecutor(1);
+
+            currentBlock.setCrossing(true);
+
+            delayReset.schedule(new Runnable() 
+                              {
+                                public void run()
+                                {
+                                    currentBlock.setCrossing(false);
+                                }
+                            }, 30, TimeUnit.SECONDS);
+
+       }
+    }                               
+
+    private void putMaintenanceClicked(java.awt.event.MouseEvent evt) 
+    {    
+      if(putMaintenance.isEnabled())
         {
-            putMaintenance.setEnabled(true);
-        }
-        else
+            currentBlock.setMaintenance(!currentBlock.getMaintenance());
+            tcProp.setValueAt((Object) currentBlock.isOccupied(), tcProp.getSelectedRow(), 2);
+            tcProp.setValueAt((Object) currentBlock.getMaintenance(), tcProp.getSelectedRow(), 3);
+        }  
+    }                                      
+
+    private void toggleSwitchClicked(java.awt.event.MouseEvent evt) 
+    {                                     
+        // TODO add your handling code here:
+        if(toggleSwitch.isEnabled())
         {
-            putMaintenance.setEnabled(false);
+            System.out.println("HERE switch");
         }
-    }     
+            
+    }                                      
+
+    private void loadProg(java.awt.event.MouseEvent evt) 
+    {                          
+        // TODO add your handling code here:
+       String className = "";
+        try
+        {   
+            JFileChooser choosePLC = new JFileChooser();
+            int returnVal = choosePLC.showOpenDialog(null);
+
+            if(returnVal != JFileChooser.APPROVE_OPTION)
+            {
+                return;
+            }
+
+            className = choosePLC.getSelectedFile().getName();
+
+            plcClass = Class.forName("TLTTC."+className.split("\\.")[0]);
+                                                                                       
+            plcObject = plcClass.newInstance();  
+
+            plcClass.getMethod("doMethod", int.class).invoke(plcObject, 5);
+        } 
+        catch (ClassNotFoundException cnfe)
+        {
+            JOptionPane.showMessageDialog(null, className + " is not a valid class file!");
+            return;
+        }
+        catch (Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.toString());
+            return;
+        }
+        
+        plcLoaded = true;
+        loadPLC.setEnabled(false);
+
+        for(Method m : plcClass.getMethods())
+            System.out.println(m);
+    }       
+
+    public void refresh()
+    {
+        while(tcPropModel.getRowCount() > 0)
+        {
+            tcPropModel.removeRow(0);
+        }
+
+        if(selectedController == -1)
+        {
+            return;
+        }
+
+        for(Block b : controller.get(selectedController).values())
+        {
+            String crossing = (b.isCrossing()) ? (""+ b.getCrossing()) : "-";
+            try
+            {
+                tcPropModel.addRow(new Object [] { b.getID(), 
+                                                   b.getNextBlock(b.getStartNode()).getID(),
+                                                   b.isOccupied(),
+                                                   b.getMaintenance(),
+                                                   crossing
+                                                   });
+            }
+            catch(Exception e)
+            {
+                tcPropModel.addRow(new Object [] { b.getID(), 
+                                                   "yard",
+                                                   b.isOccupied(),
+                                                   b.getMaintenance(),
+                                                   crossing
+                                                   });
+            }
+        }
+
+        enableCrossing.setEnabled(false);
+        putMaintenance.setEnabled(false);
+        toggleSwitch.setEnabled(false);
+    }
 
     private javax.swing.JButton closeTC;
     private javax.swing.JButton curLine;
     private javax.swing.JButton enableCrossing;
     private javax.swing.JButton putMaintenance;
     private javax.swing.JButton toggleSwitch;
+    private javax.swing.JButton loadPLC;
 
     private javax.swing.JTable controllerInfo;
     private javax.swing.JTable tcList;
@@ -402,4 +483,3 @@ public class TrackControllerView extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
 }    
-    

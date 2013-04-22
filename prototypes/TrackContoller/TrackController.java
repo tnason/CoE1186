@@ -7,13 +7,16 @@ public class TrackController extends Worker implements constData, Runnable
 	private Module name = Module.trackController;
   private LinkedBlockingQueue<Message> msgs = new LinkedBlockingQueue<Message>();
 
-  private Hashtable<Integer, Hashtable<Integer, Block>> blockUnderController = new Hashtable<Integer, Hashtable<Integer, Block>>();
+  private Hashtable<Integer, Hashtable<Integer, Block>> blockUnderController =
+                                       new Hashtable<Integer, Hashtable<Integer, Block>>();
 
-  TrackControllerView gui;
+  private Object myPLC = null;
+  private TrackControllerView gui;
+
 
   public TrackController()
   {
-      
+  
   }
 
 	public void run()
@@ -22,23 +25,27 @@ public class TrackController extends Worker implements constData, Runnable
 		{
 			if(msgs.peek() != null)
      		{
-        		Message m = msgs.poll();
-        
+        	Message m = msgs.poll();
+          if(m.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority)
+            System.out.println("THROUGH: " +m.getType()+" "+ m.getData().toString());
+
           if(name == m.getDest())
 			    {
-			    	System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
+			    	//System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
           }
 			    else
           {
-            if(m.getType() == constData.msg.MBO_TnCt_Send_Moving_Block_Authority)
-            {
-              
-              
-            }
 
-         			System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+"), (type : " + m.getType()+")");
-              m.updateSender(name);
-          		Environment.passMessage(m);
+            if(m.getType() == msg.MBO_TnCt_Send_Moving_Block_Authority)
+            {
+              // Check if safe MBA and add fixed block.
+            }
+            else if(m.getType() == msg.TnMd_CTC_Send_Block_Occupied)
+            {
+              gui.refresh();
+            }
+            
+            send(m);
         	}
         }
       }
@@ -74,22 +81,18 @@ public class TrackController extends Worker implements constData, Runnable
 
     gui = new TrackControllerView(blockUnderController);
     gui.setVisible(true);
-	}
 
+    //while(gui.getPLC() == null);
+
+    //myPLC = gui.getPLC();
+  }
 	public void setMsg(Message m)
   {
 		msgs.add(m);
   }
 
-  public void send()
-  {
-  	Message m = new Message(name,name,name,msg.verify);
-  	send(m);
-  }
-
   public void send(Message m)
   {
-      System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
       m.updateSender(name);
       Environment.passMessage(m);
   }
