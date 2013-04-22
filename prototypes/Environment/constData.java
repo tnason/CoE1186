@@ -39,6 +39,7 @@ public interface constData
 		TnMd_TcMd_Request_Track_Speed_Limit,
 		Sat_TnCnt_Request_Traversed_Block_Stats,
 		Sat_TnCt_ReceiptConfirm_Traversed_Block_Stats,
+		TcMd_TnCt_Send_Station_State,
 		placeHolder
 	}
 
