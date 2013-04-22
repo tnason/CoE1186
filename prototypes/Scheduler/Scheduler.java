@@ -58,10 +58,12 @@ public class Scheduler extends Worker implements constData
 	{
 		int numTrains;
 
-		numTrains = calculateOptimalTrains();
+		numTrains = calculateOptimalTrains(); //Get minimum number of trains that should be on the track
 
 		if(trains.size() < numTrains)
 		{
+			//Add trains to schedule if there must be more trains on the track and on the schedule
+
 			while(schedule.size() < numTrains)
 			{
 				schedule.add("Train", "Operator", Scheduler.NEXT_TRAIN_NUMBER++, System.currentTimeMillis(), OperatorStatus.SHIFTNOTSTARTED);
@@ -95,6 +97,8 @@ public class Scheduler extends Worker implements constData
 			time = time +1000;
 		}
 	}
+
+	//Searches train list for a train
 
 	private Train findTrain(int trainNumber)
 	{
@@ -150,7 +154,11 @@ public class Scheduler extends Worker implements constData
 
 				if(name == message.getDest())
 				{
+<<<<<<< HEAD
 					System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+=======
+					//System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+>>>>>>> b507b286af5fe1e338666192e5073e9c3596e06f
 
 					switch(message.getType())
 					{
@@ -177,7 +185,11 @@ public class Scheduler extends Worker implements constData
 				}
 				else
 				{
+<<<<<<< HEAD
 					System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
+=======
+					//System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
+>>>>>>> b507b286af5fe1e338666192e5073e9c3596e06f
 					message.updateSender(name);
 					Environment.passMessage(message);
 				}
@@ -186,6 +198,8 @@ public class Scheduler extends Worker implements constData
 			Iterator<TimesObject> i;
 
 			i = timetable.getIterator();
+
+			//Checks timetable to see if train is late to arrive at a station
 
 			while(i.hasNext())
 			{
@@ -220,9 +234,11 @@ public class Scheduler extends Worker implements constData
 
 		trainID = (int)message.getData().get("trainID");
 		trains.add(new Train(trainID, System.currentTimeMillis()));
-		sendTrainUpdate();
+		sendTrainUpdate(); //Notify MBO that a train was added to the track
 
 		operator = schedule.search(trainID);
+
+		//If train isn't in schedule, add it
 
 		if(operator == null)
 		{
@@ -231,6 +247,9 @@ public class Scheduler extends Worker implements constData
 			operatorScheduleChanged();
 			updateTimetable();
 		}
+
+		//If train is in schedule update status
+
 		else
 		{
 			if(operator.status == OperatorStatus.SHIFTNOTSTARTED)
@@ -267,6 +286,8 @@ public class Scheduler extends Worker implements constData
 
 		operator = schedule.search(trainID);
 
+		//Update status of operator
+
 		if(operator.status == OperatorStatus.SHIFTFIRSTHALF)
 		{
 			operator.status = OperatorStatus.ONBREAK;
@@ -285,7 +306,11 @@ public class Scheduler extends Worker implements constData
 
 	public void send(Message message)
 	{
+<<<<<<< HEAD
 	    	System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+=======
+	    	//System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+>>>>>>> b507b286af5fe1e338666192e5073e9c3596e06f
 		Environment.passMessage(message);
 	}
 
@@ -304,6 +329,8 @@ public class Scheduler extends Worker implements constData
 		}
 */
 	}
+
+	//Notifies MBO a train has been added to or removed from the track
 
 	private void sendTrainUpdate()
 	{
@@ -337,6 +364,9 @@ public class Scheduler extends Worker implements constData
 	{
 		listeners.remove(listener);
 	}
+
+
+	//Events
 
 	private synchronized void operatorScheduleChanged()
 	{

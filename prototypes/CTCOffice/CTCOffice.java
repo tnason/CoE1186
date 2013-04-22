@@ -12,8 +12,9 @@ public class CTCOffice extends Worker implements Runnable, constData {
     private Module name = Module.CTC; //CTCOffice?
     private HashMap<Integer, TrainViewModel> _trainList = new HashMap<Integer, TrainViewModel>();
     private HashMap<Integer, BlockViewModel> _blockList = new HashMap<Integer, BlockViewModel>();
-    // 
+    
     private int _trainCount = 0;
+    private CTCOfficeView view = new CTCOfficeView(this);
     
     CTCOffice () {
         // Do any set-up needed, launch the GUI, and get it on!
@@ -32,17 +33,19 @@ public class CTCOffice extends Worker implements Runnable, constData {
                 Message m = msgs.poll();
                 if (name == m.getDest())
                 { // hey, this was sent to me; let's do something
-                    System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + "), (type: " + m.getType() + ")");
+                    //System.out.println("RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + "), (type: " + m.getType() + ")");
                     switch (m.getType()) {
 		                case TnMd_CTC_Confirm_Train_Creation: // hey a train really did get made!
 			                // unpack the data from the message
 			                tID = (Integer) m.getData().get("trainID");
-			                System.out.println("Adding Train #" + tID + " to CTC list...");
+			                System.out.println("\n\nAdding Train #" + tID + " to CTC list...");
 			                addTrainToTrainList(tID);
+			                setFixedAuthority(tID, 1); // default
+			                setSpeed(tID, 10); // default
                         break; // end Confirm train creation case
 		                case TnMd_CTC_Request_Train_Destruction: // Aw snap! Train's going away, better let everyone know
 			                tID = (Integer) m.getData().get("trainID");
-			                System.out.println("Removing Train #" + tID + " to CTC list...");
+			                System.out.println("\n\nRemoving Train #" + tID + " to CTC list...");
 			                removeTrainFromTrainList(tID);
                         break; // end train destruction case
 		                case TnMd_CTC_Send_Block_Occupied: // Train has definitely moved to a new block; let e'rybody know
@@ -60,7 +63,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
                     }
                 }
                 else { // it ain't ours
-                    System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
+                    //System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+"), (type : " + m.getType()+")");
                     m.updateSender(name);
                     Environment.passMessage(m);
                 }
@@ -74,7 +77,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
     
     public void send(Message m)
     {
-        System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+        //System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
         Environment.passMessage(m);
     }
     
@@ -138,7 +141,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
             train.setFixedBlockAuthority(authority);
             _trainList.put(tID, train);            
             // create a message to send to the train controller
-            Message m = new Message(Module.CTC, Module.CTC, Module.trainController, msg.CTC_TnCt_Send_Manual_FixedBlock, new String[] {"trainID", "authority"}, new Object[] {tID, authority});
+            Message m = new Message(Module.CTC, Module.CTC, Module.trainController, msg.CTC_TnCt_Send_Manual_FixedBlock, new String[] {"trainID", "authority", "blockID"}, new Object[] {tID, authority, train.getCurrentBlockID()});
         }
         else {
             System.out.println("Respect my authoritah! And make that number positive!");
@@ -152,7 +155,7 @@ public class CTCOffice extends Worker implements Runnable, constData {
             train.setMovingBlockAuthority(authority);
             _trainList.put(tID, train);            
             // create a message to send to the train controller
-            Message m = new Message(Module.CTC, Module.CTC, Module.trainController, msg.CTC_TnCt_Send_Manual_MovingBlock, new String[] {"trainID", "authority"}, new Object[] {tID, authority});
+            Message m = new Message(Module.CTC, Module.CTC, Module.trainController, msg.CTC_TnCt_Send_Manual_MovingBlock, new String[] {"trainID", "authority", "blockID"}, new Object[] {tID, authority, train.getCurrentBlockID()});
         }
         else {
             System.out.println("Respect my (moving) authoritah! And make that number positive!");

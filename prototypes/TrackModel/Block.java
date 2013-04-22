@@ -1,14 +1,59 @@
 package TLTTC;
 import java.util.*;
 
+
+//notice-
+//I have to clean this class up a lot, I'll be refactoring a lot over the next few days
+
+
+
 public abstract class Block {
+
+	/* Cameron: able to toggle crossing? For drawing too.*/
+
+	boolean crossingEnabled = false;
+	public void setCrossing(boolean crossingState)
+	{
+		crossingEnabled = crossingState;
+	}
+
+	public boolean getCrossing()
+	{
+		return crossingEnabled;
+	}
+
+	/*updates from 4/16/13*/
+	boolean isCrossing = false;
+	boolean isStation = false;
+	String stationName;
+	
+	public boolean isCrossing()
+	{
+		return isCrossing;	
+	}
+	
+	public boolean isStation()
+	{
+		return isStation;
+	}
+	
+	public String getStationName()
+	{
+		return stationName;
+	}
 	
 	public Block(Node start, Node stop, int c){
 		startNode = start;
 		stopNode = stop;
 		controller.add(c);
 	}
-	
+
+	public Block(Node start, Node stop)
+	{
+		startNode = start;
+		stopNode = stop;
+	}
+
 	public String toString(){
 		return "Abstract Block Class";
 	}
@@ -39,8 +84,14 @@ public abstract class Block {
 	public void setOccupation(boolean state){
 		occupied = state;
 	}
+
 	public void setMaintenance(boolean state){
 		maintenance = state;
+	}
+
+	public boolean getMaintenance()
+	{
+		return maintenance;
 	}
 	
 	public void setID(int id)
@@ -54,7 +105,7 @@ public abstract class Block {
 	}
 
 	public boolean isOccupied(){
-		return occupied;
+		return occupied || maintenance;
 	}
 	
 	public double getGrade(){
@@ -63,9 +114,9 @@ public abstract class Block {
 		double dy = stopNode.getY() - startNode.getY();
 		double dz = stopNode.getZ() - startNode.getZ();
 		
-		double dist = Math.sqrt(dx*dx * dy*dy);
+		double dist = Math.sqrt(dx*dx + dy*dy);
 		
-		return dz/dist;
+		return dz/dist * 100;
 	}
 	
 	public double getLength(){
@@ -78,11 +129,11 @@ public abstract class Block {
 	}
 	
 	public double getPowerLimit(){
-		return 0;
+		return 10000;
 	}
 	
 	public double getSpeedLimit(){
-		return 0;
+		return 15; //meters per second
 	}
 	
 	public boolean isUnderground(){
@@ -126,9 +177,9 @@ public abstract class Block {
   
   public Node getYardNode(){
     //return a yard node if it belongs to block else return null
-	  if(startNode.getNodeType() == NodeType.Yard)
+	  if(startNode.getNodeType() == constData.NodeType.Yard)
 		  return startNode;
-	  if(stopNode.getNodeType() == NodeType.Yard)
+	  if(stopNode.getNodeType() == constData.NodeType.Yard)
 		  return stopNode;
 	  return null;
   }

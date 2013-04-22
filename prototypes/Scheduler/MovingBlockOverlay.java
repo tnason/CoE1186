@@ -3,6 +3,7 @@ package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
 
+@SuppressWarnings("unchecked")
 public class MovingBlockOverlay extends Worker implements constData
 {
 	public static long DELIVERY_FREQUENCY = 1000; //milliseconds
@@ -42,6 +43,8 @@ public class MovingBlockOverlay extends Worker implements constData
 		Methods
 	*/
 
+	//Find train in linked list
+
 	private Train findTrain(int trainNumber)
 	{
 		Train t;
@@ -71,6 +74,8 @@ public class MovingBlockOverlay extends Worker implements constData
 		return value;
 	}
 
+	//Calculate moving block between trains
+
 	private double calculateMovingBlock(double trainLocation, double trainSpeed, double forwardTrainLocation, double forwardTrainSpeed)
 	{
 /*
@@ -98,7 +103,11 @@ public class MovingBlockOverlay extends Worker implements constData
 
 				if(name == message.getDest())
 				{
+<<<<<<< HEAD
 					System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+=======
+					//System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+>>>>>>> b507b286af5fe1e338666192e5073e9c3596e06f
 
 					switch(message.getType())
 					{
@@ -118,11 +127,17 @@ public class MovingBlockOverlay extends Worker implements constData
 				}
 				else
 				{
+<<<<<<< HEAD
 					System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
+=======
+					//System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
+>>>>>>> b507b286af5fe1e338666192e5073e9c3596e06f
 					message.updateSender(name);
 					Environment.passMessage(message);
 				}
 			}
+
+			//Send messages in outboxes after 1 second has elapsed
 
 			if(nextDelivery < System.currentTimeMillis())
 			{
@@ -138,12 +153,17 @@ public class MovingBlockOverlay extends Worker implements constData
 				forwardTrain = trains.previous(); //returns selected train, then goes backwards
 				train = trains.selected();
 
+				//If conditions are correct to calcuate moving block, do it
+
 				if(forwardTrain.isLocationValid() && train.isLocationValid() && train.isStoppingDistanceValid())
 				{
 					sendAuthority(train.trainNumber, calculateMovingBlock(train.getLocation(), train.getStoppingDistance(), forwardTrain.getLocation(), 0));
 					forwardTrain.setLocationValid(false);
 					train.setStoppingDistanceValid(false);
 				}
+
+				//If not, create messages to send to trains
+
 				else
 				{
 					if(!forwardTrain.isLocationValid())
@@ -177,6 +197,8 @@ public class MovingBlockOverlay extends Worker implements constData
 		
 	}
 
+	//Update train information in linked list
+
 	private void receivedStoppingDistance(Message message)
 	{
 		Train train;
@@ -190,6 +212,11 @@ public class MovingBlockOverlay extends Worker implements constData
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	//When train is added/removed from track, update object
+
+>>>>>>> b507b286af5fe1e338666192e5073e9c3596e06f
 	private void receivedTrainUpdate(Message message)
 	{
 		trains = (MyLinkedList<Train>)message.getData().get("trainList");
@@ -201,9 +228,15 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	public void send(Message message)
 	{
+<<<<<<< HEAD
 		System.out.println("SENDING MSG: start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
+=======
+		//System.out.println("SENDING MSG: start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
+>>>>>>> b507b286af5fe1e338666192e5073e9c3596e06f
 		Environment.passMessage(message);
 	}
+
+	//Send messages from outboxes
 
 	public void sendMessages()
 	{
@@ -212,6 +245,8 @@ public class MovingBlockOverlay extends Worker implements constData
 		Message m;
 
 		keys = authorityOutbox.keys();
+
+		//Send authorites to trains
 
 		while(keys.hasMoreElements())
 		{
@@ -226,6 +261,8 @@ public class MovingBlockOverlay extends Worker implements constData
 
 		keys = locationOutbox.keys();
 
+		//Request train locations from satellite
+
 		while(keys.hasMoreElements())
 		{
 			trainNumber = (int)keys.nextElement();
@@ -238,6 +275,8 @@ public class MovingBlockOverlay extends Worker implements constData
 		}
 
 		keys = distanceOutbox.keys();
+
+		//Request train stopping distance from trains
 
 		while(keys.hasMoreElements())
 		{

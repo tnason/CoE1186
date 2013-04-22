@@ -14,15 +14,24 @@ public class TrainContainer extends Worker implements Runnable, constData
   
 	private Timer motionTimer;
 
-	private final double TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time!)
+	private SystemClock clock;
 
-	private int timerTrigger = 1; //real-time value (in ms) for triggering motionStep() calls
+	//This value is just a suggestion for integration's sake!
+	private final double TIME_STEP = .1; //timestep (in s) for train motion integration (simulation time)
+
+	private long timerTrigger; //real-time value (in ms) for triggering motionStep() calls
+
+	private int motionStepCount = 0;
+
+	private TrainControllerModule trc;
+
 	//For now, simulationSpeedup = (trainTimestep * 1000) / timerTrigger
 
 	//for message sending/receiving
 	int trainID;
 	TrainModel tm;
 	Block bl;
+	Node n;
 	Message outgoingMessage;
 	
 
@@ -32,7 +41,6 @@ public class TrainContainer extends Worker implements Runnable, constData
 		msgs  = new LinkedBlockingQueue<Message>();
 		trains = new Hashtable<Integer, TrainModel>();
 		motionTimer = new Timer();
-  		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every X ms
 	}
   
 	//Driver for timed motion!
@@ -43,16 +51,35 @@ public class TrainContainer extends Worker implements Runnable, constData
   			Enumeration<Integer> enumKey = trains.keys();
   			while(enumKey.hasMoreElements())
   			{
-  				trains.get(enumKey.nextElement()).motionStep(); //move the trains!
+				trainID = enumKey.nextElement();
+				tm = trains.get(trainID);
+				if(tm.whiteFlag)
+				{
+					//kill it!
+					trains.remove(trainID);
+				}
+				else
+				{
+					tm.motionStep(clock); //move the trains!
+				}
 	  		}
+			motionStepCount++;
   		}
 	}
 
-	public void newTrain(int TrainID, Block start)
+	public TrainModel newTrain(int TrainID, Block start, double step)
 	{
-		trains.put(TrainID, new TrainModel(TrainID, start, TIME_STEP));
-		//send a message to TrainControllerModule to make a new, linked TrainController
+		TrainModel n = new TrainModel(TrainID, start, step);
+		trains.put(TrainID, n);
+		return n;
+	}
 
+	public void init(TrainControllerModule other, SystemClock sys)
+	{
+		trc = other;
+		clock = sys;
+		timerTrigger = (long)(TIME_STEP * 1000.0)/(long)clock.SIMULATION_SPEEDUP;
+  		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every X ms
 	}
 
 	public void run()
@@ -68,39 +95,39 @@ public class TrainContainer extends Worker implements Runnable, constData
 				if(name == mine.getDest())
 				{
 					
-					System.out.println("RECEIVED MESSAGE ~ (source : " + mine.getSource() + "), (dest : " + mine.getDest() + ")\n");
+					//System.out.println("RECEIVED MESSAGE ~ (source : " + mine.getSource() + "), (dest : " + mine.getDest() + ")\n");
 
 					if(mine.getData() != null)
-					{
-						//System.out.println(mine.getData().get("check")); ????
-						
+					{	
 						//handling incoming messages
 						switch (mine.getType())
 						{
 							case CTC_TnMd_Request_Train_Creation:
-							  bl = (Block)mine.getData().get("yard");
+								n = (YardNode)mine.getData().get("yardNode");
+								bl = (Block)mine.getData().get("yardBlock");
 								if(bl.isOccupied())
 								{
 									//fail silently
 								} 
 								else
 								{
-									tm = new TrainModel((int)mine.getData().get("trainID"), bl, TIME_STEP);
-								
+									System.out.println("	!!!!!!!!!!!!!!!!!NEW TRAIN!!!!!!!!");
+
+									tm = newTrain((int)mine.getData().get("trainID"), bl, TIME_STEP);
+									
+									tm.setYardNode(n);
 									//send associated messages!!!
+
+									// Cameron: Does this ever happen? Does it need to happen?
+									trc.createTrainController((int)mine.getData().get("trainID"));
 									
 									// Send will pass message to environment. Notify to console of msg send.
 									//send TnMd_CTC_Confirm_Train_Creation
 									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Confirm_Train_Creation, new String[] {"trainID"}, new Object[] {mine.getData().get("trainID")});
 									send(outgoingMessage); 
 
-									//send TnMd_TcMd_Request_Yard_Node
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackModel, msg.TnMd_TcMd_Request_Yard_Node, new String[] {"trainID", "blockID"}, new Object[] {mine.getData().get("trainID"), (Object)(bl.getID())});
-									send(outgoingMessage);
-
 									//send TnMd_TnCt_Request_Train_Controller_Creation
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Request_Train_Controller_Creation, new String[] {"trainID"}, new Object[] {mine.getData().get("trainID")});
-									send(outgoingMessage);
+									//deprecated
 
 									//send TnMd_Sch_Notify_Yard
 									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID","blockID"}, new Object[] {(Object)false, mine.getData().get("trainID"), (Object)(bl.getID())});
@@ -108,24 +135,10 @@ public class TrainContainer extends Worker implements Runnable, constData
 								}
 								break;
 							case TnCt_TnMd_Send_Power:
-								//update power setting
-								trainID = (int)(mine.getData().get("trainID"));
-								tm = trains.get(trainID);
-
-								tm.setPower((double)mine.getData().get("power"));
-								break;
-							case TcMd_TnMd_Send_Yard_Node:
-								trainID = (int)(mine.getData().get("trainID"));
-								tm = trains.get(trainID);
-
-								//tm.setYardNode((Node)mine.getData().get("yard"));
+								//deprecated
 								break;
 							case TnCt_TnMd_Request_Train_Velocity:
-								trainID = (int)(mine.getData().get("trainID"));
-								tm = trains.get(trainID);
-							
-								outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trainController, msg.TnMd_TnCt_Send_Train_Velocity, new String[] {"trainID","velocity"}, new Object[] {(Object)trainID, (Object)tm.getVelocity()});
-
+								//deprecated
 								break;
 							default:
 								//stuff
@@ -139,13 +152,20 @@ public class TrainContainer extends Worker implements Runnable, constData
 				}
 				else
 				{
-					System.out.println("PASSING MSG ~ (source : " + mine.getSource() + "), (step : " + name + "), (dest : "+mine.getDest()+")");
+					//System.out.println("PASSING MSG ~ (source : " + mine.getSource() + "), (step : " + name + "), (dest : " + mine.getDest()+"), (type : " + mine.getType()+")");
           			mine.updateSender(name);
-					Environment.passMessage(mine);
+					send(mine);
 				}
 			}
 		}
 	}
+
+	//methods called by TrainControllerModule!
+	TrainModel getTrain(int trainID)
+	{
+		return trains.get(trainID);
+	}
+
 
 	public void setMsg(Message m)
 	{
@@ -156,12 +176,12 @@ public class TrainContainer extends Worker implements Runnable, constData
 	{
 		//Message outgoing = new Message(name, name, Module.trainController);
 		//System.out.println("SENDING MSG: start->"+outgoing.getSource() + " : dest->"+outgoing.getDest()+"\n");
-		//Environment.passMessage(outgoing);
+		//send(outgoing);
 	}
 
 	public void send(Message m)
 	{
-   		System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
+   		//System.out.println("SENDING MSG ~ (start : "+m.getSource() + "), (dest : "+m.getDest()+"), (type : " + m.getType()+ ")");
         m.updateSender(name);
         Environment.passMessage(m);
 	}

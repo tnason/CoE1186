@@ -1,4 +1,5 @@
 package TLTTC;
+
 public interface constData
 {
 	public enum Module
@@ -19,20 +20,25 @@ public interface constData
 		CTC_TnCt_Send_Manual_Speed,
 		TcCt_TnCt_Send_Fixed_Block_Authority,
 		TcMd_TnCt_Send_Track_Speed_Limit,
-		TcMd_TnMd_Send_Yard_Node,
+		TcMd_TnCt_Confirm_Occupancy_Return_Block_Stats,
+		TcMd_TnCt_Confirm_Depopulation,
+		TcMd_TnCt_Send_Track_Gnd_State,
+		TcMd_TnCt_Send_Station_Name,
 		TnMd_Sch_Notify_Yard,
 		TnMd_CTC_Confirm_Train_Creation,
 		TnMd_CTC_Request_Train_Destruction,
 		TnMd_CTC_Send_Block_Occupied,
 		TnMd_TcCt_Update_Block_Occupancy,
-		TnMd_TcMd_Request_Yard_Node,
-		TnMd_TnCt_Request_Train_Controller_Creation,
-		TnMd_TnCt_Request_Train_Controller_Destruction,
-		TnMd_TnCt_Send_Train_Velocity,
-		TnCt_TnMd_Send_Power,
-		TnCtTcMdRequestTrackSpeedLimit, verify,
-		TnCt_TnMd_Request_Train_Velocity,
+		TnMd_TnCt_Request_Train_Controller_Creation, //deprecated 
+		TnMd_TnCt_Request_Train_Controller_Destruction, //deprecated
+		TnMd_TnCt_Send_Train_Velocity, //deprecated
+		TnCt_TnMd_Send_Power, //deprecated
+		verify,
+		TnCt_TnMd_Request_Train_Velocity, //deprecated
 		TnCt_TcMd_Request_Track_Speed_Limit,
+		TnMd_TcMd_Request_Track_Speed_Limit,
+		Sat_TnCnt_Request_Traversed_Block_Stats,
+		Sat_TnCt_ReceiptConfirm_Traversed_Block_Stats,
 		placeHolder
 	}
 

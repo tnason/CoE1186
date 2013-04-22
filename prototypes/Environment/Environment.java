@@ -1,20 +1,14 @@
 package TLTTC;
+
 import java.util.*;
 import java.util.concurrent.*;
-
-/*
-public enum Module
-	{
-		satellite, scheduler, MBO, CTC, trackController,
-		trackModel, trainModel, trainController
-	}
-
-*/
 
 public class Environment implements constData
 {
     private static LinkedBlockingQueue<Message> messageQ = new LinkedBlockingQueue<Message>();
     private static Scanner s = new Scanner(System.in);
+
+	private static SystemClock sysClk; 
 
     public static void main(String [] args)
     {
@@ -53,9 +47,15 @@ public class Environment implements constData
 		Thread trmThread = new Thread(trm);
 		Thread ctcThread = new Thread(ctc);
 
-		((TrackModel)tkm).initTrack();
-		((TrackController)tkc).init(tkm);
+		//Initialize the system clock here
+		//Pass it to your module through your init()
+		sysClk = new SystemClock();
 
+		((TrackModel)tkm).init();
+		((TrainControllerModule)trc).init((TrainContainer)trm);
+		((TrainContainer)trm).init((TrainControllerModule)trc, sysClk);
+		((TrackController)tkc).init(tkm);
+		
 		mboThread.start();
 		schThread.start();
 		tkcThread.start();
@@ -67,35 +67,30 @@ public class Environment implements constData
 		Message begin = new Message(Module.CTC, Module.CTC, Module.trainModel, msg.CTC_TnMd_Request_Train_Creation,
 							new String [] {"trainID"}, new Object [] {0});
 
-		ctc.send(begin);//w2.send();w3.send();w4.send();w5.send();
+		ctc.send(begin);
 
 		Thread t = new Thread();
-		try{t.sleep(7000);}catch(Exception e){}
 
 		while(true)
 		{
-			if(messageQ.peek() != null)
+			while(messageQ.peek() != null)
 			{
 				Message inbox = messageQ.poll();
 
-				System.out.println("\t"+ inbox.getSender() + " " + inbox.getDest());
+				if(inbox.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority)
+					System.out.println("NEW " + inbox.getType()+" " + inbox.getData().toString() + " "+inbox.getSender());
 
 				if(modualOrder.indexOf(inbox.getSender()) < modualOrder.indexOf(inbox.getDest()))
 				{
 					Module right = modualOrder.get(modualOrder.indexOf(inbox.getSender()) + 1);
-					System.out.print("right " + (modualOrder.indexOf(inbox.getSender())) + " " + (modualOrder.indexOf(inbox.getSender()) + 1));
 					modWorker.get(right).setMsg(inbox);
-					System.out.println(" " + (modualOrder.indexOf(right)));
-
 				}
 				else if(modualOrder.indexOf(inbox.getSender()) > modualOrder.indexOf(inbox.getDest()))
 				{
 					Module left = modualOrder.get(modualOrder.indexOf(inbox.getSender()) - 1);
-					System.out.println("left " + (modualOrder.indexOf(inbox.getSender())) + " " + (modualOrder.indexOf(inbox.getSender()) - 1));
 					modWorker.get(left).setMsg(inbox);
 				}
 			}
-			try{t.sleep(1000);}catch(Exception e){}
 		}
     }
 

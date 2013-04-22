@@ -1,6 +1,7 @@
 package TLTTC;
 
-public abstract class Node {
+public abstract class Node implements constData
+ {
 	public Node(){
 		nodeType = NodeType.Node;
 	}
@@ -16,6 +17,13 @@ public abstract class Node {
 		
 		
 		return sb.toString();
+	}
+	
+	public void setInput(Block b){
+		input = b;
+	}
+	public void setOutput(Block b){
+		output = b;
 	}
 	
 	/*Unique identifier*/
@@ -44,7 +52,7 @@ public abstract class Node {
 	}
 	
 	public double getY(){
-		return zPos;
+		return yPos;
 	}
 	
 	public double getZ(){
