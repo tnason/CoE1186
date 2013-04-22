@@ -63,8 +63,8 @@ import java.util.*;
     public Hashtable<Integer, Integer> nextBlocksForTrains ()
     {
         Hashtable<Integer, Integer> blocks = new Hashtable<Integer, Integer>();
-        @SuppressWarnings("unchecked")
-        ArrayList<TrainViewModel> trains = (ArrayList<TrainViewModel>) _trainList.elements();
+       
+        ArrayList<TrainViewModel> trains = new ArrayList<TrainViewModel>(_trainList.values());
         
         for (TrainViewModel train : trains)
         {

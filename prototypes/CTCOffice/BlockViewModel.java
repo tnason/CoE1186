@@ -12,7 +12,7 @@ public class BlockViewModel
     private Integer _occupantID = -1;
     private boolean _occupied = false;
     
-    BlockViewModel ( Integer bID )
+    public BlockViewModel ( Integer bID )
     {
         _blockID = bID;
     }

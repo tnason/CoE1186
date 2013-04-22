@@ -43,11 +43,11 @@ public class TrainController
     
     // Test variables -- Remove later
     velocity = 5;
-    trainOperatorVelocity = 10;
+    trainOperatorVelocity = 100;
     ctcOperatorVelocity = 1000;
     trackLimit = 15;
     
-    fixedBlockAuth = 10;
+    fixedBlockAuth = 1400;
     ctcFixedBlockAuth = 1400;
     ctcMovingBlockAuth = 1400;
     movingBlockAuth = 1400;
@@ -63,28 +63,32 @@ public class TrainController
     {
       tm.setPower(0.0);
     }
-    else
-    {
-      velocity = tm.getVelocity();
-      double authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
-      // Train's maximum non-emergency deceleration is -1.2098 m/s^2.
-      // Using vf^2 = vi^2 + 2ad = 0 (final velocity cannot be > 0), vi = sqrt(-2ad) = sqrt(2*1.2098*authority)
-      double authorityVelocityLimit = Math.sqrt(2.4196*authority);
-      
-      double velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
-      if (velocitySetpoint > Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
-      {
-        velocitySetpoint = Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit); // set to next highest allowable velocity
-      }
-      
-      if (power < trainMaxPower)
-      {
-        uk = uk + (T/2)*(ek + (velocitySetpoint - velocity));
-      }
-      ek = velocitySetpoint - velocity; // kth sample of velocity error
-      power = ((KP*ek)+(KI*uk));
-      tm.setPower(power);
-    }
+	else
+	{
+		velocity = tm.getVelocity();
+		double authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
+		// At max train acceleration on steepest slope:
+		// a = F/m = (.5 + g*sin(2.86) - .001*g*cos(2.86)) = .9794 m/s^2
+		// d = (vi)(t) + (1/2)(a)(t^2) = vi*5.281 + (1/2)*.9794*27.889
+		// where t = 5.281 s is the average time to enter a new block at max speed
+		double authorityVelocityLimit = (Math.abs(authority - 13.657)/5.281);
+		
+		double velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
+		
+    if (velocitySetpoint > Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
+		{
+		  velocitySetpoint = Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit); // set to next highest allowable velocity
+		}
+
+		if (power < trainMaxPower)
+		{
+		  uk = uk + (T/2)*(ek + (velocitySetpoint - velocity));
+		}
+		ek = velocitySetpoint - velocity; // kth sample of velocity error
+		power = ((KP*ek)+(KI*uk));
+		tm.setPower(power);
+
+	}
   }
   
   

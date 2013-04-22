@@ -142,7 +142,8 @@ public class Scheduler extends Worker implements Runnable, constData
 
 				if(name == message.getDest())
 				{
-					// System.out.println("\nRECEIVED MESSAGE " + message.getType() +": source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+
+					//System.out.println("\nRECEIVED MESSAGE " + message.getType() +": source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 					//System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 
 					switch(message.getType())
@@ -170,7 +171,11 @@ public class Scheduler extends Worker implements Runnable, constData
 				}
 				else
 				{
+<<<<<<< HEAD
 					// System.out.println("PASSING MESSAGE " + message.getType() + ": step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
+=======
+					//System.out.println("PASSING MESSAGE " + message.getType() + ": step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
+>>>>>>> bdc66616ebbb0c5b92b088ffa1771a825bc9ea04
 					//System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
 					message.updateSender(name);
 					Environment.passMessage(message);
@@ -288,7 +293,11 @@ public class Scheduler extends Worker implements Runnable, constData
 
 	public void send(Message message)
 	{
+<<<<<<< HEAD
 	    	// System.out.println("SENDING MESSAGE " + message.getType() + ": start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+=======
+	    	//System.out.println("SENDING MESSAGE " + message.getType() + ": start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+>>>>>>> bdc66616ebbb0c5b92b088ffa1771a825bc9ea04
 	    	//System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 		Environment.passMessage(message);
 	}
