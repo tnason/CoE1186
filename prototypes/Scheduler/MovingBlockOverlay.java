@@ -93,6 +93,7 @@ public class MovingBlockOverlay extends Worker implements constData
 
 				if(name == message.getDest())
 				{
+					System.out.println("\nRECEIVED MESSAGE " + message.getType() + ": source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 					//System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 
 					switch(message.getType())
@@ -113,6 +114,7 @@ public class MovingBlockOverlay extends Worker implements constData
 				}
 				else
 				{
+					System.out.println("PASSING MESSAGE " + message.getType() + ": step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
 					//System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
 					message.updateSender(name);
 					Environment.passMessage(message);
@@ -227,7 +229,6 @@ public class MovingBlockOverlay extends Worker implements constData
 			Collections.sort(trains);
 		}
 	}
-
 	//When train is added/removed from track, update object
 
 	private void receivedTrainUpdate(Message message)
@@ -241,6 +242,7 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	public void send(Message message)
 	{
+		System.out.println("SENDING MSG " + message.getType() + ": start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
 		//System.out.println("SENDING MSG: start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
 		message.updateSender(name);
 		Environment.passMessage(message);

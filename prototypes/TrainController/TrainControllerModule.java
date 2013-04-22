@@ -38,7 +38,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
             {
               tc = controllers.get(trainID); // Local TrainController
             }
-        
+            
             switch (m.getType())
             {
               case Sat_TnCnt_Request_Traversed_Block_Stats: //???????????
@@ -69,8 +69,8 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 tc.setUnderground((boolean)(m.getData().get("state")));
                 break;
               case TcMd_TnCt_Send_Station_State: // Station state from track model
-  			tc.setInStation((boolean)(m.getData().get("state")));
-				break;
+                tc.setInStation((boolean)(m.getData().get("state")));
+                break;
               case TcMd_TnCt_Send_Station_Name: // Next station name from track model
                 tc.setNextStation((String)(m.getData().get("stationName")));
                 break;
