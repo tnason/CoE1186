@@ -416,6 +416,7 @@ public class TrackControllerView extends javax.swing.JFrame
             JOptionPane.showMessageDialog(null, e.toString());
             return;
         }
+        
         plcLoaded = true;
         loadPLC.setEnabled(false);
 
