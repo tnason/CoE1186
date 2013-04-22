@@ -43,18 +43,18 @@ public class TrainController
     
     // Test variables -- Remove later
     velocity = 5;
-    trainOperatorVelocity = 10;
+    trainOperatorVelocity = 100;
     ctcOperatorVelocity = 1000;
     trackLimit = 15;
     
-    fixedBlockAuth = 10;
+    fixedBlockAuth = 1400;
     ctcFixedBlockAuth = 1400;
     ctcMovingBlockAuth = 1400;
     movingBlockAuth = 1400;
   }
   
   
-  public double setPower() // this method is called whenever an authority or new speed limit is received
+  public void setPower() // this method is called whenever an authority or new speed limit is received
   {
     // get failure flags and update UI
     // get time for UI
@@ -71,10 +71,11 @@ public class TrainController
 		// a = F/m = (.5 + g*sin(2.86) - .001*g*cos(2.86)) = .9794 m/s^2
 		// d = (vi)(t) + (1/2)(a)(t^2) = vi*5.281 + (1/2)*.9794*27.889
 		// where t = 5.281 s is the average time to enter a new block at max speed
-		double authorityVelocityLimit = ((authority - 13.657)/5.281);
+		double authorityVelocityLimit = (Math.abs(authority - 13.657)/5.281);
 		
 		double velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
-		if (velocitySetpoint > Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
+		
+    if (velocitySetpoint > Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
 		{
 		  velocitySetpoint = Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit); // set to next highest allowable velocity
 		}
@@ -86,8 +87,8 @@ public class TrainController
 		ek = velocitySetpoint - velocity; // kth sample of velocity error
 		power = ((KP*ek)+(KI*uk));
 		tm.setPower(power);
+
 	}
-  return 0.0;
   }
   
   

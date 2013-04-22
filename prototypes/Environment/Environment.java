@@ -77,7 +77,7 @@ public class Environment implements constData
 			{
 				Message inbox = messageQ.poll();
 
-				//if(inbox.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority)
+				if(inbox.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority)
 					System.out.println("NEW " + inbox.getType()+" " + inbox.getData().toString() + " "+inbox.getSender()+"\n");
 
 				if(modualOrder.indexOf(inbox.getSender()) < modualOrder.indexOf(inbox.getDest()))
