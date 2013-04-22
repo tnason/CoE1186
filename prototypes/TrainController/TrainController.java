@@ -54,40 +54,37 @@ public class TrainController
   }
   
   
-  public double setPower() // this method is called whenever an authority or new speed limit is received
+  public void setPower() // this method is called whenever an authority or new speed limit is received
   {
     // get failure flags and update UI
     // get time for UI
-  
+    
     if (engineFail || signalPickupFail || brakeFail) // If train failure, stop train
-	{
-		tm.setPower(0.0);
+    {
+      tm.setPower(0.0);
     }
-	else
-	{
-		velocity = tm.getVelocity();
-		double authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
-		// At max train acceleration on steepest slope:
-		// a = F/m = (.5 + g*sin(2.86) - .001*g*cos(2.86)) = .9794 m/s^2
-		// d = (vi)(t) + (1/2)(a)(t^2) = vi*5.281 + (1/2)*.9794*27.889
-		// where t = 5.281 s is the average time to enter a new block at max speed
-		double authorityVelocityLimit = ((authority - 13.657)/5.281);
-		
-		double velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
-		if (velocitySetpoint > Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
-		{
-		  velocitySetpoint = Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit); // set to next highest allowable velocity
-		}
-
-		if (power < trainMaxPower)
-		{
-		  uk = uk + (T/2)*(ek + (velocitySetpoint - velocity));
-		}
-		ek = velocitySetpoint - velocity; // kth sample of velocity error
-		power = ((KP*ek)+(KI*uk));
-		tm.setPower(power);
-	}
-  return 0.0;
+    else
+    {
+      velocity = tm.getVelocity();
+      double authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
+      // Train's maximum non-emergency deceleration is -1.2098 m/s^2.
+      // Using vf^2 = vi^2 + 2ad = 0 (final velocity cannot be > 0), vi = sqrt(-2ad) = sqrt(2*1.2098*authority)
+      double authorityVelocityLimit = Math.sqrt(2.4196*authority);
+      
+      double velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
+      if (velocitySetpoint > Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
+      {
+        velocitySetpoint = Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit); // set to next highest allowable velocity
+      }
+      
+      if (power < trainMaxPower)
+      {
+        uk = uk + (T/2)*(ek + (velocitySetpoint - velocity));
+      }
+      ek = velocitySetpoint - velocity; // kth sample of velocity error
+      power = ((KP*ek)+(KI*uk));
+      tm.setPower(power);
+    }
   }
   
   
@@ -97,11 +94,11 @@ public class TrainController
     // get door status from train model
     
     if (velocity == 0 && inStation && !doorsOpen)
-	{
+    {
       // open doors
     }
     else if (velocity != 0 && doorsOpen)
-	{
+    {
       // close doors
     }
   }
@@ -111,12 +108,12 @@ public class TrainController
     // get time from train model and set daytime variable
     
     if (!daytime || underground && !lightsOn)
-	{
+    {
       // turn on lights
       // change UI
     }
     else if (daytime && !underground && lightsOn)
-	{
+    {
       // turn off lights
       // change UI
     }
@@ -125,83 +122,83 @@ public class TrainController
   
   public void announceStation() // this method is called whenever a station name is sent to the train controller
   {
-      // announce station on train model
-      // update UI so that button cannot be pressed
+    // announce station on train model
+    // update UI so that button cannot be pressed
   }
   
   
   public void setMovingBlockAuth(double m)
   {
-	movingBlockAuth = m;
-	//sendPower();
-  setPower();
+    movingBlockAuth = m;
+    //sendPower();
+    setPower();
   }
   
   
   public void setCtcMovingBlockAuth(double m)
   {
-	ctcMovingBlockAuth = m;
-	//sendPower();
-  setPower();
+    ctcMovingBlockAuth = m;
+    //sendPower();
+    setPower();
   }
   
   
   public void setFixedBlockAuth(double f)
   {
-	fixedBlockAuth = f;
-	//sendPower();
-  setPower();
+    fixedBlockAuth = f;
+    //sendPower();
+    setPower();
   }
   
   
   public void setCtcFixedBlockAuth(double f)
   {
-	ctcFixedBlockAuth = f;
-	//sendPower();
-  setPower();
+    ctcFixedBlockAuth = f;
+    //sendPower();
+    setPower();
   }
   
   
   public void setCtcOperatorVelocity(double v)
   {
-	ctcOperatorVelocity = v;
-	//sendPower();
-  setPower();
+    ctcOperatorVelocity = v;
+    //sendPower();
+    setPower();
   }
   
   
   public void setTrainOperatorVelocity(double v)
   {
-	trainOperatorVelocity = v;
-	//sendPower();
-  setPower();
+    trainOperatorVelocity = v;
+    //sendPower();
+    setPower();
   }
- 
+  
   
   public void setTrackLimit(double v)
   {
-	trackLimit = v;
-	//sendPower();
-  setPower();
+    trackLimit = v;
+    //sendPower();
+    setPower();
   }
   
   
   public void setUnderground(boolean u)
   {
-	underground = u;
-	setLights();
+    underground = u;
+    setLights();
   }
   
   
   public void setInStation(boolean i){
-	inStation = i;
-	setDoors();
+    inStation = i;
+    setDoors();
   }
   
   
   public void setNextStation(String s)
   {
-	nextStation = s;
-	announceStation();
+    nextStation = s;
+    announceStation();
   }
 }
