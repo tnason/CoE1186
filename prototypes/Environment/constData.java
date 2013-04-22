@@ -14,6 +14,8 @@ public interface constData
 		Sch_MBO_Notify_Train_Added_Removed,
 		Sch_CTC_Send_Schedule,
 		CTC_Sch_Generate_Schedule,
+		CTC_TcMd_Send_Track_Closing,
+		CTC_TcMd_Send_Track_Opening,
 		CTC_TnMd_Request_Train_Creation,
 		CTC_TnCt_Send_Manual_MovingBlock,
 		CTC_TnCt_Send_Manual_FixedBlock,

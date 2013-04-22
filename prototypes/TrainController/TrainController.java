@@ -58,10 +58,10 @@ public class TrainController
   {
     // get failure flags and update UI
     // get time for UI
-  
+    
     if (engineFail || signalPickupFail || brakeFail) // If train failure, stop train
-	{
-		tm.setPower(0.0);
+    {
+      tm.setPower(0.0);
     }
 	else
 	{
@@ -98,11 +98,11 @@ public class TrainController
     // get door status from train model
     
     if (velocity == 0 && inStation && !doorsOpen)
-	{
+    {
       // open doors
     }
     else if (velocity != 0 && doorsOpen)
-	{
+    {
       // close doors
     }
   }
@@ -112,12 +112,12 @@ public class TrainController
     // get time from train model and set daytime variable
     
     if (!daytime || underground && !lightsOn)
-	{
+    {
       // turn on lights
       // change UI
     }
     else if (daytime && !underground && lightsOn)
-	{
+    {
       // turn off lights
       // change UI
     }
@@ -126,83 +126,76 @@ public class TrainController
   
   public void announceStation() // this method is called whenever a station name is sent to the train controller
   {
-      // announce station on train model
-      // update UI so that button cannot be pressed
+    // announce station on train model
+    // update UI so that button cannot be pressed
   }
   
   
   public void setMovingBlockAuth(double m)
   {
-	movingBlockAuth = m;
-	//sendPower();
-  setPower();
+    movingBlockAuth = m;
+    setPower();
   }
   
   
   public void setCtcMovingBlockAuth(double m)
   {
-	ctcMovingBlockAuth = m;
-	//sendPower();
-  setPower();
+    ctcMovingBlockAuth = m;
+    setPower();
   }
   
   
   public void setFixedBlockAuth(double f)
   {
-	fixedBlockAuth = f;
-	//sendPower();
-  setPower();
+    fixedBlockAuth = f;
+    setPower();
   }
   
   
   public void setCtcFixedBlockAuth(double f)
   {
-	ctcFixedBlockAuth = f;
-	//sendPower();
-  setPower();
+    ctcFixedBlockAuth = f;
+    setPower();
   }
   
   
   public void setCtcOperatorVelocity(double v)
   {
-	ctcOperatorVelocity = v;
-	//sendPower();
-  setPower();
+    ctcOperatorVelocity = v;
+    setPower();
   }
   
   
   public void setTrainOperatorVelocity(double v)
   {
-	trainOperatorVelocity = v;
-	//sendPower();
-  setPower();
+    trainOperatorVelocity = v;
+    setPower();
   }
- 
+  
   
   public void setTrackLimit(double v)
   {
-	trackLimit = v;
-	//sendPower();
-  setPower();
+    trackLimit = v;
+    setPower();
   }
   
   
   public void setUnderground(boolean u)
   {
-	underground = u;
-	setLights();
+    underground = u;
+    setLights();
   }
   
   
   public void setInStation(boolean i){
-	inStation = i;
-	setDoors();
+    inStation = i;
+    setDoors();
   }
   
   
   public void setNextStation(String s)
   {
-	nextStation = s;
-	announceStation();
+    nextStation = s;
+    announceStation();
   }
 }

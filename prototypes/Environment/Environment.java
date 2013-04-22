@@ -21,7 +21,7 @@ public class Environment implements constData
 		Worker tkm = new TrackModel();
 		Worker trc = new TrainControllerModule();
 		Worker trm = new TrainContainer();
-		Worker ctc = new CTCOffice();
+		Worker ctc = new CTCMessageServer();
 		
 		modualOrder.add(Module.MBO);
 		modualOrder.add(Module.scheduler);

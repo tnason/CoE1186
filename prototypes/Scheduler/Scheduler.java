@@ -3,7 +3,7 @@ package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class Scheduler extends Worker implements constData
+public class Scheduler extends Worker implements Runnable, constData
 {
 	public static int NEXT_TRAIN_NUMBER = 0;
 
