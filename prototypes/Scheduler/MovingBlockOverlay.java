@@ -173,13 +173,13 @@ public class MovingBlockOverlay extends Worker implements constData
 					if(!forwardTrain.isLocationValid())
 					{
 						requestLocation(forwardTrain.trainNumber);
-						forwardTrain.setLocationValid(false);
+						forwardTrain.setLocationValid(true);
 					}
 	
 					if(!train.isStoppingDistanceValid() || !train.isBlockValid())
 					{
 						requestStoppingDistance(train.trainNumber);
-						train.setStoppingDistanceValid(false);
+						train.setStoppingDistanceValid(true);
 					}
 				}
 
