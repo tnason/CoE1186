@@ -130,7 +130,6 @@ public class TrainController
   public void setMovingBlockAuth(double m)
   {
     movingBlockAuth = m;
-    //sendPower();
     setPower();
   }
   
@@ -138,7 +137,6 @@ public class TrainController
   public void setCtcMovingBlockAuth(double m)
   {
     ctcMovingBlockAuth = m;
-    //sendPower();
     setPower();
   }
   
@@ -146,7 +144,6 @@ public class TrainController
   public void setFixedBlockAuth(double f)
   {
     fixedBlockAuth = f;
-    //sendPower();
     setPower();
   }
   
@@ -154,7 +151,6 @@ public class TrainController
   public void setCtcFixedBlockAuth(double f)
   {
     ctcFixedBlockAuth = f;
-    //sendPower();
     setPower();
   }
   
@@ -162,7 +158,6 @@ public class TrainController
   public void setCtcOperatorVelocity(double v)
   {
     ctcOperatorVelocity = v;
-    //sendPower();
     setPower();
   }
   
@@ -170,7 +165,6 @@ public class TrainController
   public void setTrainOperatorVelocity(double v)
   {
     trainOperatorVelocity = v;
-    //sendPower();
     setPower();
   }
   
@@ -178,7 +172,6 @@ public class TrainController
   public void setTrackLimit(double v)
   {
     trackLimit = v;
-    //sendPower();
     setPower();
   }
   
