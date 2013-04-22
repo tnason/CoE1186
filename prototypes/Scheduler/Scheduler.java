@@ -314,7 +314,7 @@ public class Scheduler extends Worker implements constData
 
 		message = new Message(name, name, Module.MBO, msg.Sch_MBO_Notify_Train_Added_Removed);
 		message.addData("id", 96);
-		message.addData("trainList", trains.copy());
+		message.addData("trainList", trains);
 		send(message);
 	}
 
