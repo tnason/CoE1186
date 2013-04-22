@@ -12,7 +12,7 @@ public class Scheduler extends Worker implements constData
 	private Module name;
 	private OperatorSchedule schedule;
 	private Timetable timetable;
-	private MyLinkedList<Train> trains;
+	private ArrayList<Train> trains;
 
 	public static void main(String[] args)
 	{
@@ -27,7 +27,7 @@ public class Scheduler extends Worker implements constData
 	{
 		timetable = new Timetable();
 		schedule = new OperatorSchedule();
-		trains = new MyLinkedList<Train>();
+		trains = new ArrayList<Train>();
 		listeners = new ArrayList<SchedulerListener>();
 		messages = new LinkedBlockingQueue<Message>();
 		this.name = Module.scheduler;
@@ -102,31 +102,19 @@ public class Scheduler extends Worker implements constData
 
 	private Train findTrain(int trainNumber)
 	{
-		Train t;
-		Train value;
-		Train train;
+		int size = trains.size();
 
-		value = null;
-
-		if(trains.size() == 0)
+		for(int i = 0; i < size; i++)
 		{
-			return value;
-		}
-
-		t = trains.selected();
-
-		do
-		{
-			train = trains.next();
+			Train train = trains.get(i);
 
 			if(train.trainNumber == trainNumber)
 			{
-				value = train;
+				return train;
 			}
 		}
-		while(!t.equals(trains.selected()));
 
-		return value;
+		return null;
 	}
 
 	public OperatorSchedule getOperatorSchedule()
