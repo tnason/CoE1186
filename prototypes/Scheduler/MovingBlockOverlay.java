@@ -129,76 +129,65 @@ public class MovingBlockOverlay extends Worker implements constData
 			{
 				Train forwardTrain;
 				Train train;
-	
-				forwardTrain = trains.previous(); //returns selected train, then goes backwards
-				train = trains.selected();
+
+				if(trains.size() == 1)
+				{
+					forwardIndex = 0;
+				}
+				else if(index == 0)
+				{
+					forwardIndex = trains.size() - 1;
+				}
+				else
+				{
+					forwardIndex = index - 1;
+				}
+
+				forwardTrain = trains.get(forwardIndex);
+				train = trains.get(index);
 
 				//If conditions are correct to calcuate moving block, do it
 
-				if(trains != null && trains.size() > 0)
+				if(forwardTrain.isLocationValid() && train.isLocationValid() && train.isStoppingDistanceValid())
 				{
-					Train forwardTrain;
-					Train train;
-
-					if(trains.size() == 1)
+					if(index == forwardIndex)
 					{
-						forwardIndex = 0;
-					}
-					else if(index == 0)
-					{
-						forwardIndex = trains.size() - 1;
+						sendAuthority(train.trainNumber, Double.MAX_VALUE);
 					}
 					else
 					{
-						forwardIndex = index - 1;
+						sendAuthority(train.trainNumber, calculateMovingBlock(train.getLocation(), train.getStoppingDistance(), forwardTrain.getLocation(), 0));
 					}
 
-					forwardTrain = trains.get(forwardIndex);
-					train = trains.get(index);
-
-					//If conditions are correct to calcuate moving block, do it
-
-					if(forwardTrain.isLocationValid() && train.isLocationValid() && train.isStoppingDistanceValid())
-					{
-						if(index == forwardIndex)
-						{
-							sendAuthority(train.trainNumber, Double.MAX_VALUE);
-						}
-						else
-						{
-							sendAuthority(train.trainNumber, calculateMovingBlock(train.getLocation(), train.getStoppingDistance(), forwardTrain.getLocation(), 0));
-						}
-	
-						forwardTrain.setLocationValid(false);
-						forwardTrain.setBlockValid(false);
-						train.setStoppingDistanceValid(false);
-					}
+					forwardTrain.setLocationValid(false);
+					forwardTrain.setBlockValid(false);
+					train.setStoppingDistanceValid(false);
+				}
 
 					//If not, create messages to send to trains
 
-					else
+				else
+				{
+					if(!forwardTrain.isLocationValid())
 					{
-						if(!forwardTrain.isLocationValid())
-						{
-							requestLocation(forwardTrain.trainNumber);
-							forwardTrain.setLocationValid(false);
-						}
+						requestLocation(forwardTrain.trainNumber);
+						forwardTrain.setLocationValid(false);
+					}
 	
-						if(!train.isStoppingDistanceValid() || !train.isBlockValid())
-						{
-							requestStoppingDistance(train.trainNumber);
-							train.setStoppingDistanceValid(false);
-						}
-					}
-
-					if(index == 0)
+					if(!train.isStoppingDistanceValid() || !train.isBlockValid())
 					{
-						index = trains.size() - 1;
+						requestStoppingDistance(train.trainNumber);
+						train.setStoppingDistanceValid(false);
 					}
-					else
-					{	
-						index--;
-					}
+				}
+
+				if(index == 0)
+				{
+					index = trains.size() - 1;
+				}
+				else
+				{	
+					index--;
 				}
 			}			
 		}
