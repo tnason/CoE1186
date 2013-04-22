@@ -1,22 +1,25 @@
 package TLTTC;
 import java.util.*;
+import java.util.concurrent.*;
 
-public class TrainControllerModule extends Worker implements Runnable, constData{
+public class TrainControllerModule extends Worker implements Runnable, constData
+{
+  private Module name = Module.trainController;
   private Hashtable<Integer, TrainController> controllers;
-  private Module name;
-  private java.util.concurrent.LinkedBlockingQueue<Message> msgs;
+  private LinkedBlockingQueue<Message> msgs;
   
   private int trainID;
   private TrainController tc;
+  
   private TrainContainer trainContainer;
-  private TrainModel tm;
+  
   
   public TrainControllerModule()
   {
     controllers = new Hashtable<Integer, TrainController>();
-    name = Module.trainController;
-    msgs = new java.util.concurrent.LinkedBlockingQueue<Message>();
+    msgs = new LinkedBlockingQueue<Message>();
   }
+  
   
   public void run()
   {
@@ -25,7 +28,6 @@ public class TrainControllerModule extends Worker implements Runnable, constData
       if(msgs.peek() != null)
       {
         Message m = msgs.poll();
-        
         if(name == m.getDest())
         {
           //System.out.println("\nRECEIVED MSG: source->"+m.getSource() + " : dest->"+m.getDest()+"\n");
@@ -35,7 +37,6 @@ public class TrainControllerModule extends Worker implements Runnable, constData
             if (controllers.containsKey(trainID))
             {
               tc = controllers.get(trainID); // Local TrainController
-              tm = trainContainer.getTrain(trainID); // Local TrainModel
             }
         
             switch (m.getType())
@@ -47,12 +48,10 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 
                 break;
               case MBO_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC 
-                tc.movingBlockAuth = (double)(m.getData().get("authority"));
-                sendPower();
+                tc.setMovingBlockAuth((double)(m.getData().get("authority")));
                 break;
               case TcCt_TnCt_Send_Fixed_Block_Authority: // Fixed block authority from track controller
-                tc.fixedBlockAuth = (double)(m.getData().get("authority"));
-                sendPower();
+                tc.setFixedBlockAuth((double)(m.getData().get("authority")));
                 break;
               case TcMd_TnCt_Confirm_Occupancy_Return_Block_Stats: //????????????
                 
@@ -61,33 +60,25 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 
                 break; 
               case CTC_TnCt_Send_Manual_FixedBlock: // Manual fixed block from CTC
-                tc.ctcFixedBlockAuth = (double)(m.getData().get("authority"));
-                sendPower();
+                tc.setCtcFixedBlockAuth((double)(m.getData().get("authority")));
                 break;
               case CTC_TnCt_Send_Manual_Speed: // Manual velocity from CTC
-                tc.ctcOperatorVelocity = (double)(m.getData().get("velocity"));
-                sendPower();
+                tc.setCtcOperatorVelocity((double)(m.getData().get("velocity")));
                 break;
               case TcMd_TnCt_Send_Track_Gnd_State: // Underground state from track model
-                tc.underground = (boolean)(m.getData().get("state"));
-                tc.setLights();
+                tc.setUnderground((boolean)(m.getData().get("state")));
                 break;
-              // NEED TO GET IN OR OUT OF STATION STATUS FROM TRACK MODEL TO SET DOORS -- NEW MESSAGE/CASE
+              case TcMd_TnCt_Send_Station_State: // Station state from track model
+  			tc.setInStation((boolean)(m.getData().get("state")));
+				break;
               case TcMd_TnCt_Send_Station_Name: // Next station name from track model
-                tc.nextStation = (String)(m.getData().get("stationName"));
-                tc.stationAnnounced = false;
-                tc.announceStation();
+                tc.setNextStation((String)(m.getData().get("stationName")));
                 break;
               case TcMd_TnCt_Send_Track_Speed_Limit: // Track speed limit from track model
-                tc.trackLimit = (double)(m.getData().get("speedLimit"));
-                sendPower();
+                tc.setTrackLimit((double)(m.getData().get("speedLimit")));
                 break;
               case CTC_TnCt_Send_Manual_MovingBlock: // Manual moving block authority from CTC
-                tc.ctcMovingBlockAuth = (double)(m.getData().get("authority"));
-                sendPower();
-                break;
-              default:
-                
+                tc.setCtcMovingBlockAuth((double)(m.getData().get("authority")));
                 break;
             }
           }
@@ -106,6 +97,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     }
   }
   
+  
   public void setMsg(Message m)
   {
     msgs.add(m);
@@ -119,28 +111,23 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   }
   
   
-  public void sendPower(){
-    tc.velocity = tm.getVelocity();
-    tm.setPower(tc.setPower());
-  }
-  
-  public void init(TrainContainer t){
+  public void init(TrainContainer t)
+  {
     trainContainer = t;
   }
   
-  // Methods for TrainContainer
-  public TrainController getTrainController(int trainID){
-    return controllers.get(trainID);
-  }
-  
-  public TrainController createTrainController(int trainID){
-    TrainController newTrainController = new TrainController(trainID, this, trainContainer.getTrain(trainID));
-    controllers.put(trainID, newTrainController);
+  // Methods for Train Model's use
+  public TrainController createTrainController(int t)
+  {
+    TrainController newTrainController = new TrainController(t, trainContainer.getTrain(t));
+    controllers.put(t, newTrainController);
     return newTrainController;
   }
   
-  public void destroyTrainController(int trainID){
+  
+  public void destroyTrainController(int t)
+  {
     // Todo: remove from dropdown list of trains in GUI here
-    controllers.remove(trainID);
+    controllers.remove(t);
   }
 }
