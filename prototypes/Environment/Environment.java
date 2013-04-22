@@ -54,7 +54,7 @@ public class Environment implements constData
 		((TrackModel)tkm).init();
 		((TrainControllerModule)trc).init((TrainContainer)trm);
 		((TrainContainer)trm).init((TrainControllerModule)trc, sysClk);
-		((TrackController)tkc).init(tkm);
+		((TrackController)tkc).init(tkm);System.out.println("HERE");
 		
 		mboThread.start();
 		schThread.start();
@@ -76,6 +76,9 @@ public class Environment implements constData
 			while(messageQ.peek() != null)
 			{
 				Message inbox = messageQ.poll();
+
+				if(inbox.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority)
+					System.out.println("NEW " + inbox.getType()+" " + inbox.getData().toString() + " "+inbox.getSender());
 
 				if(modualOrder.indexOf(inbox.getSender()) < modualOrder.indexOf(inbox.getDest()))
 				{

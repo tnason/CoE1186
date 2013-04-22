@@ -71,7 +71,6 @@ public class TrainModel implements constData
 		currentBlockGrade = occupiedBlocks.get(0).getGrade();
 		occupiedBlocks.get(0).setOccupation(true);
 		fromYard = true;
-
 	}
 
 	public double getVelocity() 
@@ -274,7 +273,7 @@ public class TrainModel implements constData
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength() - trLength/2.0)) //if the front of the train is crossing into a new block
 			{
 
-				System.out.println("	!!!!!!!!!!!!!!!NEW BLOCK!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				System.out.println("NEW BLOCK!!! "+occupiedBlocks.get(0).getID());
 				System.out.println("currentNode: " + currentNode);
 				nextNode = occupiedBlocks.get(0).getNextNode(currentNode);
 				System.out.println("nextNode: " + nextNode);
@@ -320,7 +319,7 @@ public class TrainModel implements constData
 		{
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength()))
 			{
-				System.out.println("	!!!!!!!!!!!!!!!NEW BLOCK!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				System.out.println("NEW BLOCK!! " + occupiedBlocks.get(0).getID());
 				nextNode = occupiedBlocks.get(0).getNextNode(currentNode);
 
 				if(nextNode.getNodeType() == NodeType.Yard) //yard entry
