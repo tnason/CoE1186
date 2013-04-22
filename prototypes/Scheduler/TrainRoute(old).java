@@ -1,3 +1,5 @@
+/* See BlockSchedule
+
 package TLTTC;
 
 public class TrainRoute
@@ -26,7 +28,7 @@ public class TrainRoute
 		this.nextNode = null;
 		this.block = block;
 	}
-*/
+
 	public TrainRoute(long entryTime, long traverseTime, double speed, Block block, Node previousNode, Node nextNode)
 	{
 		this.entryTime = entryTime;
@@ -109,4 +111,5 @@ public class TrainRoute
 		return s;
 	}
 }
+*/
 	
