@@ -93,7 +93,7 @@ public class MovingBlockOverlay extends Worker implements constData
 
 				if(name == message.getDest())
 				{
-					System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+					System.out.println("\nRECEIVED MESSAGE " + message.getType() + ": source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 					//System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 
 					switch(message.getType())
@@ -114,7 +114,7 @@ public class MovingBlockOverlay extends Worker implements constData
 				}
 				else
 				{
-					System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
+					System.out.println("PASSING MESSAGE " + message.getType() + ": step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
 					//System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
 					message.updateSender(name);
 					Environment.passMessage(message);
@@ -242,7 +242,7 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	public void send(Message message)
 	{
-		System.out.println("SENDING MSG: start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
+		System.out.println("SENDING MSG " + message.getType() + ": start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
 		//System.out.println("SENDING MSG: start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
 		message.updateSender(name);
 		Environment.passMessage(message);
@@ -306,7 +306,7 @@ public class MovingBlockOverlay extends Worker implements constData
 	{
 		Message message;
 
-		message = new Message(name, name, Module.scheduler, msg.MBO_TnCt_Send_Moving_Block_Authority);
+		message = new Message(name, name, Module.trainController, msg.MBO_TnCt_Send_Moving_Block_Authority);
 		message.addData("trainID", trainNumber);
 		message.addData("authority", authority);
 		send(message);
