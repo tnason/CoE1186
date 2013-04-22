@@ -59,8 +59,10 @@ public class CTCController {
     
     public void updateOccupancy( Integer bID, Integer tID )
     {
+        Integer vacantBlockID = _trainList.getTrain.getCurrentBlock();
+        _blockList.getBlock(bID).setVacant();
         _trainList.getTrain(tID).setCurrentBlock(bID);
-        // _blockList.getBlock(bID).setCurrentTrain(tID);
+        _blockList.getBlock(bID).setCurrentTrain(tID);
     }
     
     // outbound handlers
