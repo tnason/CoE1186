@@ -142,11 +142,8 @@ public class Scheduler extends Worker implements constData
 
 				if(name == message.getDest())
 				{
-<<<<<<< HEAD
 					System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
-=======
 					//System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
->>>>>>> b507b286af5fe1e338666192e5073e9c3596e06f
 
 					switch(message.getType())
 					{
@@ -173,11 +170,8 @@ public class Scheduler extends Worker implements constData
 				}
 				else
 				{
-<<<<<<< HEAD
 					System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
-=======
 					//System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
->>>>>>> b507b286af5fe1e338666192e5073e9c3596e06f
 					message.updateSender(name);
 					Environment.passMessage(message);
 				}
@@ -294,11 +288,8 @@ public class Scheduler extends Worker implements constData
 
 	public void send(Message message)
 	{
-<<<<<<< HEAD
 	    	System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
-=======
 	    	//System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
->>>>>>> b507b286af5fe1e338666192e5073e9c3596e06f
 		Environment.passMessage(message);
 	}
 
