@@ -82,7 +82,9 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	public void run()
 	{
-
+		int index = 0;
+		int forwardIndex;
+			
 		while(true)
 		{
 			if(messages.peek() != null)
@@ -205,7 +207,7 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	private void receivedGPSLocation(Message message)
 	{
-		Collection.sort(trains);		
+		Collections.sort(trains);		
 	}
 
 	//Update train information in linked list
@@ -222,7 +224,7 @@ public class MovingBlockOverlay extends Worker implements constData
 			train.setStoppingDistanceValid(true);
 			//train.setBlock(message.getData().get("block")), message.getData().get("previousNode")), message.getData().get("nextNode")), System.currentTimeMillis());
 			//train.setBlockValid(true);
-			Collection.sort(trains);
+			Collections.sort(trains);
 		}
 	}
 
