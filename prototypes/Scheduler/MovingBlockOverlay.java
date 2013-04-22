@@ -14,7 +14,7 @@ public class MovingBlockOverlay extends Worker implements constData
 	private Hashtable<Integer, Message> distanceOutbox;
 	private Hashtable<Integer, Message> locationOutbox;
 	private Module name;
-	private MyLinkedList<Train> trains;
+	private ArrayList<Train> trains;
 
 	/*
 		Main
@@ -47,31 +47,19 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	private Train findTrain(int trainNumber)
 	{
-		Train t;
-		Train value;
-		Train train;
+		int size = trains.size();
 
-		value = null;
-
-		if(trains.size() == 0)
+		for(int i = 0; i < size; i++)
 		{
-			return value;
-		}
-
-		t = trains.selected();
-
-		do
-		{
-			train = trains.next();
+			Train train = trains.get(i);
 
 			if(train.trainNumber == trainNumber)
 			{
-				value = train;
+				return train;
 			}
 		}
-		while(!t.equals(trains.selected()));
 
-		return value;
+		return null;
 	}
 
 	//Calculate moving block between trains
@@ -147,27 +135,69 @@ public class MovingBlockOverlay extends Worker implements constData
 
 				//If conditions are correct to calcuate moving block, do it
 
-				if(forwardTrain.isLocationValid() && train.isLocationValid() && train.isStoppingDistanceValid())
+				if(trains != null && trains.size() > 0)
 				{
-					sendAuthority(train.trainNumber, calculateMovingBlock(train.getLocation(), train.getStoppingDistance(), forwardTrain.getLocation(), 0));
-					forwardTrain.setLocationValid(false);
-					train.setStoppingDistanceValid(false);
-				}
+					Train forwardTrain;
+					Train train;
 
-				//If not, create messages to send to trains
-
-				else
-				{
-					if(!forwardTrain.isLocationValid())
+					if(trains.size() == 1)
 					{
-						requestLocation(forwardTrain.trainNumber);
-						forwardTrain.setLocationValid(true);
+						forwardIndex = 0;
+					}
+					else if(index == 0)
+					{
+						forwardIndex = trains.size() - 1;
+					}
+					else
+					{
+						forwardIndex = index - 1;
 					}
 
-					if(!train.isStoppingDistanceValid())
+					forwardTrain = trains.get(forwardIndex);
+					train = trains.get(index);
+
+					//If conditions are correct to calcuate moving block, do it
+
+					if(forwardTrain.isLocationValid() && train.isLocationValid() && train.isStoppingDistanceValid())
 					{
-						requestStoppingDistance(train.trainNumber);
-						train.setStoppingDistanceValid(true);
+						if(index == forwardIndex)
+						{
+							sendAuthority(train.trainNumber, Double.MAX_VALUE);
+						}
+						else
+						{
+							sendAuthority(train.trainNumber, calculateMovingBlock(train.getLocation(), train.getStoppingDistance(), forwardTrain.getLocation(), 0));
+						}
+	
+						forwardTrain.setLocationValid(false);
+						forwardTrain.setBlockValid(false);
+						train.setStoppingDistanceValid(false);
+					}
+
+					//If not, create messages to send to trains
+
+					else
+					{
+						if(!forwardTrain.isLocationValid())
+						{
+							requestLocation(forwardTrain.trainNumber);
+							forwardTrain.setLocationValid(false);
+						}
+	
+						if(!train.isStoppingDistanceValid() || !train.isBlockValid())
+						{
+							requestStoppingDistance(train.trainNumber);
+							train.setStoppingDistanceValid(false);
+						}
+					}
+
+					if(index == 0)
+					{
+						index = trains.size() - 1;
+					}
+					else
+					{	
+						index--;
 					}
 				}
 			}			
@@ -186,7 +216,7 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	private void receivedGPSLocation(Message message)
 	{
-		
+		Collection.sort(trains);		
 	}
 
 	//Update train information in linked list
@@ -201,6 +231,9 @@ public class MovingBlockOverlay extends Worker implements constData
 		{
 			train.setStoppingDistance((double)(message.getData().get("stoppingDist")), System.currentTimeMillis());
 			train.setStoppingDistanceValid(true);
+			//train.setBlock(message.getData().get("block")), message.getData().get("previousNode")), message.getData().get("nextNode")), System.currentTimeMillis());
+			//train.setBlockValid(true);
+			Collection.sort(trains);
 		}
 	}
 
@@ -208,7 +241,7 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	private void receivedTrainUpdate(Message message)
 	{
-		trains = (MyLinkedList<Train>)message.getData().get("trainList");
+		trains = (ArrayList<Train>)message.getData().get("trainList");
 	}
 
 	/*
