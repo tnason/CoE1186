@@ -242,6 +242,7 @@ public class MovingBlockOverlay extends Worker implements constData
 	public void send(Message message)
 	{
 		//System.out.println("SENDING MSG: start->"+message.getSource() + " : dest->"+message.getDest()+"\n");
+		message.updateSender(name);
 		Environment.passMessage(message);
 	}
 
@@ -306,7 +307,7 @@ public class MovingBlockOverlay extends Worker implements constData
 		message = new Message(name, name, Module.trainController, msg.MBO_TnCt_Send_Moving_Block_Authority);
 		message.addData("trainID", trainNumber);
 		message.addData("authority", authority);
-		//send(message);
+		send(message);
 
 		authorityOutbox.remove(trainNumber);
 		authorityOutbox.put(trainNumber, message);
