@@ -85,7 +85,7 @@ public class TrainControllerGUI extends JFrame {
             model.addElement(list.nextElement()); // Adds each ID to the model
         }
         if (i == 0){
-            trainContDropdown.setModel(model); // Sets new model (null model in this case)
+            // trainContDropdown.setModel(model); // Sets new model (null model in this case)
             noTrains = true;
         }
         else{
