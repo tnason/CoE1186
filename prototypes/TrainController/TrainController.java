@@ -34,6 +34,7 @@ public class TrainController
   private double ctcFixedBlockAuth = 0; // Fixed block authority sent from CTC operator
   private double movingBlockAuth = 0; // Moving block authority sent from MBO
   private double ctcMovingBlockAuth = 0; // Moving block authority sent from CTC operator
+  private double authority = 0; // Safest authority
   
   
   public TrainController(int id, TrainModel t)
@@ -68,7 +69,7 @@ public class TrainController
 	else
 	{
 		velocity = tm.getVelocity();
-		double authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
+		authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
 		// Max train deceleration = -1.2098 m/s^2
 		// Using vf^2 = vi^2 + 2ad = 0 (final speed cannot be > 0), vi = sqrt(-2ad) = (2*1.2098*authority)
 		double authorityVelocityLimit = Math.sqrt(2.4196*authority);
