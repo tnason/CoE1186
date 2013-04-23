@@ -64,6 +64,14 @@ public class Environment implements constData
 		trmThread.start();
 		ctcThread.start();
 
+		System.out.println("MBO " + mboThread.getId());
+		System.out.println("scheduler " + schThread.getId());
+		System.out.println("track controlelr " + tkcThread.getId());
+		System.out.println("track model " + tkmThread.getId());
+		System.out.println("train controller " + trcThread.getId());
+		System.out.println("train model " + trmThread.getId());
+		System.out.println("ctc " + ctcThread.getId());
+
 		Message begin = new Message(Module.CTC, Module.CTC, Module.trainModel, msg.CTC_TnMd_Request_Train_Creation,
 							new String [] {"trainID"}, new Object [] {0});
 
