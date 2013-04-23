@@ -381,5 +381,17 @@ public class TrainModel implements constData
 			}
 		}
 	}
+	
+	
+	public boolean getDoors(){ // placeholder methods for compiling --Ben
+		return true;
+	}
 
+	public boolean getLights(){
+		return true;
+	}
+	
+	public double getTemp(){
+		return 0.0;
+	}
 }
