@@ -383,15 +383,60 @@ public class TrainModel implements constData
 	}
 	
 	
-	public boolean getDoors(){ // placeholder methods for compiling --Ben
+	// Placeholder methods for compiling --Ben
+	public boolean getDoors()
+	{
 		return true;
 	}
 
-	public boolean getLights(){
+
+	public boolean getLights()
+	{
 		return true;
 	}
 	
-	public double getTemp(){
+	
+	public double getTemperature()
+	{
 		return 0.0;
+	}
+	
+	
+	public void getTime() // not sure what type to return
+	{
+		
+	}
+	
+	
+	public void updateTrainController()
+	{
+		/*NOTE: The TrainModel class needs a reference to a TrainController for updating the train controller.
+		Call TrainControllerModule.getTrainController(int trainID); This returns a TrainController.
+		Whenever a new block is traversed, call this method. Thanks. --Ben
+		
+		tc.setUnderground(blockName.isUnderground());
+		tc.setInStation(blockName.isStation());
+		tc.setNextStation(blockName.getStationName());
+		tc.setTrackLimit(blockName.getSpeedLimit());
+		tc.setLights();
+		tc.setDoors();*/
+	}
+	
+	
+	public void setDoors(boolean setting) // true = open, false = close
+	{
+		
+	}
+	
+	
+	public void setLights(boolean setting) // true = turn on, false = turn off
+	{
+		
+	}
+	
+	
+	public void setTemperature(double temp)
+	{
+		
 	}
 }

@@ -14,7 +14,8 @@ public class MovingBlockOverlay extends Worker implements constData
 	private Hashtable<Integer, Message> distanceOutbox;
 	private Hashtable<Integer, Message> locationOutbox;
 	private Module name;
-	private ArrayList<Train> trains;
+	private ArrayList<Train> redTrains;
+	private ArrayList<Train> greenTrains;
 
 	/*
 		Main
@@ -43,9 +44,9 @@ public class MovingBlockOverlay extends Worker implements constData
 		Methods
 	*/
 
-	//Find train in linked list
+	//Searches train list for a train
 
-	private Train findTrain(int trainNumber)
+	private Train findTrain(int trainNumber, ArrayList<Train> trains)
 	{
 		int size = trains.size();
 
@@ -82,8 +83,8 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	public void run()
 	{
-		int index = 0;
-		int forwardIndex;
+		int greenIndex = 0;
+		int redIndex = 0;
 			
 		while(true)
 		{
@@ -107,9 +108,15 @@ public class MovingBlockOverlay extends Worker implements constData
 						//case 91:
 							//Not implemented
 							//break;
-						case Sch_MBO_Notify_Train_Added_Removed:
+						//case Sch_MBO_Notify_Train_Added_Removed: //Deprecated
+							//receivedTrainUpdate(message);
+							//break;
+						case Sch_MBO_Send_Train_Info:
 							receivedTrainUpdate(message);
-							break;	
+							break;
+						case TnMd_MBO_Send_Velocity:
+							receivedStoppingDistance(message);
+							break;
 					}
 				}
 				else
@@ -129,74 +136,96 @@ public class MovingBlockOverlay extends Worker implements constData
 				nextDelivery = System.currentTimeMillis() + DELIVERY_FREQUENCY;
 			}
 
-			if(trains != null && trains.size() > 0)
+			if(greenTrains != null && greenTrains.size() > 0)
 			{
-				Train forwardTrain;
-				Train train;
+				doWork(greenIndex, greenTrains);
 
-				if(trains.size() == 1)
+				if(greenIndex == 0)
 				{
-					forwardIndex = 0;
-				}
-				else if(index == 0)
-				{
-					forwardIndex = trains.size() - 1;
-				}
-				else
-				{
-					forwardIndex = index - 1;
-				}
-
-				forwardTrain = trains.get(forwardIndex);
-				train = trains.get(index);
-
-				//If conditions are correct to calcuate moving block, do it
-
-				if(forwardTrain.isLocationValid() && train.isLocationValid() && train.isStoppingDistanceValid())
-				{
-					if(index == forwardIndex)
-					{
-						sendAuthority(train.trainNumber, Double.MAX_VALUE);
-					}
-					else
-					{
-						sendAuthority(train.trainNumber, calculateMovingBlock(train.getLocation(), train.getStoppingDistance(), forwardTrain.getLocation(), 0));
-					}
-
-					forwardTrain.setLocationValid(false);
-					forwardTrain.setBlockValid(false);
-					train.setStoppingDistanceValid(false);
-				}
-
-					//If not, create messages to send to trains
-
-				else
-				{
-					if(!forwardTrain.isLocationValid())
-					{
-						requestLocation(forwardTrain.trainNumber);
-						forwardTrain.setLocationValid(true);
-					}
-	
-					if(!train.isStoppingDistanceValid() || !train.isBlockValid())
-					{
-						requestStoppingDistance(train.trainNumber);
-						train.setStoppingDistanceValid(true);
-					}
-				}
-
-				if(index == 0)
-				{
-					index = trains.size() - 1;
+					greenIndex = greenTrains.size() - 1;
 				}
 				else
 				{	
-					index--;
+					greenIndex--;
 				}
-			}			
+			}
+
+			if(redTrains != null && redTrains.size() > 0)
+			{
+
+				doWork(redIndex, redTrains);
+
+				if(redIndex == 0)
+				{
+					redIndex = redTrains.size() - 1;
+				}
+				else
+				{	
+					redIndex--;
+				}
+			}	
 		}
 
 	}
+
+	private void doWork(int index, ArrayList<Train> trains)
+	{
+		int forwardIndex;
+		Train forwardTrain;
+		Train train;
+
+		if(trains.size() == 1)
+		{
+			forwardIndex = 0;
+		}
+		else if(index == 0)
+		{
+			forwardIndex = trains.size() - 1;
+		}
+		else
+		{
+			forwardIndex = index - 1;
+		}
+
+		forwardTrain = trains.get(forwardIndex);
+		train = trains.get(index);
+
+		//If conditions are correct to calcuate moving block, do it
+
+		if(forwardTrain.isLocationValid() && train.isLocationValid() && train.isStoppingDistanceValid())
+		{
+			if(index == forwardIndex)
+			{
+				sendAuthority(train.trainNumber, Double.MAX_VALUE);
+			}
+			else
+			{
+				sendAuthority(train.trainNumber, calculateMovingBlock(train.getLocation(), train.getStoppingDistance(), forwardTrain.getLocation(), 0));
+			}
+
+			forwardTrain.setLocationValid(false);
+			forwardTrain.setBlockValid(false);
+			train.setStoppingDistanceValid(false);
+		}
+
+		//If not, create messages to send to trains
+
+		else
+		{
+			if(!forwardTrain.isLocationValid())
+			{
+				requestLocation(forwardTrain.trainNumber);
+				forwardTrain.setLocationValid(true);
+			}
+
+			if(!train.isStoppingDistanceValid() || !train.isBlockValid())
+			{
+				requestStoppingDistance(train.trainNumber);
+				train.setStoppingDistanceValid(true);
+			}
+		}
+	}
+
 
 	/*
 		Message Handlers
@@ -209,7 +238,8 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	private void receivedGPSLocation(Message message)
 	{
-		Collections.sort(trains);		
+		Collections.sort(greenTrains);		
+		Collections.sort(redTrains);
 	}
 
 	//Update train information in linked list
@@ -217,23 +247,40 @@ public class MovingBlockOverlay extends Worker implements constData
 	private void receivedStoppingDistance(Message message)
 	{
 		Train train;
+		int trainID;
 
-		train = findTrain((int)(message.getData().get("trainID")));
+		trainID = (int)message.getData().get("trainID");
+		train = findTrain(trainID, greenTrains);
 
-		if(train != null)
+		if(train == null)
+		{
+			train = findTrain(trainID, redTrains);
+
+			if(train != null)
+			{
+				train.setStoppingDistance((double)(message.getData().get("stoppingDist")), System.currentTimeMillis());
+				train.setStoppingDistanceValid(true);
+				train.setBlock((Block)message.getData().get("block"), (Node)message.getData().get("previousNode"), (Node)message.getData().get("nextNode"), System.currentTimeMillis());
+				train.setBlockValid(true);
+				Collections.sort(redTrains);
+			}
+		}
+		else
 		{
 			train.setStoppingDistance((double)(message.getData().get("stoppingDist")), System.currentTimeMillis());
 			train.setStoppingDistanceValid(true);
-			//train.setBlock(message.getData().get("block")), message.getData().get("previousNode")), message.getData().get("nextNode")), System.currentTimeMillis());
-			//train.setBlockValid(true);
-			Collections.sort(trains);
+			train.setBlock((Block)message.getData().get("block"), (Node)message.getData().get("previousNode"), (Node)message.getData().get("nextNode"), System.currentTimeMillis());
+			train.setBlockValid(true);
+			Collections.sort(greenTrains);
 		}
 	}
+
 	//When train is added/removed from track, update object
 
 	private void receivedTrainUpdate(Message message)
 	{
-		trains = (ArrayList<Train>)message.getData().get("trainList");
+		greenTrains = (ArrayList<Train>)message.getData().get("greenTrains");
+		redTrains = (ArrayList<Train>)message.getData().get("redTrains");
 	}
 
 	/*
@@ -309,18 +356,17 @@ public class MovingBlockOverlay extends Worker implements constData
 		message = new Message(name, name, Module.trainController, msg.MBO_TnCt_Send_Moving_Block_Authority);
 		message.addData("trainID", trainNumber);
 		message.addData("authority", authority);
-		//send(message);
 
 		authorityOutbox.remove(trainNumber);
 		authorityOutbox.put(trainNumber, message);
 	}
+
 	private void requestLocation(int trainNumber)
 	{
 		Message message;
 
 		//message = new Message(name, name, Module.scheduler);
 		//message.addData("trainID", trainNumber);
-		//send(message);
 
 		//locationOutbox.remove(trainNumber);
 		//locationOutbox.put(trainNumber, message);
@@ -330,11 +376,10 @@ public class MovingBlockOverlay extends Worker implements constData
 	{
 		Message message;
 
-		//message = new Message(name, name, Module.trainModel);
-		//message.addData("trainID", trainNumber);
-		//send(message);
+		message = new Message(name, name, Module.trainModel, msg.MBO_TnMd_Request_Velocity);
+		message.addData("trainID", trainNumber);
 
-		//distanceOutbox.remove(trainNumber);
-		//distanceOutbox.put(trainNumber, message);
+		distanceOutbox.remove(trainNumber);
+		distanceOutbox.put(trainNumber, message);
 	}
 }

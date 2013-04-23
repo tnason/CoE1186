@@ -3,7 +3,7 @@ package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class Scheduler extends Worker implements constData
+public class Scheduler extends Worker implements Runnable, constData
 {
 	public static int NEXT_TRAIN_NUMBER = 0;
 
@@ -12,7 +12,9 @@ public class Scheduler extends Worker implements constData
 	private Module name;
 	private OperatorSchedule schedule;
 	private Timetable timetable;
-	private ArrayList<Train> trains;
+	private ArrayList<Train> redTrains;
+	private ArrayList<Train> greenTrains;
+	private RouteSchedule route;
 
 	public static void main(String[] args)
 	{
@@ -27,7 +29,9 @@ public class Scheduler extends Worker implements constData
 	{
 		timetable = new Timetable();
 		schedule = new OperatorSchedule();
-		trains = new ArrayList<Train>();
+		route = new RouteSchedule();
+		redTrains = new ArrayList<Train>();
+		greenTrains = new ArrayList<Train>();
 		listeners = new ArrayList<SchedulerListener>();
 		messages = new LinkedBlockingQueue<Message>();
 		this.name = Module.scheduler;
@@ -35,6 +39,7 @@ public class Scheduler extends Worker implements constData
 
 		updateOperatorSchedule();
 		updateTimetable();
+		sendTrainInfo();
 	}
 
 	/*
@@ -58,13 +63,13 @@ public class Scheduler extends Worker implements constData
 	{
 		int numTrains;
 
-		numTrains = calculateOptimalTrains(); //Get minimum number of trains that should be on the track
+		numTrains = calculateOptimalTrains(true); //Get minimum number of trains that should be on the track
 
-		if(trains.size() < numTrains)
+		if(greenTrains.size() < numTrains || redTrains.size() < numTrains)
 		{
 			//Add trains to schedule if there must be more trains on the track and on the schedule
 
-			while(schedule.size() < numTrains)
+			while(schedule.size() < numTrains * 2)
 			{
 				schedule.add("Train", "Operator", Scheduler.NEXT_TRAIN_NUMBER++, System.currentTimeMillis(), OperatorStatus.SHIFTNOTSTARTED);
 			}
@@ -79,28 +84,62 @@ public class Scheduler extends Worker implements constData
 
 	public boolean updateTimetable()
 	{
+		updateTimetable(true);
+		updateTimetable(false);
+	}
+
+	public boolean updateTimetable(boolean isGreenLine)
+	{
+		TrainRoute tr;
+		BlockSchedule bs;
+		Block block;
+		int trainNumber;
+		Iterator<TrainRoute> iTR;
+		Iterator<BlockSchedule> iBS;
+		
+		calculateRoutes(System.currentTimeMillis());
+		timetable = new Timetable();
+		
+		iTR = route.getIterator();
+
+		while(iTR.hasNext())
+		{
+			tr = iTR.next();
+			trainNumber = tr.getTrainNumber();
+
+			iBS = tr.getIterator();
+
+			while(iBS.hasNext())
+			{
+				bs = iBS.next();
+				block = bs.getBlock();
+
+				if(block.isStation())
+				{
+					timetable.add(block.getStationName(), trainNumber, (bs.getEntryTime() + bs.getExitTime()) / 2, TrainStatus.ONTIME);
+				}
+			}
+		}
+
 		timetableChanged();
 
 		return true;
 	}
 
-	private int calculateOptimalTrains()
+	private int calculateOptimalTrains(boolean isGreenLine)
 	{
 		return 1;
 	}
 
-	private void calculateRoutes(int time)
+	private void calculateRoutes(long time)
 	{
-		while(time < 36000000)
-		{
-			
-			time = time +1000;
-		}
+		route.routeTrains(time, greenTrains, schedule);
+		route.routeTrains(time, redTrains, schedule);
 	}
 
 	//Searches train list for a train
 
-	private Train findTrain(int trainNumber)
+	private Train findTrain(int trainNumber, ArrayList<Train> trains)
 	{
 		int size = trains.size();
 
@@ -142,7 +181,6 @@ public class Scheduler extends Worker implements constData
 
 				if(name == message.getDest())
 				{
-					//System.out.println("\nRECEIVED MESSAGE " + message.getType() +": source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 					//System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 
 					switch(message.getType())
@@ -171,7 +209,6 @@ public class Scheduler extends Worker implements constData
 				else
 				{
 					//System.out.println("PASSING MESSAGE " + message.getType() + ": step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
-					//System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
 					message.updateSender(name);
 					Environment.passMessage(message);
 				}
@@ -215,9 +252,17 @@ public class Scheduler extends Worker implements constData
 		Operator operator;
 
 		trainID = (int)message.getData().get("trainID");
-		trains.add(new Train(trainID, System.currentTimeMillis()));
-		sendTrainUpdate(); //Notify MBO that a train was added to the track
+		//sendTrainUpdate(); //Notify MBO that a train was added to the track
 
+		if((boolean)message.getData().get("isGreenLine"))
+		{
+			greenTrains.add(new Train(trainID, System.currentTimeMillis()));
+		}
+		else
+		{
+			redTrains.add(new Train(trainID, System.currentTimeMillis()));
+		}
+			
 		operator = schedule.search(trainID);
 
 		//If train isn't in schedule, add it
@@ -270,7 +315,13 @@ public class Scheduler extends Worker implements constData
 			}
 		}
 
-		train = findTrain(trainID);
+		train = findTrain(trainID, greenTrains);
+
+		if(train == null)
+		{
+			train = findTrain(trainID, redTrains);
+		}
+
 		//train.setPassengerCount((int)message.getData().get("passengerCount"));
 		timetableChanged();		
 	}
@@ -285,10 +336,26 @@ public class Scheduler extends Worker implements constData
 	{
 		int trainID;
 		Operator operator;
+		Train train;
 
 		trainID = (int)message.getData().get("trainID");
-		trains.remove(findTrain(trainID));
-		sendTrainUpdate();
+		train = findTrain(trainID, greenTrains);
+
+		if(train == null)
+		{
+			train = findTrain(trainID, redTrains);
+
+			if(train != null)
+			{
+				redTrains.remove(trainID);
+			}
+		}
+		else
+		{
+			greenTrains.remove(trainID);
+		}
+
+		//sendTrainUpdate();
 
 		operator = schedule.search(trainID);
 
@@ -313,7 +380,6 @@ public class Scheduler extends Worker implements constData
 	public void send(Message message)
 	{
 	    	//System.out.println("SENDING MESSAGE " + message.getType() + ": start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
-	    	//System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 		Environment.passMessage(message);
 	}
 
@@ -334,7 +400,7 @@ public class Scheduler extends Worker implements constData
 	}
 
 	//Notifies MBO a train has been added to or removed from the track
-
+/* Deprecated
 	private void sendTrainUpdate()
 	{
 		Message message;
@@ -342,6 +408,19 @@ public class Scheduler extends Worker implements constData
 		message = new Message(name, name, Module.MBO, msg.Sch_MBO_Notify_Train_Added_Removed);
 		message.addData("id", 96);
 		message.addData("trainList", trains);
+		send(message);
+	}
+*/
+
+
+	private void sendTrainInfo()
+	{
+		Message message;
+
+		message = new Message(name, name, Module.MBO, msg.Sch_MBO_Send_Train_Info);
+		message.addData("id", 96);
+		message.addData("greenLine", greenTrains);
+		message.addData("redLine", redTrains);
 		send(message);
 	}
 

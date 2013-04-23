@@ -4,7 +4,7 @@ import java.util.*;
 
 public class RouteSchedule
 {
-  public static long ROUTE_LENGTH = 60 * 60 * 1000;//milliseconds
+ 	public static long ROUTE_LENGTH = 60 * 60 * 1000;//milliseconds
 	public static double PERCENT_SPEED = .75;
 
 	private Hashtable<Integer, TrainRoute> route;
@@ -43,7 +43,7 @@ public class RouteSchedule
 
 		ROUTE_LENGTH = 10 * 1000;
 
-		rs.routeTrains(train, schedule);		
+		rs.routeTrains(System.currentTimeMillis(), train, schedule);		
 
 		System.out.println(rs.toString());
 	}
@@ -84,7 +84,7 @@ public class RouteSchedule
 		return (route.remove(tr) != null);
 	}
 
-	public int getSize()
+	public int size()
 	{
 		return route.size();
 	}
@@ -111,7 +111,7 @@ public class RouteSchedule
 		return route.get(trainNumber);
 	}
 
-	public void routeTrains(ArrayList<Train> trains, OperatorSchedule schedule) throws Exception
+	public void routeTrains(long start, ArrayList<Train> trains, OperatorSchedule schedule) throws Exception
 	{
 		if(trains.size() != schedule.size())
 		{
@@ -126,8 +126,6 @@ public class RouteSchedule
 		}
 
 		route.clear();
-
-		long start = System.currentTimeMillis();
 
 		for(int i = 0; i < size; i++)
 		{
@@ -243,7 +241,7 @@ public class RouteSchedule
 				traverseTime = traverseTime + (long)Math.ceil(1000 * t);
 				bs.setTraverseTime(traverseTime);
 				
-				if(!timeOverlap(i, trainRoute, block, entryTime, traverseTime))
+				if(!isForwardCollision(i, trainRoute, block, previousNode, entryTime, traverseTime))
 				{
 					BlockSchedule temp;
 
@@ -273,17 +271,19 @@ public class RouteSchedule
 						temp = new BlockSchedule(entryTime + traverseTime, 0, RouteSchedule.PERCENT_SPEED * block.getSpeedLimit(), block, previousNode, nextNode);
 					}
 
-
-					if(start[i] < size - 1)
+					if(block != null && !isRearCollision(i, trainRoute, block, previousNode, entryTime, traverseTime))
 					{
-						trainRoute[i].set(start[i], temp);
-					}
-					else
-					{
-						trainRoute[i].add(temp);
-					}
+						if(start[i] < size - 1)
+						{
+							trainRoute[i].set(start[i], temp);
+						}
+						else
+						{
+							trainRoute[i].add(temp);
+						}
 
-					start[i]++;
+						start[i]++;
+					}
 				}
 				else
 				{
@@ -318,11 +318,24 @@ public class RouteSchedule
 		while(doingWork);
 	}
 
-	private boolean timeOverlap(int index, TrainRoute[] tr, Block block, long entryTime, long traverseTime)
+	private boolean isRearCollision(int index, TrainRoute[] tr, Block block, Node previousNode, long entryTime, long traverseTime)
 	{
 		for(int i = 0; i < tr.length; i++)
 		{
-			if(i != index && tr[i].isOverlap(block, entryTime, traverseTime))
+			if(i != index && tr[i].isRearCollision(block, previousNode, entryTime, traverseTime))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean isForwardCollision(int index, TrainRoute[] tr, Block block, Node previousNode, long entryTime, long traverseTime)
+	{
+		for(int i = 0; i < tr.length; i++)
+		{
+			if(i != index && tr[i].isForwardCollision(block, previousNode, entryTime, traverseTime))
 			{
 				return true;
 			}

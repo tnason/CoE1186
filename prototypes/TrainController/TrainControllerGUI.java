@@ -1,6 +1,7 @@
 package TLTTC;
 
 import javax.swing.*;
+import javax.swing.table.*;
 import java.util.*;
 import java.awt.*;
 
@@ -10,7 +11,7 @@ public class TrainControllerGUI extends JFrame {
     TrainControllerModule mod;
     Integer[] trainIDs;
     boolean noTrains = true;
-    DefaultTableModel model;
+    javax.swing.table.DefaultTableModel model;
     
     public TrainControllerGUI(TrainControllerModule m) {
         mod = m;
@@ -60,14 +61,16 @@ public class TrainControllerGUI extends JFrame {
         if (!noTrains){
             doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
             lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
-            currentTempText.setText(tm.getTemp());
+
+            currentTempText.setText(Double.toString(tm.getTemperature()));
             nextStationText.setText(tc.getNextStation());
-            velocityText.setText(tm.getVelocity());
-            authorityText.setText(tc.getAuthority());
+            velocityText.setText(Double.toString(tm.getVelocity()));
+            authorityText.setText(Double.toString(tc.getAuthority()));
+
             engineFailureText.setBackground(tc.getEngineFail() == true ? Color.RED : Color.GRAY);
             pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
             brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
-            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
+            model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
             model.addRow(new Object[]{"time", tc.getVelocity(), tc.getVelocitySetpoint(), tc.getPower()});
         }
     }
@@ -75,7 +78,7 @@ public class TrainControllerGUI extends JFrame {
     private void createDropdownModel(){ // Creates Integer array of train IDs
         trainIDs = new Integer[60];
         Enumeration<Integer> list = mod.getTrainList(); // List of train IDs
-        DefaultComboBoxModel model = new DefaultComboBoxModel(); // Combo Box Model
+        DefaultComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>(); // Combo Box Model
         int i = 0;
         for (i = 0; list.hasMoreElements(); i++){
             trainIDs[i] = list.nextElement();
@@ -92,11 +95,11 @@ public class TrainControllerGUI extends JFrame {
     }
     
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("serial")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
-        trainContDropdown = new javax.swing.JComboBox();
+        trainContDropdown = new javax.swing.JComboBox<Integer>();
         doorControlPanel = new javax.swing.JPanel();
         doorControlButton = new javax.swing.JButton();
         lightControlPanel = new javax.swing.JPanel();
@@ -135,7 +138,6 @@ public class TrainControllerGUI extends JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        trainContDropdown.setModel(new DefaultComboBoxModel(trainIDs) );
         trainContDropdown.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trainContDropdownActionPerformed(evt);
@@ -578,83 +580,83 @@ public class TrainControllerGUI extends JFrame {
     
     private void trainContDropdownActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         if (!noTrains){
-            tc = mod.getTrainController(trainContDropdown.getSelectedItem());
+            tc = mod.getTrainController((Integer)(trainContDropdown.getSelectedItem()));
             tm = tc.getTrain();
             refreshUI();
         }
     }                                                 
 
     
-    private void currentTempTextActionPerformed(java.awt.event.ActionEvent evt) {
+    private void currentTempTextActionPerformed(java.awt.event.ActionEvent evt) {                                                
         // TODO add your handling code here:
-    }
+    }                                               
 
-    private void tempSetpointSetButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void tempSetpointSetButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                      
         if (!noTrains && Integer.parseInt(tempSetpointText.getText()) >= 55 && Integer.parseInt(tempSetpointText.getText()) <= 80){ // If temperature is safe, set it
-            tm.setTemp(tempSetpointText.getText());
+            tm.setTemperature(Double.parseDouble(tempSetpointText.getText()));
         }
-    }
+    }                                                     
 
-    private void lightControlButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void lightControlButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                   
         if (!noTrains){
             tc.setLights();
         }
-    }
+    }                                                  
 
-    private void authorityTextActionPerformed(java.awt.event.ActionEvent evt) {
+    private void authorityTextActionPerformed(java.awt.event.ActionEvent evt) {                                              
         // TODO add your handling code here:
-    }
+    }                                             
 
-    private void doorControlButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void doorControlButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         if (!noTrains){
            tc.setDoors();
         }
-    }
+    }                                                 
 
-    private void tempSetpointTextActionPerformed(java.awt.event.ActionEvent evt) {
+    private void tempSetpointTextActionPerformed(java.awt.event.ActionEvent evt) {                                                 
         // TODO add your handling code here:
-    }
+    }                                                
 
-    private void velocityTextActionPerformed(java.awt.event.ActionEvent evt) {
+    private void velocityTextActionPerformed(java.awt.event.ActionEvent evt) {                                             
         // TODO add your handling code here:
-    }
+    }                                            
 
-    private void accelerateButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void accelerateButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                 
         if (!noTrains){
             double v = new Double(velocitySetter.getValue().toString());
             tc.setTrainOperatorVelocity(v*0.44704);
         }
-    }
+    }                                                
 
-    private void brakeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void brakeButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
         if (!noTrains){
             tm.setPower(0);
         }
-    }
+    }                                           
 
-    private void emergencyBrakeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void emergencyBrakeButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                     
         if (!noTrains){
             tm.setEmergencyBrake(true);
         }
-    }
+    }                                                    
 
-    private void nextStationAnnounceButton2ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void nextStationAnnounceButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                                           
         if (!noTrains){
-            tc.announceStation();
+            tc.announceStation(false);
         }
-    }
+    }                                                          
 
-    private void engineFailureTextActionPerformed(java.awt.event.ActionEvent evt) {
+    private void engineFailureTextActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         // TODO add your handling code here:
-    }
+    }                                                 
 
-    private void gpsConnectButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void gpsConnectButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                 
         if (!noTrains){
             if (!tc.getGpsConnected()){
                 // connect to GPS
             }
         }
-    }
+    }                                                
 
     // Variables declaration - do not modify
     private javax.swing.JButton accelerateButton;
@@ -689,7 +691,7 @@ public class TrainControllerGUI extends JFrame {
     private javax.swing.JButton tempSetpointSetButton;
     private javax.swing.JTextField tempSetpointText;
     private javax.swing.JPanel temperatureControlPanel;
-    private javax.swing.JComboBox trainContDropdown;
+    private javax.swing.JComboBox<Integer> trainContDropdown;
     private javax.swing.JLabel velocityLabel;
     private javax.swing.JSpinner velocitySetter;
     private javax.swing.JTextField velocityText;

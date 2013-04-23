@@ -2,7 +2,7 @@ package TLTTC;
 
 import java.sql.*;
 
-public class TimesObject
+public class TimesObject implements Comparable<TimesObject>
 {
 	public final String stationName;
 	public final int trainNumber;
@@ -25,4 +25,21 @@ public class TimesObject
 					"\nArrivalTime: " + new Time(time).toString() +
 					"\nTrain Status: " + status);
 	}
+
+	public int compareTo(TimesObject to)
+	{
+		if(time < to.time)
+		{
+			return -1;
+		}
+		else if(time > to.time)
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+		
 }

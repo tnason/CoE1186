@@ -37,7 +37,6 @@ public class CTCController implements constData
         if (_trainList.contains(tID))
         {
             _trainList.setActive(tID);
-            System.out.println("CTC: train " + tID + " Activated!");
         }
         else
         {
@@ -51,24 +50,23 @@ public class CTCController implements constData
         if (_trainList.contains(tID))
         {
             _trainList.removeTrain(tID);
-            System.out.println("CTC: train " + tID + " Removed!"); 
         }
     }
     
     public void updateOccupancy ( Integer bID )
     {   
         // determine which train this "block" belongs to
-        // Integer tID = _trainList.nextBlocksForTrains().get(bID);
-        System.out.println("CTC: block " + bID + "is now occupied!");
-        // updateOccupancy(bID, tID);    
+        Integer tID = _trainList.nextBlocksForTrains().get(bID);
+        
+        updateOccupancy(bID, tID);    
     }
     
     public void updateOccupancy( Integer bID, Integer tID )
     {
-        //Integer vacantBlockID = _trainList.getTrain(tID).getCurrentBlock();
-        //_blockList.getBlock(bID).setVacant();
-        //_trainList.getTrain(tID).setCurrentBlock(bID);
-        //_blockList.getBlock(bID).setCurrentTrain(tID);
+        Integer vacantBlockID = _trainList.getTrain(tID).getCurrentBlock();
+        _blockList.getBlock(bID).setVacant();
+        _trainList.getTrain(tID).setCurrentBlock(bID);
+        _blockList.getBlock(bID).setCurrentTrain(tID);
     }
     
     // outbound handlers

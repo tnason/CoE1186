@@ -13,6 +13,7 @@ public class Train implements Comparable<Train>
 	private Node nextNode;
 	private double location;
 	private long time;
+	private int passengerCount;
 
 	public Train(int trainNumber, long time)
 	{
