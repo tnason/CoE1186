@@ -1,5 +1,11 @@
 package TLTTC;
 
+// lib/freetts.jar needs to be added to classpath during compilation
+/*import com.sun.speech.freetts.Voice;
+import com.sun.speech.freetts.VoiceManager;
+import com.sun.speech.freetts.audio.JavaClipAudioPlayer;*/
+
+
 public class TrainController
 {
   private int trainID;
@@ -128,14 +134,22 @@ public class TrainController
   
   public void announceStation(boolean automatic) // this method is called every time the train enters a new block or manually
   {
-    if (automatic && !oldNextStation.equals(nextStation))
+    /*if (automatic && !oldNextStation.equals(nextStation))
     {
-        // announce station
+        VoiceManager voiceManager = VoiceManager.getInstance();
+        Voice speaker = voiceManager.getVoice("kevin16");
+        speaker.allocate();
+        speaker.speak("Next stop " + nextStation + " on " + trainID);
+        speaker.deallocate();
     }
     else if (!automatic)
     {
-    	// announce station
-    }
+    	VoiceManager voiceManager = VoiceManager.getInstance();
+        Voice speaker = voiceManager.getVoice("kevin16");
+        speaker.allocate();
+        speaker.speak("Next stop " + nextStation + " on " + trainID);
+        speaker.deallocate();
+    }*/
   }
   
   
