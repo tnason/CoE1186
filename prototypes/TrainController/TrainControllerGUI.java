@@ -10,6 +10,7 @@ public class TrainControllerGUI extends JFrame {
     TrainControllerModule mod;
     Integer[] trainIDs;
     boolean noTrains = true;
+    DefaultTableModel model;
     
     public TrainControllerGUI(TrainControllerModule m) {
         mod = m;
@@ -24,6 +25,73 @@ public class TrainControllerGUI extends JFrame {
     }
 
 
+        public void open(){
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+        this.setVisible(true);
+        /*final TrainControllerGUI t = this;
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                t.setVisible(true);
+            }
+        });*/
+        
+        (new Thread(new UpdateGUI())).start();
+    }
+    
+    
+    private void refreshUI(){
+        createDropdownModel();
+        if (!noTrains){
+            doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
+            lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
+            currentTempText.setText(tm.getTemp());
+            nextStationText.setText(tc.getNextStation());
+            velocityText.setText(tm.getVelocity());
+            authorityText.setText(tc.getAuthority());
+            engineFailureText.setBackground(tc.getEngineFail() == true ? Color.RED : Color.GRAY);
+            pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
+            brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
+            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
+            model.addRow(new Object[]{"time", tc.getVelocity(), tc.getVelocitySetpoint(), tc.getPower()});
+        }
+    }
+    
+    private void createDropdownModel(){ // Creates Integer array of train IDs
+        trainIDs = new Integer[60];
+        Enumeration<Integer> list = mod.getTrainList(); // List of train IDs
+        DefaultComboBoxModel model = new DefaultComboBoxModel(); // Combo Box Model
+        int i = 0;
+        for (i = 0; list.hasMoreElements(); i++){
+            trainIDs[i] = list.nextElement();
+            model.addElement(list.nextElement()); // Adds each ID to the model
+        }
+        if (i == 0){
+            trainContDropdown.setModel(model); // Sets new model (null model in this case)
+            noTrains = true;
+        }
+        else{
+            trainContDropdown.setModel(model); // Sets new model
+            noTrains = false;
+        }
+    }
+    
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
@@ -172,9 +240,6 @@ public class TrainControllerGUI extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(temperatureControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(temperatureControlPanelLayout.createSequentialGroup()
-                        .addComponent(tempSetpointSetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, temperatureControlPanelLayout.createSequentialGroup()
                         .addGroup(temperatureControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(temperatureControlPanelLayout.createSequentialGroup()
                                 .addGap(0, 6, Short.MAX_VALUE)
@@ -182,7 +247,10 @@ public class TrainControllerGUI extends JFrame {
                             .addComponent(tempSetpointText))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(degreesSymbolText1)
-                        .addGap(8, 8, 8))))
+                        .addGap(8, 8, 8))
+                    .addGroup(temperatureControlPanelLayout.createSequentialGroup()
+                        .addComponent(tempSetpointSetButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         temperatureControlPanelLayout.setVerticalGroup(
             temperatureControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -212,7 +280,7 @@ public class TrainControllerGUI extends JFrame {
             }
         });
 
-        velocitySetter.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        velocitySetter.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 43.0d, 1.0d));
 
         accelerateButton.setText("Accelerate");
         accelerateButton.addActionListener(new java.awt.event.ActionListener() {
@@ -507,71 +575,6 @@ public class TrainControllerGUI extends JFrame {
 
         pack();
     }// </editor-fold>
-
-    
-    public void open(){
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-        this.setVisible(true);
-        /*final TrainControllerGUI t = this;
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                t.setVisible(true);
-            }
-        });*/
-        
-        (new Thread(new UpdateGUI())).start();
-    }
-    
-    
-    private void refreshUI(){
-        createDropdownModel();
-        if (!noTrains){
-            doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
-            lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
-            currentTempText.setText(tm.getTemp());
-            nextStationText.setText(tc.getNextStation());
-            velocityText.setText(tm.getVelocity());
-            authorityText.setText(tc.getAuthority());
-            engineFailureText.setBackground(tc.getEngineFail() == true ? Color.RED : Color.GRAY);
-            pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
-            brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
-        }
-    }
-    
-    private void createDropdownModel(){ // Creates Integer array of train IDs
-        trainIDs = new Integer[60];
-        Enumeration<Integer> list = mod.getTrainList(); // List of train IDs
-        DefaultComboBoxModel model = new DefaultComboBoxModel(); // Combo Box Model
-        int i = 0;
-        for (i = 0; list.hasMoreElements(); i++){
-            trainIDs[i] = list.nextElement();
-            model.addElement(list.nextElement()); // Adds each ID to the model
-        }
-        if (i == 0){
-            trainContDropdown.setModel(model); // Sets new model (null model in this case)
-            noTrains = true;
-        }
-        else{
-            trainContDropdown.setModel(model); // Sets new model
-            noTrains = false;
-        }
-    }
     
     private void trainContDropdownActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         if (!noTrains){
