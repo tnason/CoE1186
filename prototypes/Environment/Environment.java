@@ -64,13 +64,13 @@ public class Environment implements constData
 		trmThread.start();
 		ctcThread.start();
 
-		System.out.println("MBO " + mboThread.getId());
-		System.out.println("scheduler " + schThread.getId());
-		System.out.println("track controlelr " + tkcThread.getId());
-		System.out.println("track model " + tkmThread.getId());
-		System.out.println("train controller " + trcThread.getId());
-		System.out.println("train model " + trmThread.getId());
-		System.out.println("ctc " + ctcThread.getId());
+		System.out.println("MBO " + mboThread.getId()+ " " + mboThread.getName());
+		System.out.println("scheduler " + schThread.getId() + " " + schThread.getName());
+		System.out.println("track controlelr " + tkcThread.getId() + " " + tkcThread.getName());
+		System.out.println("track model " + tkmThread.getId() + " " + tkmThread.getName());
+		System.out.println("train controller " + trcThread.getId() + " " + trcThread.getName());
+		System.out.println("train model " + trmThread.getId() + " " + trmThread.getName());
+		System.out.println("ctc " + ctcThread.getId() + " " + ctcThread.getName());
 
 		Message begin = new Message(Module.CTC, Module.CTC, Module.trainModel, msg.CTC_TnMd_Request_Train_Creation,
 							new String [] {"trainID"}, new Object [] {0});
@@ -81,6 +81,11 @@ public class Environment implements constData
 
 		while(true)
 		{
+
+			if(!mboThread.isAlive())
+					mboThread.dumpStack();
+					
+
 			while(messageQ.peek() != null)
 			{
 				Message inbox = messageQ.poll();
