@@ -12,7 +12,9 @@ public class Scheduler extends Worker implements Runnable, constData
 	private Module name;
 	private OperatorSchedule schedule;
 	private Timetable timetable;
-	private ArrayList<Train> trains;
+	private ArrayList<Train> redTrains;
+	private ArrayList<Train> greenTrains;
+	private RouteSchedule route;
 
 	public static void main(String[] args)
 	{
@@ -27,7 +29,9 @@ public class Scheduler extends Worker implements Runnable, constData
 	{
 		timetable = new Timetable();
 		schedule = new OperatorSchedule();
-		trains = new ArrayList<Train>();
+		route = new RouteSchedule();
+		redTrains = new ArrayList<Train>();
+		greenTrains = new ArrayList<Train>();
 		listeners = new ArrayList<SchedulerListener>();
 		messages = new LinkedBlockingQueue<Message>();
 		this.name = Module.scheduler;
@@ -35,6 +39,7 @@ public class Scheduler extends Worker implements Runnable, constData
 
 		updateOperatorSchedule();
 		updateTimetable();
+		sendTrainInfo();
 	}
 
 	/*
@@ -79,6 +84,9 @@ public class Scheduler extends Worker implements Runnable, constData
 
 	public boolean updateTimetable()
 	{
+		calculateRoutes(System.currentTimeMillis());
+
+		
 		timetableChanged();
 
 		return true;
@@ -89,18 +97,15 @@ public class Scheduler extends Worker implements Runnable, constData
 		return 1;
 	}
 
-	private void calculateRoutes(int time)
+	private void calculateRoutes(long time)
 	{
-		while(time < 36000000)
-		{
-			
-			time = time +1000;
-		}
+		route.routeTrains(time, greenTrains, schedule);
+		route.routeTrains(time, redTrains, schedule);
 	}
 
 	//Searches train list for a train
 
-	private Train findTrain(int trainNumber)
+	private Train findTrain(int trainNumber, ArrayList<Train> trains)
 	{
 		int size = trains.size();
 
@@ -213,9 +218,17 @@ public class Scheduler extends Worker implements Runnable, constData
 		Operator operator;
 
 		trainID = (int)message.getData().get("trainID");
-		trains.add(new Train(trainID, System.currentTimeMillis()));
-		sendTrainUpdate(); //Notify MBO that a train was added to the track
+		//sendTrainUpdate(); //Notify MBO that a train was added to the track
 
+		if((boolean)message.getData().get("isGreenLine"))
+		{
+			greenTrains.add(new Train(trainID, System.currentTimeMillis()));
+		}
+		else
+		{
+			redTrains.add(new Train(trainID, System.currentTimeMillis()));
+		}
+			
 		operator = schedule.search(trainID);
 
 		//If train isn't in schedule, add it
@@ -268,7 +281,13 @@ public class Scheduler extends Worker implements Runnable, constData
 			}
 		}
 
-		train = findTrain(trainID);
+		train = findTrain(greenTrains, trainID);
+
+		if(train == null)
+		{
+			findTrain(redTrains, trainID);
+		}
+
 		//train.setPassengerCount((int)message.getData().get("passengerCount"));
 		timetableChanged();		
 	}
@@ -283,10 +302,18 @@ public class Scheduler extends Worker implements Runnable, constData
 	{
 		int trainID;
 		Operator operator;
+		Train train;
 
 		trainID = (int)message.getData().get("trainID");
-		trains.remove(findTrain(trainID));
-		sendTrainUpdate();
+		train = findTrain(greenTrains, trainID);
+
+		if(train == null)
+		{
+			findTrain(redTrains, trainID);
+		}
+
+		trains.remove(trainID);
+		//sendTrainUpdate();
 
 		operator = schedule.search(trainID);
 
@@ -331,7 +358,7 @@ public class Scheduler extends Worker implements Runnable, constData
 	}
 
 	//Notifies MBO a train has been added to or removed from the track
-
+/* Deprecated
 	private void sendTrainUpdate()
 	{
 		Message message;
@@ -339,6 +366,19 @@ public class Scheduler extends Worker implements Runnable, constData
 		message = new Message(name, name, Module.MBO, msg.Sch_MBO_Notify_Train_Added_Removed);
 		message.addData("id", 96);
 		message.addData("trainList", trains);
+		send(message);
+	}
+*/
+
+
+	private void sendTrainInfo()
+	{
+		Message message;
+
+		message = new Message(name, name, Module.MBO, msg.Sch_MBO_Send_Train_Info);
+		message.addData("id", 96);
+		message.addData("greenLine", greenTrains);
+		message.addData("redLine", redTrains);
 		send(message);
 	}
 

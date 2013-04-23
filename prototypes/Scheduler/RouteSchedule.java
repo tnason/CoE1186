@@ -4,7 +4,7 @@ import java.util.*;
 
 public class RouteSchedule
 {
-  public static long ROUTE_LENGTH = 60 * 60 * 1000;//milliseconds
+ 	public static long ROUTE_LENGTH = 60 * 60 * 1000;//milliseconds
 	public static double PERCENT_SPEED = .75;
 
 	private Hashtable<Integer, TrainRoute> route;
@@ -111,7 +111,7 @@ public class RouteSchedule
 		return route.get(trainNumber);
 	}
 
-	public void routeTrains(ArrayList<Train> trains, OperatorSchedule schedule) throws Exception
+	public void routeTrains(long start, ArrayList<Train> trains, OperatorSchedule schedule) throws Exception
 	{
 		if(trains.size() != schedule.size())
 		{
@@ -126,8 +126,6 @@ public class RouteSchedule
 		}
 
 		route.clear();
-
-		long start = System.currentTimeMillis();
 
 		for(int i = 0; i < size; i++)
 		{
