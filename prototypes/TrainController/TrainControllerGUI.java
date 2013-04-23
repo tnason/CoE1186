@@ -5,7 +5,7 @@ import javax.swing.table.*;
 import java.util.*;
 import java.awt.*;
 
-public class TrainControllerGUI extends JFrame {
+public class TrainControllerGUI extends JFrame implements Runnable {
     TrainModel tm;
     TrainController tc;
     TrainControllerModule mod;
@@ -15,6 +15,9 @@ public class TrainControllerGUI extends JFrame {
     
     public TrainControllerGUI(TrainControllerModule m) {
         mod = m;
+    }
+    
+    public void run(){
         while (noTrains){ // Don't open GUI until a train is created
             createDropdownModel(); // Creates dropdown menu
         }
@@ -85,7 +88,6 @@ public class TrainControllerGUI extends JFrame {
             model.addElement(list.nextElement()); // Adds each ID to the model
         }
         if (i == 0){
-            // trainContDropdown.setModel(model); // Sets new model (null model in this case)
             noTrains = true;
         }
         else{
