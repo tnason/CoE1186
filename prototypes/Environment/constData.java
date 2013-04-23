@@ -42,6 +42,9 @@ public interface constData
 		Sat_TnCnt_Request_Traversed_Block_Stats,
 		Sat_TnCt_ReceiptConfirm_Traversed_Block_Stats,
 		TcMd_TnCt_Send_Station_State,
+		MBO_TnMd_Request_Velocity,
+		TnMd_MBO_Send_Velocity,
+		TnMd_Sch_Station_Arrival,
 		placeHolder
 	}
 
