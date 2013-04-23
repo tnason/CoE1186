@@ -114,6 +114,9 @@ public class MovingBlockOverlay extends Worker implements constData
 						case Sch_MBO_Send_Train_Info:
 							receivedTrainUpdate(message);
 							break;
+						case TnMd_MBO_Send_Velocity:
+							receivedStoppingDistance(message);
+							break;
 					}
 				}
 				else
@@ -257,8 +260,8 @@ public class MovingBlockOverlay extends Worker implements constData
 			{
 				train.setStoppingDistance((double)(message.getData().get("stoppingDist")), System.currentTimeMillis());
 				train.setStoppingDistanceValid(true);
-				//train.setBlock(message.getData().get("block")), message.getData().get("previousNode")), message.getData().get("nextNode")), System.currentTimeMillis());
-				//train.setBlockValid(true);
+				train.setBlock((Block)message.getData().get("block"), (Node)message.getData().get("previousNode"), (Node)message.getData().get("nextNode"), System.currentTimeMillis());
+				train.setBlockValid(true);
 				Collections.sort(redTrains);
 			}
 		}
@@ -266,8 +269,8 @@ public class MovingBlockOverlay extends Worker implements constData
 		{
 			train.setStoppingDistance((double)(message.getData().get("stoppingDist")), System.currentTimeMillis());
 			train.setStoppingDistanceValid(true);
-			//train.setBlock(message.getData().get("block")), message.getData().get("previousNode")), message.getData().get("nextNode")), System.currentTimeMillis());
-			//train.setBlockValid(true);
+			train.setBlock((Block)message.getData().get("block"), (Node)message.getData().get("previousNode"), (Node)message.getData().get("nextNode"), System.currentTimeMillis());
+			train.setBlockValid(true);
 			Collections.sort(greenTrains);
 		}
 	}
@@ -353,18 +356,17 @@ public class MovingBlockOverlay extends Worker implements constData
 		message = new Message(name, name, Module.trainController, msg.MBO_TnCt_Send_Moving_Block_Authority);
 		message.addData("trainID", trainNumber);
 		message.addData("authority", authority);
-		//send(message);
 
 		authorityOutbox.remove(trainNumber);
 		authorityOutbox.put(trainNumber, message);
 	}
+
 	private void requestLocation(int trainNumber)
 	{
 		Message message;
 
 		//message = new Message(name, name, Module.scheduler);
 		//message.addData("trainID", trainNumber);
-		//send(message);
 
 		//locationOutbox.remove(trainNumber);
 		//locationOutbox.put(trainNumber, message);
@@ -374,11 +376,10 @@ public class MovingBlockOverlay extends Worker implements constData
 	{
 		Message message;
 
-		//message = new Message(name, name, Module.trainModel);
-		//message.addData("trainID", trainNumber);
-		//send(message);
+		message = new Message(name, name, Module.trainModel, msg.MBO_TnMd_Request_Velocity);
+		message.addData("trainID", trainNumber);
 
-		//distanceOutbox.remove(trainNumber);
-		//distanceOutbox.put(trainNumber, message);
+		distanceOutbox.remove(trainNumber);
+		distanceOutbox.put(trainNumber, message);
 	}
 }
