@@ -639,7 +639,7 @@ public class TrainControllerGUI extends JFrame {
 
     private void nextStationAnnounceButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                                           
         if (!noTrains){
-            tc.announceStation();
+            tc.announceStation(false);
         }
     }                                                          
 
