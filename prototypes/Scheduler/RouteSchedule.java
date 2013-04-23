@@ -43,7 +43,7 @@ public class RouteSchedule
 
 		ROUTE_LENGTH = 10 * 1000;
 
-		rs.routeTrains(train, schedule);		
+		rs.routeTrains(System.currentTimeMillis(), train, schedule);		
 
 		System.out.println(rs.toString());
 	}

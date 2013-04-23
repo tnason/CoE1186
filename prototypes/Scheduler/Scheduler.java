@@ -63,13 +63,13 @@ public class Scheduler extends Worker implements Runnable, constData
 	{
 		int numTrains;
 
-		numTrains = calculateOptimalTrains(); //Get minimum number of trains that should be on the track
+		numTrains = calculateOptimalTrains(true); //Get minimum number of trains that should be on the track
 
-		if(trains.size() < numTrains)
+		if(greenTrains.size() < numTrains || redTrains.size() < numTrains)
 		{
 			//Add trains to schedule if there must be more trains on the track and on the schedule
 
-			while(schedule.size() < numTrains)
+			while(schedule.size() < numTrains * 2)
 			{
 				schedule.add("Train", "Operator", Scheduler.NEXT_TRAIN_NUMBER++, System.currentTimeMillis(), OperatorStatus.SHIFTNOTSTARTED);
 			}
@@ -84,6 +84,12 @@ public class Scheduler extends Worker implements Runnable, constData
 
 	public boolean updateTimetable()
 	{
+		updateTimetable(true);
+		updateTimetable(false);
+	}
+
+	public boolean updateTimetable(boolean isGreenLine)
+	{
 		calculateRoutes(System.currentTimeMillis());
 
 		
@@ -92,7 +98,7 @@ public class Scheduler extends Worker implements Runnable, constData
 		return true;
 	}
 
-	private int calculateOptimalTrains()
+	private int calculateOptimalTrains(boolean isGreenLine)
 	{
 		return 1;
 	}
@@ -281,11 +287,11 @@ public class Scheduler extends Worker implements Runnable, constData
 			}
 		}
 
-		train = findTrain(greenTrains, trainID);
+		train = findTrain(trainID, greenTrains);
 
 		if(train == null)
 		{
-			findTrain(redTrains, trainID);
+			train = findTrain(trainID, redTrains);
 		}
 
 		//train.setPassengerCount((int)message.getData().get("passengerCount"));
@@ -305,14 +311,22 @@ public class Scheduler extends Worker implements Runnable, constData
 		Train train;
 
 		trainID = (int)message.getData().get("trainID");
-		train = findTrain(greenTrains, trainID);
+		train = findTrain(trainID, greenTrains);
 
 		if(train == null)
 		{
-			findTrain(redTrains, trainID);
+			train = findTrain(trainID, redTrains);
+
+			if(train != null)
+			{
+				redTrains.remove(trainID);
+			}
+		}
+		else
+		{
+			greenTrains.remove(trainID);
 		}
 
-		trains.remove(trainID);
 		//sendTrainUpdate();
 
 		operator = schedule.search(trainID);

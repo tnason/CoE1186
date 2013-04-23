@@ -46,7 +46,7 @@ public interface constData
 		MBO_TnMd_Request_Velocity,
 		TnMd_MBO_Send_Velocity,
 		TnMd_Sch_Station_Arrival,
-		Sch_MBO_Send_Train_Info
+		Sch_MBO_Send_Train_Info,
 		placeHolder
 	}
 

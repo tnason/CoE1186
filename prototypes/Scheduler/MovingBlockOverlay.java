@@ -247,11 +247,11 @@ public class MovingBlockOverlay extends Worker implements constData
 		int trainID;
 
 		trainID = (int)message.getData().get("trainID");
-		train = findTrain(greenTrains, trainID);
+		train = findTrain(trainID, greenTrains);
 
 		if(train == null)
 		{
-			train = findTrain(redTrains, trainID);
+			train = findTrain(trainID, redTrains);
 
 			if(train != null)
 			{
