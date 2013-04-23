@@ -381,5 +381,34 @@ public class TrainModel implements constData
 			}
 		}
 	}
+	
+	
+	public boolean getDoors(){ // placeholder methods for compiling --Ben
+		return true;
+	}
 
+	public boolean getLights(){
+		return true;
+	}
+	
+	public double getTemp(){
+		return 0.0;
+	}
+	
+	public void updateTrainController(){
+		/*NOTE: The TrainModel class needs a reference to a TrainController for updating the train controller.
+		Call TrainControllerModule.getTrainController(int trainID); This returns a TrainController.
+		Whenever a new block is traversed, call this method. Thanks. --Ben
+		
+		tc.setUnderground(blockName.isUnderground());
+		tc.setInStation(blockName.isStation());
+		tc.setNextStation(blockName.getStationName());
+		tc.setTrackLimit(blockName.getSpeedLimit());
+		tc.setLights();
+		tc.setDoors();*/
+	}
+	
+	public void setTemp(double t){
+		
+	}
 }

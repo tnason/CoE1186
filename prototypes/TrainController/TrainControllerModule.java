@@ -18,6 +18,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   {
     controllers = new Hashtable<Integer, TrainController>();
     msgs = new LinkedBlockingQueue<Message>();
+    TrainControllerGUI gui = new TrainControllerGUI(this);
   }
   
   
@@ -50,35 +51,17 @@ public class TrainControllerModule extends Worker implements Runnable, constData
               case MBO_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC 
                 tc.setMovingBlockAuth((double)(m.getData().get("authority")));
                 break;
+              case CTC_TnCt_Send_Manual_MovingBlock: // Manual moving block authority from CTC
+                tc.setCtcMovingBlockAuth((double)(m.getData().get("authority")));
+                break;
               case TcCt_TnCt_Send_Fixed_Block_Authority: // Fixed block authority from track controller
                 tc.setFixedBlockAuth((double)(m.getData().get("authority")));
                 break;
-              case TcMd_TnCt_Confirm_Occupancy_Return_Block_Stats: //????????????
-                
-                break;
-              case TcMd_TnCt_Confirm_Depopulation: //???????????
-                
-                break; 
               case CTC_TnCt_Send_Manual_FixedBlock: // Manual fixed block from CTC
                 tc.setCtcFixedBlockAuth((double)(m.getData().get("authority")));
                 break;
               case CTC_TnCt_Send_Manual_Speed: // Manual velocity from CTC
                 tc.setCtcOperatorVelocity((double)(m.getData().get("velocity")));
-                break;
-              case TcMd_TnCt_Send_Track_Gnd_State: // Underground state from track model
-                tc.setUnderground((boolean)(m.getData().get("state")));
-                break;
-              case TcMd_TnCt_Send_Station_State: // Station state from track model
-                tc.setInStation((boolean)(m.getData().get("state")));
-                break;
-              case TcMd_TnCt_Send_Station_Name: // Next station name from track model
-                tc.setNextStation((String)(m.getData().get("stationName")));
-                break;
-              case TcMd_TnCt_Send_Track_Speed_Limit: // Track speed limit from track model
-                tc.setTrackLimit((double)(m.getData().get("speedLimit")));
-                break;
-              case CTC_TnCt_Send_Manual_MovingBlock: // Manual moving block authority from CTC
-                tc.setCtcMovingBlockAuth((double)(m.getData().get("authority")));
                 break;
             }
           }
@@ -122,6 +105,11 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     TrainController newTrainController = new TrainController(t, trainContainer.getTrain(t));
     controllers.put(t, newTrainController);
     return newTrainController;
+  }
+  
+  
+  public TrainController getTrainController(int t){
+    return controllers.get(t);
   }
   
   

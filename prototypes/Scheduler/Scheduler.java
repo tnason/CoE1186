@@ -142,11 +142,6 @@ public class Scheduler extends Worker implements Runnable, constData
 
 				if(name == message.getDest())
 				{
-<<<<<<< HEAD
-=======
-
->>>>>>> 0dabf2be567b0162f1ec5a2d0da3749fbc67e363
-					//System.out.println("\nRECEIVED MESSAGE " + message.getType() +": source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 					//System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 
 					switch(message.getType())
@@ -174,16 +169,7 @@ public class Scheduler extends Worker implements Runnable, constData
 				}
 				else
 				{
-<<<<<<< HEAD
 					//System.out.println("PASSING MESSAGE " + message.getType() + ": step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
-=======
-<<<<<<< HEAD
-					// System.out.println("PASSING MESSAGE " + message.getType() + ": step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
-=======
-					//System.out.println("PASSING MESSAGE " + message.getType() + ": step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
->>>>>>> bdc66616ebbb0c5b92b088ffa1771a825bc9ea04
->>>>>>> 0dabf2be567b0162f1ec5a2d0da3749fbc67e363
-					//System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
 					message.updateSender(name);
 					Environment.passMessage(message);
 				}
@@ -324,16 +310,7 @@ public class Scheduler extends Worker implements Runnable, constData
 
 	public void send(Message message)
 	{
-<<<<<<< HEAD
 	    	//System.out.println("SENDING MESSAGE " + message.getType() + ": start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
-=======
-<<<<<<< HEAD
-	    	// System.out.println("SENDING MESSAGE " + message.getType() + ": start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
-=======
-	    	//System.out.println("SENDING MESSAGE " + message.getType() + ": start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
->>>>>>> bdc66616ebbb0c5b92b088ffa1771a825bc9ea04
->>>>>>> 0dabf2be567b0162f1ec5a2d0da3749fbc67e363
-	    	//System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 		Environment.passMessage(message);
 	}
 

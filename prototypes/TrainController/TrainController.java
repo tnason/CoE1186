@@ -14,6 +14,7 @@ public class TrainController
   private boolean engineFail = false;
   private boolean signalPickupFail = false;
   private boolean brakeFail = false;
+  private boolean gpsConnected = false;
   
   private final double KP = 5000; // Proportional gain
   private double ek = 0; // Proportional error
@@ -25,6 +26,7 @@ public class TrainController
   
   private double trainOperatorVelocity = 0; // Velocity sent from train operator
   private double ctcOperatorVelocity = 0; // Velocity sent from CTC operator
+  private double velocitySetpoint = 0; // Velocity setpoint
   private double velocity = 0; // Current velocity of train
   private double trackLimit = 0; // Track's speed limit
   private final double trainLimit = 19.4444; // Train's speed limit (70 km/hr = 19.44 m/s)
@@ -33,6 +35,7 @@ public class TrainController
   private double ctcFixedBlockAuth = 0; // Fixed block authority sent from CTC operator
   private double movingBlockAuth = 0; // Moving block authority sent from MBO
   private double ctcMovingBlockAuth = 0; // Moving block authority sent from CTC operator
+  private double authority = 0; // Safest authority
   
   
   public TrainController(int id, TrainModel t)
@@ -40,6 +43,7 @@ public class TrainController
     trainID = id;
     tm = t;
     // Todo: connect to GPS here
+    gpsConnected = true;
     
     // Test variables -- Remove later
     velocity = 5;
@@ -66,14 +70,12 @@ public class TrainController
 	else
 	{
 		velocity = tm.getVelocity();
-		double authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
-		// At max train acceleration on steepest slope:
-		// a = F/m = (.5 + g*sin(2.86) - .001*g*cos(2.86)) = .9794 m/s^2
-		// d = (vi)(t) + (1/2)(a)(t^2) = vi*5.281 + (1/2)*.9794*27.889
-		// where t = 5.281 s is the average time to enter a new block at max speed
-		double authorityVelocityLimit = (Math.abs(authority - 13.657)/5.281);
+		authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
+		// Max train deceleration = -1.2098 m/s^2
+		// Using vf^2 = vi^2 + 2ad = 0 (final speed cannot be > 0), vi = sqrt(-2ad) = (2*1.2098*authority)
+		double authorityVelocityLimit = Math.sqrt(2.4196*authority);
 		
-		double velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
+		velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
 		
     if (velocitySetpoint > Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
 		{
@@ -197,5 +199,54 @@ public class TrainController
   {
     nextStation = s;
     announceStation();
+  }
+  
+    public double getAuthority(){
+  	return authority;
+  }
+  
+  
+  public double getVelocity(){
+  	return velocity;
+  }
+  
+  
+  public double getVelocitySetpoint(){
+  	return velocitySetpoint;
+  }
+  
+  
+  public double getPower(){
+  	return power;
+  }
+  
+  
+  public boolean getEngineFail(){
+  	return engineFail;	
+  }
+  
+  
+  public boolean getSignalPickupFail(){
+  	return signalPickupFail;
+  }
+  
+  
+  public boolean getBrakeFail(){
+  	return brakeFail;
+  }
+  
+  
+  public String getNextStation(){
+  	return nextStation;
+  }
+  
+  
+  public boolean getGpsConnected(){
+  	return gpsConnected;
+  }
+  
+  
+  public TrainModel getTrain(){
+  	return tm;
   }
 }
