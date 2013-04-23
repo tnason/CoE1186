@@ -84,11 +84,6 @@ public class Environment implements constData
 
 		while(true)
 		{
-
-			if(!mboThread.isAlive())
-					mboThread.dumpStack();
-					
-
 			while(messageQ.peek() != null)
 			{
 				Message inbox = messageQ.poll();

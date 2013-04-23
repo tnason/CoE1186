@@ -1,6 +1,7 @@
 package TLTTC;
 
 import javax.swing.*;
+import javax.swing.table.*;
 import java.util.*;
 import java.awt.*;
 
@@ -60,10 +61,12 @@ public class TrainControllerGUI extends JFrame {
         if (!noTrains){
             doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
             lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
+
             currentTempText.setText(Double.toString(tm.getTemp()));
             nextStationText.setText(tc.getNextStation());
             velocityText.setText(Double.toString(tm.getVelocity()));
             authorityText.setText(Double.toString(tc.getAuthority()));
+
             engineFailureText.setBackground(tc.getEngineFail() == true ? Color.RED : Color.GRAY);
             pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
             brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
@@ -639,7 +642,7 @@ public class TrainControllerGUI extends JFrame {
 
     private void nextStationAnnounceButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                                           
         if (!noTrains){
-            tc.announceStation();
+            tc.announceStation(false);
         }
     }                                                          
 
