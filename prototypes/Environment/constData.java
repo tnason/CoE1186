@@ -41,7 +41,6 @@ public interface constData
 		TnMd_TcMd_Request_Track_Speed_Limit,
 		Sat_TnCnt_Request_Traversed_Block_Stats,
 		Sat_TnCt_ReceiptConfirm_Traversed_Block_Stats,
-		TcMd_TnCt_Send_Station_State,
 		TcMd_TnCt_Send_Station_State, //deprecated
 		MBO_TnMd_Request_Velocity,
 		TnMd_MBO_Send_Velocity,

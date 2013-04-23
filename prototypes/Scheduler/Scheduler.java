@@ -84,8 +84,7 @@ public class Scheduler extends Worker implements Runnable, constData
 
 	public boolean updateTimetable()
 	{
-		updateTimetable(true);
-		updateTimetable(false);
+		return updateTimetable(true) && updateTimetable(false);
 	}
 
 	public boolean updateTimetable(boolean isGreenLine)
@@ -133,8 +132,14 @@ public class Scheduler extends Worker implements Runnable, constData
 
 	private void calculateRoutes(long time)
 	{
-		route.routeTrains(time, greenTrains, schedule);
-		route.routeTrains(time, redTrains, schedule);
+	    try
+	    {
+		    route.routeTrains(time, greenTrains, schedule);
+		    route.routeTrains(time, redTrains, schedule);
+		}
+		catch (Exception e)
+		{
+		}
 	}
 
 	//Searches train list for a train
