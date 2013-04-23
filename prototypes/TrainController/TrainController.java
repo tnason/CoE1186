@@ -14,6 +14,7 @@ public class TrainController
   private boolean engineFail = false;
   private boolean signalPickupFail = false;
   private boolean brakeFail = false;
+  private boolean gpsConnected = false;
   
   private final double KP = 5000; // Proportional gain
   private double ek = 0; // Proportional error
@@ -40,6 +41,7 @@ public class TrainController
     trainID = id;
     tm = t;
     // Todo: connect to GPS here
+    gpsConnected = true;
     
     // Test variables -- Remove later
     velocity = 5;
@@ -199,6 +201,21 @@ public class TrainController
   
     public double getAuthority(){
   	return authority;
+  }
+  
+  
+  public double getVelocity(){
+  	return velocity;
+  }
+  
+  
+  public double getVelocitySetpoint(){
+  	return velocitySetpoint;
+  }
+  
+  
+  public double getPower(){
+  	return power;
   }
   
   
