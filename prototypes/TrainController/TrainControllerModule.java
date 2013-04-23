@@ -116,6 +116,10 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     trainContainer = t;
   }
   
+  public Enumeration<Integer> getTrainList(){
+    return controllers.keys();
+  }
+  
   // Methods for Train Model's use
   public TrainController createTrainController(int t)
   {
