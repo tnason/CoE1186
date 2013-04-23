@@ -330,7 +330,7 @@ public class MovingBlockOverlay extends Worker implements constData
 	{
 		Message message;
 
-		//message = new Message(name, name, Module.scheduler);
+		//message = new Message(name, name, Module.trainModel);
 		//message.addData("trainID", trainNumber);
 		//send(message);
 

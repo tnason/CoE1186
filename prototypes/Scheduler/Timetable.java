@@ -9,12 +9,15 @@ public class Timetable
 
 	public boolean add(TimesObject time)
 	{
-		return timetable.add(time);
+		boolean value = timetable.add(time);
+		Collections.sort(timetable);
+		return value;
 	}
 
 	public boolean add(String stationName, int trainNumber, long time, TrainStatus status)
 	{
-		return timetable.add(new TimesObject(stationName, trainNumber, time, status));
+		return add(new TimesObject(stationName, trainNumber, time, status));
+		
 	}
 
 	public Iterator<TimesObject> getIterator()
@@ -22,9 +25,16 @@ public class Timetable
 		return timetable.iterator();
 	}
 
+	public TimesObject getTimesObject(int index)
+	{
+		return timetable.get(index);
+	}
+
 	public boolean remove(TimesObject time)
 	{
-		return timetable.remove(time);
+		boolean value = timetable.remove(time);
+		Collections.sort(timetable);
+		return value;
 	}
 
 	public int remove(int trainNumber)
@@ -45,6 +55,8 @@ public class Timetable
 				i--;
 			}
 		}
+
+		Collections.sort(timetable);
 
 		return count;
 	}
@@ -68,6 +80,8 @@ public class Timetable
 			}
 		}
 
+		Collections.sort(timetable);
+
 		return count;
 	}
 
@@ -87,6 +101,8 @@ public class Timetable
 			}
 		}
 
+		Collections.sort(timetable);
+
 		return false;
 	}
 
@@ -105,6 +121,8 @@ public class Timetable
 				return true;
 			}
 		}
+
+		Collections.sort(timetable);
 
 		return false;
 	}
@@ -127,6 +145,8 @@ public class Timetable
 				i--;
 			}
 		}
+
+		Collections.sort(timetable);
 
 		return count;
 	}

@@ -142,7 +142,7 @@ public class Scheduler extends Worker implements constData
 
 				if(name == message.getDest())
 				{
-					System.out.println("\nRECEIVED MESSAGE " + message.getType() +": source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+					//System.out.println("\nRECEIVED MESSAGE " + message.getType() +": source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 					//System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 
 					switch(message.getType())
@@ -153,9 +153,9 @@ public class Scheduler extends Worker implements constData
 						/*case:
 							receivedGPSLocation(message);
 							break;*/
-						/*case 95:
+						case TnMd_Sch_Station_Arrival:
 							receivedTrainArrival(message);
-							break;	*/
+							break;
 						case TnMd_Sch_Notify_Yard:
 							if((boolean)message.getData().get("entry"))
 							{
@@ -170,7 +170,7 @@ public class Scheduler extends Worker implements constData
 				}
 				else
 				{
-					System.out.println("PASSING MESSAGE " + message.getType() + ": step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
+					//System.out.println("PASSING MESSAGE " + message.getType() + ": step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
 					//System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
 					message.updateSender(name);
 					Environment.passMessage(message);
@@ -249,6 +249,30 @@ public class Scheduler extends Worker implements constData
 
 	private void receivedTrainArrival(Message message)
 	{
+		int trainID;
+		String stationName;
+		Iterator<TimesObject> i;
+		TimesObject to;
+		Train train;
+
+		trainID = (int)message.getData().get("trainID");
+		stationName = (String)message.getData().get("trainID");
+		i = timetable.search(stationName, trainID).getIterator();
+
+		while(i.hasNext())
+		{
+			to = i.next();
+
+			if(to.status != TrainStatus.ARRIVED)
+			{
+				to.status = TrainStatus.ARRIVED;
+				break;
+			}
+		}
+
+		train = findTrain(trainID);
+		//train.setPassengerCount((int)message.getData().get("passengerCount"));
+		timetableChanged();		
 	}
 
 	private void receivedTimetableUpdateRequest(Message message)
@@ -288,7 +312,7 @@ public class Scheduler extends Worker implements constData
 
 	public void send(Message message)
 	{
-	    	System.out.println("SENDING MESSAGE " + message.getType() + ": start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+	    	//System.out.println("SENDING MESSAGE " + message.getType() + ": start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 	    	//System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 		Environment.passMessage(message);
 	}
