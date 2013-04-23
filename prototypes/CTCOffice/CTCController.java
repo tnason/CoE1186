@@ -39,6 +39,11 @@ public class CTCController implements constData
             _trainList.setActive(tID);
             System.out.println("CTC: train " + tID + " Activated!");
         }
+        else
+        {
+            _trainList.addTrain(tID, "red");
+            _trainList.setActive(tID);
+        }
     }
     
     public void removeTrain ( Integer tID )
