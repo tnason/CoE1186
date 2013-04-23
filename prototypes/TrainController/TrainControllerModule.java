@@ -18,6 +18,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   {
     controllers = new Hashtable<Integer, TrainController>();
     msgs = new LinkedBlockingQueue<Message>();
+    TrainControllerGUI gui = new TrainControllerGUI(this);
   }
   
   
