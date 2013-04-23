@@ -394,4 +394,8 @@ public class TrainModel implements constData
 	public double getTemp(){
 		return 0.0;
 	}
+	
+	public void setTemp(){
+		
+	}
 }
