@@ -26,6 +26,7 @@ public class TrainController
   
   private double trainOperatorVelocity = 0; // Velocity sent from train operator
   private double ctcOperatorVelocity = 0; // Velocity sent from CTC operator
+  private double velocitySetpoint = 0; // Velocity setpoint
   private double velocity = 0; // Current velocity of train
   private double trackLimit = 0; // Track's speed limit
   private final double trainLimit = 19.4444; // Train's speed limit (70 km/hr = 19.44 m/s)
@@ -74,7 +75,7 @@ public class TrainController
 		// Using vf^2 = vi^2 + 2ad = 0 (final speed cannot be > 0), vi = sqrt(-2ad) = (2*1.2098*authority)
 		double authorityVelocityLimit = Math.sqrt(2.4196*authority);
 		
-		double velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
+		velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
 		
     if (velocitySetpoint > Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
 		{
