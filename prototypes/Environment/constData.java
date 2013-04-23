@@ -41,18 +41,12 @@ public interface constData
 		TnMd_TcMd_Request_Track_Speed_Limit,
 		Sat_TnCnt_Request_Traversed_Block_Stats,
 		Sat_TnCt_ReceiptConfirm_Traversed_Block_Stats,
-<<<<<<< HEAD
 		TcMd_TnCt_Send_Station_State,
-=======
 		TcMd_TnCt_Send_Station_State, //deprecated
 		MBO_TnMd_Request_Velocity,
 		TnMd_MBO_Send_Velocity,
 		TnMd_Sch_Station_Arrival,
-<<<<<<< HEAD
->>>>>>> ceb4ddb709e33ca1f03d699e30e5c73d48fc3180
-=======
 		Sch_MBO_Send_Train_Info
->>>>>>> 36945dd9bb504c8418c8eea8829a0f1122f1135a
 		placeHolder
 	}
 
