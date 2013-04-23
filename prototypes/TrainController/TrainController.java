@@ -23,10 +23,10 @@ public class TrainController
   private boolean brakeFail = false;
   private boolean gpsConnected = false;
   
-  private final double KP = 5000; // Proportional gain
+  private final double KP = 80000; // Proportional gain
   private double ek = 0; // Proportional error
   private final double T = 0.1; // Sample period of train model (0.1 seconds)
-  private final double KI = 1000; // Integral gain
+  private final double KI = 300; // Integral gain
   private double uk = 0; // Integral error
   private double power = 0; // Power of train
   private final double trainMaxPower = 120000.0; // Maximum power of train (120 kW)
