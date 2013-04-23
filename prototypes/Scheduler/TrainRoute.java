@@ -160,13 +160,8 @@ public class TrainRoute
 
 		return true;
 	}
-/*
-	public boolean isOverlap(Block block, long entryTime, long traverseTime)
-	{
-		return isOverlap(block, entryTime, entryTime + traverseTime);
-	}
-*/
-	public boolean isOverlap(Block block, long entryTime, long exitTime)
+
+	public boolean isForwardCollision(Block block, Node previousNode, long entryTime, long exitTime)
 	{
 		for(int i = route.size() - 1; i >= 0; i--)
 		{
@@ -180,7 +175,7 @@ public class TrainRoute
 			long bsEntryTime = bs.getEntryTime();
 			long bsExitTime = bs.getExitTime();
 
-			if(block.equals(bs.getBlock()) && ((bsEntryTime <= entryTime && entryTime < bsExitTime) || (bsEntryTime <= exitTime && exitTime < bsExitTime) || (entryTime <= bsEntryTime && bsExitTime <= exitTime)))
+			if(block.equals(bs.getBlock()) && previousNode.equals(bs.getNextNode()) && ((bsEntryTime <= entryTime && entryTime < bsExitTime) || (bsEntryTime <= exitTime && exitTime < bsExitTime) || (entryTime <= bsEntryTime && bsExitTime <= exitTime)))
 			{
 				return true;
 			}
@@ -188,13 +183,8 @@ public class TrainRoute
 
 		return false;
 	}
-/*
-	public boolean isOverlap(int blockID, long entryTime, long traverseTime)
-	{
-		return isOverlap(blockID, entryTime, entryTime + traverseTime);
-	}
-*/
-	public boolean isOverlap(int blockID, long entryTime, long exitTime)
+
+	public boolean isRearCollision(Block block, Node previousNode, long entryTime, long exitTime)
 	{
 		for(int i = route.size() - 1; i >= 0; i--)
 		{
@@ -205,11 +195,10 @@ public class TrainRoute
 				return false;
 			}
 
-			Block block = bs.getBlock();
 			long bsEntryTime = bs.getEntryTime();
 			long bsExitTime = bs.getExitTime();
 
-			if(blockID == block.getID() && ((bsEntryTime <= entryTime && entryTime < bsExitTime) || (bsEntryTime <= exitTime && exitTime < bsExitTime) || (entryTime <= bsEntryTime && bsExitTime <= exitTime)))
+			if(block.equals(bs.getBlock()) && previousNode.equals(bs.getPreviousNode()) && ((bsEntryTime <= entryTime && entryTime < bsExitTime) || (bsEntryTime <= exitTime && exitTime < bsExitTime) || (entryTime <= bsEntryTime && bsExitTime <= exitTime)))
 			{
 				return true;
 			}
