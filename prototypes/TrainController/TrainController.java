@@ -7,7 +7,8 @@ public class TrainController
   
   private boolean underground = false;
   private boolean inStation = false;
-  private String nextStation = "";
+  private String oldNextStation = ""; // next station one block ago
+  private String nextStation = ""; // next station
   private boolean daytime = false; // True = day, False = night
   private boolean doorsOpen = false;
   private boolean lightsOn = false;
@@ -58,7 +59,7 @@ public class TrainController
   }
   
   
-  public void setPower() // this method is called whenever an authority or new speed limit is received
+  public void setPower() // this method is called whenever an authority, speed limit, or speed setpoint is received
   {
     // get failure flags and update UI
     // get time for UI
@@ -94,42 +95,47 @@ public class TrainController
   }
   
   
-  public void setDoors() // this method is called every time the train enters a new block
+  public void setDoors() // this method is called every time the train enters a new block or manually
   {
     velocity = tm.getVelocity();
-    // get door status from train model
+    doorsOpen = tm.getDoors();
     
     if (velocity == 0 && inStation && !doorsOpen)
     {
-      // open doors
+      tm.setDoors(true);
     }
     else if (velocity != 0 && doorsOpen)
     {
-      // close doors
+      tm.setDoors(false);
     }
   }
   
-  public void setLights() // this method is called every time the train enters a new block
+  public void setLights() // this method is called every time the train enters a new block or manually
   {
     // get time from train model and set daytime variable
+    lightsOn = tm.getLights();
     
     if (!daytime || underground && !lightsOn)
     {
-      // turn on lights
-      // change UI
+      tm.setLights(true);
     }
     else if (daytime && !underground && lightsOn)
     {
-      // turn off lights
-      // change UI
+      tm.setLights(false);
     }
   }
   
   
-  public void announceStation() // this method is called whenever a station name is sent to the train controller
+  public void announceStation(boolean automatic) // this method is called every time the train enters a new block or manually
   {
-    // announce station on train model
-    // update UI so that button cannot be pressed
+    if (automatic && !oldNextStation.equals(nextStation))
+    {
+        // announce station
+    }
+    else if (!automatic)
+    {
+    	// announce station
+    }
   }
   
   
@@ -189,7 +195,8 @@ public class TrainController
   }
   
   
-  public void setInStation(boolean i){
+  public void setInStation(boolean i)
+  {
     inStation = i;
     setDoors();
   }
@@ -197,56 +204,67 @@ public class TrainController
   
   public void setNextStation(String s)
   {
+    oldNextStation = nextStation;
     nextStation = s;
-    announceStation();
+    announceStation(true);
   }
   
-    public double getAuthority(){
+  public double getAuthority()
+  {
   	return authority;
   }
   
   
-  public double getVelocity(){
+  public double getVelocity()
+  {
   	return velocity;
   }
   
   
-  public double getVelocitySetpoint(){
+  public double getVelocitySetpoint()
+  {
   	return velocitySetpoint;
   }
   
   
-  public double getPower(){
+  public double getPower()
+  {
   	return power;
   }
   
   
-  public boolean getEngineFail(){
+  public boolean getEngineFail()
+  {
   	return engineFail;	
   }
   
   
-  public boolean getSignalPickupFail(){
+  public boolean getSignalPickupFail()
+  {
   	return signalPickupFail;
   }
   
   
-  public boolean getBrakeFail(){
+  public boolean getBrakeFail()
+  {
   	return brakeFail;
   }
   
   
-  public String getNextStation(){
+  public String getNextStation()
+  {
   	return nextStation;
   }
   
   
-  public boolean getGpsConnected(){
+  public boolean getGpsConnected()
+  {
   	return gpsConnected;
   }
   
   
-  public TrainModel getTrain(){
+  public TrainModel getTrain()
+  {
   	return tm;
   }
 }
