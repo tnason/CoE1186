@@ -90,9 +90,37 @@ public class Scheduler extends Worker implements Runnable, constData
 
 	public boolean updateTimetable(boolean isGreenLine)
 	{
-		calculateRoutes(System.currentTimeMillis());
-
+		TrainRoute tr;
+		BlockSchedule bs;
+		Block block;
+		int trainNumber;
+		Iterator<TrainRoute> iTR;
+		Iterator<BlockSchedule> iBS;
 		
+		calculateRoutes(System.currentTimeMillis());
+		timetable = new Timetable();
+		
+		iTR = route.getIterator();
+
+		while(iTR.hasNext())
+		{
+			tr = iTR.next();
+			trainNumber = tr.getTrainNumber();
+
+			iBS = tr.getIterator();
+
+			while(iBS.hasNext())
+			{
+				bs = iBS.next();
+				block = bs.getBlock();
+
+				if(block.isStation())
+				{
+					timetable.add(block.getStationName(), trainNumber, (bs.getEntryTime() + bs.getExitTime()) / 2, TrainStatus.ONTIME);
+				}
+			}
+		}
+
 		timetableChanged();
 
 		return true;

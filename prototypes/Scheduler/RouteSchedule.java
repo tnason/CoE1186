@@ -84,7 +84,7 @@ public class RouteSchedule
 		return (route.remove(tr) != null);
 	}
 
-	public int getSize()
+	public int size()
 	{
 		return route.size();
 	}
