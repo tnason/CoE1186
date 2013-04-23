@@ -1,30 +1,106 @@
 package TLTTC;
 
-import java.util.*;
 import javax.swing.*;
+import java.util.*;
+import java.awt.*;
 
-@SuppressWarnings("serial") 
 public class TrainControllerGUI extends JFrame {
-  TrainControllerModule module;
-
-
-    public TrainControllerGUI(TrainControllerModule mod) {
-        module = mod;
-		initComponents();
+    TrainModel tm;
+    TrainController tc;
+    TrainControllerModule mod;
+    Integer[] trainIDs;
+    boolean noTrains = true;
+    DefaultTableModel model;
+    
+    public TrainControllerGUI(TrainControllerModule m) {
+        mod = m;
+        while (noTrains){ // Don't open GUI until a train is created
+            createDropdownModel(); // Creates dropdown menu
+        }
+        trainContDropdown.setSelectedItem(trainIDs[0]); // Set dropdown to first train in list
+        tc = mod.getTrainController(trainIDs[0]); // Sets first displayed data to first train in list
+        tm = tc.getTrain();
+        initComponents();
+        open();
     }
 
 
+        public void open(){
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+        this.setVisible(true);
+        /*final TrainControllerGUI t = this;
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                t.setVisible(true);
+            }
+        });*/
+        
+        (new Thread(new UpdateGUI())).start();
+    }
+    
+    
+    private void refreshUI(){
+        createDropdownModel();
+        if (!noTrains){
+            doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
+            lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
+            currentTempText.setText(tm.getTemp());
+            nextStationText.setText(tc.getNextStation());
+            velocityText.setText(tm.getVelocity());
+            authorityText.setText(tc.getAuthority());
+            engineFailureText.setBackground(tc.getEngineFail() == true ? Color.RED : Color.GRAY);
+            pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
+            brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
+            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
+            model.addRow(new Object[]{"time", tc.getVelocity(), tc.getVelocitySetpoint(), tc.getPower()});
+        }
+    }
+    
+    private void createDropdownModel(){ // Creates Integer array of train IDs
+        trainIDs = new Integer[60];
+        Enumeration<Integer> list = mod.getTrainList(); // List of train IDs
+        DefaultComboBoxModel model = new DefaultComboBoxModel(); // Combo Box Model
+        int i = 0;
+        for (i = 0; list.hasMoreElements(); i++){
+            trainIDs[i] = list.nextElement();
+            model.addElement(list.nextElement()); // Adds each ID to the model
+        }
+        if (i == 0){
+            trainContDropdown.setModel(model); // Sets new model (null model in this case)
+            noTrains = true;
+        }
+        else{
+            trainContDropdown.setModel(model); // Sets new model
+            noTrains = false;
+        }
+    }
+    
+    
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
         trainContDropdown = new javax.swing.JComboBox();
         doorControlPanel = new javax.swing.JPanel();
         doorControlButton = new javax.swing.JButton();
         lightControlPanel = new javax.swing.JPanel();
-        lightControlButton1 = new javax.swing.JButton();
-        lightControlButton2 = new javax.swing.JButton();
-        internalLightsLabel = new javax.swing.JLabel();
-        externalLightsLabel = new javax.swing.JLabel();
+        lightControlButton = new javax.swing.JButton();
         temperatureControlPanel = new javax.swing.JPanel();
         tempSetpointSetButton = new javax.swing.JButton();
         currentTempText = new javax.swing.JTextField();
@@ -49,7 +125,7 @@ public class TrainControllerGUI extends JFrame {
         gpsConnectButton = new javax.swing.JButton();
         nextStationPanel = new javax.swing.JPanel();
         nextStationAnnounceButton2 = new javax.swing.JButton();
-        nextStationText2 = new javax.swing.JTextField();
+        nextStationText = new javax.swing.JTextField();
         faultsPanel = new javax.swing.JPanel();
         engineFailureText = new javax.swing.JTextField();
         pickupFailureText = new javax.swing.JTextField();
@@ -59,6 +135,7 @@ public class TrainControllerGUI extends JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        trainContDropdown.setModel(new DefaultComboBoxModel(trainIDs) );
         trainContDropdown.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trainContDropdownActionPerformed(evt);
@@ -67,16 +144,21 @@ public class TrainControllerGUI extends JFrame {
 
         doorControlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Door Control"));
 
-        doorControlButton.setText("Open Doors");
+        doorControlButton.setText("No Train!");
+        doorControlButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                doorControlButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout doorControlPanelLayout = new javax.swing.GroupLayout(doorControlPanel);
         doorControlPanel.setLayout(doorControlPanelLayout);
         doorControlPanelLayout.setHorizontalGroup(
             doorControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, doorControlPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(doorControlPanelLayout.createSequentialGroup()
+                .addGap(23, 23, 23)
                 .addComponent(doorControlButton)
-                .addGap(27, 27, 27))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         doorControlPanelLayout.setVerticalGroup(
             doorControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -88,53 +170,60 @@ public class TrainControllerGUI extends JFrame {
 
         lightControlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Light Control"));
 
-        lightControlButton1.setText("Turn On");
-
-        lightControlButton2.setText("Turn On");
-
-        internalLightsLabel.setText("Internal Lights");
-
-        externalLightsLabel.setText("External Lights");
+        lightControlButton.setText("No Train!");
+        lightControlButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lightControlButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout lightControlPanelLayout = new javax.swing.GroupLayout(lightControlPanel);
         lightControlPanel.setLayout(lightControlPanelLayout);
         lightControlPanelLayout.setHorizontalGroup(
             lightControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(lightControlPanelLayout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addGroup(lightControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lightControlButton2)
-                    .addComponent(externalLightsLabel)
-                    .addComponent(internalLightsLabel)
-                    .addComponent(lightControlButton1))
+                .addGap(23, 23, 23)
+                .addComponent(lightControlButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         lightControlPanelLayout.setVerticalGroup(
             lightControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(lightControlPanelLayout.createSequentialGroup()
-                .addComponent(internalLightsLabel)
-                .addGap(9, 9, 9)
-                .addComponent(lightControlButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(externalLightsLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lightControlButton2)
-                .addContainerGap())
+                .addContainerGap()
+                .addComponent(lightControlButton)
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         temperatureControlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Temperature Control"));
 
         tempSetpointSetButton.setText("Set");
+        tempSetpointSetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tempSetpointSetButtonActionPerformed(evt);
+            }
+        });
 
         currentTempText.setEditable(false);
+        currentTempText.setText("-");
+        currentTempText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                currentTempTextActionPerformed(evt);
+            }
+        });
 
         currentTempLabel.setText("Temperature");
 
-        degreesSymbolText1.setText("째F");
+        degreesSymbolText1.setText("°F");
+
+        tempSetpointText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tempSetpointTextActionPerformed(evt);
+            }
+        });
 
         tempSetpointLabel.setText("Setpoint");
 
-        degreesSymbolText2.setText("째F");
+        degreesSymbolText2.setText("°F");
 
         javax.swing.GroupLayout temperatureControlPanelLayout = new javax.swing.GroupLayout(temperatureControlPanel);
         temperatureControlPanel.setLayout(temperatureControlPanelLayout);
@@ -151,9 +240,6 @@ public class TrainControllerGUI extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(temperatureControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(temperatureControlPanelLayout.createSequentialGroup()
-                        .addComponent(tempSetpointSetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, temperatureControlPanelLayout.createSequentialGroup()
                         .addGroup(temperatureControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(temperatureControlPanelLayout.createSequentialGroup()
                                 .addGap(0, 6, Short.MAX_VALUE)
@@ -161,7 +247,10 @@ public class TrainControllerGUI extends JFrame {
                             .addComponent(tempSetpointText))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(degreesSymbolText1)
-                        .addGap(8, 8, 8))))
+                        .addGap(8, 8, 8))
+                    .addGroup(temperatureControlPanelLayout.createSequentialGroup()
+                        .addComponent(tempSetpointSetButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         temperatureControlPanelLayout.setVerticalGroup(
             temperatureControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,22 +273,49 @@ public class TrainControllerGUI extends JFrame {
         authorityLabel.setText("Authority");
 
         authorityText.setEditable(false);
+        authorityText.setText("-");
+        authorityText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                authorityTextActionPerformed(evt);
+            }
+        });
 
-        velocitySetter.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(0.0d), Double.valueOf(0.0d), null, Double.valueOf(1.0d)));
+        velocitySetter.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 43.0d, 1.0d));
 
         accelerateButton.setText("Accelerate");
+        accelerateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accelerateButtonActionPerformed(evt);
+            }
+        });
 
         brakeButton.setText("Brake");
+        brakeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                brakeButtonActionPerformed(evt);
+            }
+        });
 
         metersText.setText("m");
 
         mphText2.setText("mph");
 
         emergencyBrakeButton.setText("E-Brake");
+        emergencyBrakeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                emergencyBrakeButtonActionPerformed(evt);
+            }
+        });
 
         velocityLabel.setText("Velocity");
 
         velocityText.setEditable(false);
+        velocityText.setText("-");
+        velocityText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                velocityTextActionPerformed(evt);
+            }
+        });
 
         mphText.setText("mph");
 
@@ -266,6 +382,11 @@ public class TrainControllerGUI extends JFrame {
         gpsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("GPS"));
 
         gpsConnectButton.setText("Connect");
+        gpsConnectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gpsConnectButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout gpsPanelLayout = new javax.swing.GroupLayout(gpsPanel);
         gpsPanel.setLayout(gpsPanelLayout);
@@ -287,8 +408,14 @@ public class TrainControllerGUI extends JFrame {
         nextStationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Next Station"));
 
         nextStationAnnounceButton2.setText("Announce");
+        nextStationAnnounceButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextStationAnnounceButton2ActionPerformed(evt);
+            }
+        });
 
-        nextStationText2.setEditable(false);
+        nextStationText.setEditable(false);
+        nextStationText.setText("-");
 
         javax.swing.GroupLayout nextStationPanelLayout = new javax.swing.GroupLayout(nextStationPanel);
         nextStationPanel.setLayout(nextStationPanelLayout);
@@ -296,7 +423,7 @@ public class TrainControllerGUI extends JFrame {
             nextStationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, nextStationPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(nextStationText2)
+                .addComponent(nextStationText)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(nextStationAnnounceButton2)
                 .addContainerGap())
@@ -307,7 +434,7 @@ public class TrainControllerGUI extends JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(nextStationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nextStationAnnounceButton2)
-                    .addComponent(nextStationText2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nextStationText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -316,6 +443,11 @@ public class TrainControllerGUI extends JFrame {
         engineFailureText.setEditable(false);
         engineFailureText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         engineFailureText.setText("Train Engine Failure");
+        engineFailureText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                engineFailureTextActionPerformed(evt);
+            }
+        });
 
         pickupFailureText.setEditable(false);
         pickupFailureText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -426,54 +558,105 @@ public class TrainControllerGUI extends JFrame {
                             .addComponent(gpsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(nextStationPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(powerControlPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(faultsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lightControlPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(powerControlPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(faultsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(22, 22, 22)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lightControlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(temperatureControlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 113, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>
+    
+    private void trainContDropdownActionPerformed(java.awt.event.ActionEvent evt) {                                                  
+        if (!noTrains){
+            tc = mod.getTrainController(trainContDropdown.getSelectedItem());
+            tm = tc.getTrain();
+            refreshUI();
+        }
+    }                                                 
 
-    private void trainContDropdownActionPerformed(java.awt.event.ActionEvent evt) {
+    
+    private void currentTempTextActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-	
-    public static void main(String args[]) {
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TrainControllerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void tempSetpointSetButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (!noTrains && Integer.parseInt(tempSetpointText.getText()) >= 55 && Integer.parseInt(tempSetpointText.getText()) <= 80){ // If temperature is safe, set it
+            tm.setTemp(tempSetpointText.getText());
         }
-		
-		/*final TrainControllerGUI g = this;
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                super.setVisible(true);
-            }
-        });*/
     }
 
+    private void lightControlButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (!noTrains){
+            tc.setLights();
+        }
+    }
+
+    private void authorityTextActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void doorControlButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (!noTrains){
+           tc.setDoors();
+        }
+    }
+
+    private void tempSetpointTextActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void velocityTextActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void accelerateButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (!noTrains){
+            double v = new Double(velocitySetter.getValue().toString());
+            tc.setTrainOperatorVelocity(v*0.44704);
+        }
+    }
+
+    private void brakeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (!noTrains){
+            tm.setPower(0);
+        }
+    }
+
+    private void emergencyBrakeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (!noTrains){
+            tm.setEmergencyBrake(true);
+        }
+    }
+
+    private void nextStationAnnounceButton2ActionPerformed(java.awt.event.ActionEvent evt) {
+        if (!noTrains){
+            tc.announceStation();
+        }
+    }
+
+    private void engineFailureTextActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void gpsConnectButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (!noTrains){
+            if (!tc.getGpsConnected()){
+                // connect to GPS
+            }
+        }
+    }
+
+    // Variables declaration - do not modify
     private javax.swing.JButton accelerateButton;
     private javax.swing.JLabel authorityLabel;
     private javax.swing.JTextField authorityText;
@@ -487,21 +670,18 @@ public class TrainControllerGUI extends JFrame {
     private javax.swing.JPanel doorControlPanel;
     private javax.swing.JButton emergencyBrakeButton;
     private javax.swing.JTextField engineFailureText;
-    private javax.swing.JLabel externalLightsLabel;
     private javax.swing.JPanel faultsPanel;
     private javax.swing.JButton gpsConnectButton;
     private javax.swing.JPanel gpsPanel;
-    private javax.swing.JLabel internalLightsLabel;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton lightControlButton1;
-    private javax.swing.JButton lightControlButton2;
+    private javax.swing.JButton lightControlButton;
     private javax.swing.JPanel lightControlPanel;
     private javax.swing.JLabel metersText;
     private javax.swing.JLabel mphText;
     private javax.swing.JLabel mphText2;
     private javax.swing.JButton nextStationAnnounceButton2;
     private javax.swing.JPanel nextStationPanel;
-    private javax.swing.JTextField nextStationText2;
+    private javax.swing.JTextField nextStationText;
     private javax.swing.JTextField pickupFailureText;
     private javax.swing.JPanel powerControlPanel;
     private javax.swing.JTable powerTable;
@@ -513,4 +693,16 @@ public class TrainControllerGUI extends JFrame {
     private javax.swing.JLabel velocityLabel;
     private javax.swing.JSpinner velocitySetter;
     private javax.swing.JTextField velocityText;
+    // End of variables declaration
+
+private class UpdateGUI implements Runnable {
+    public void run() {
+        while (true){ // Refreshes UI
+            if (System.currentTimeMillis() % 500 == 0){
+                refreshUI(); // Refresh UI every half second
+            }
+        }
+    }
+}
+
 }

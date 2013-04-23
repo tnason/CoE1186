@@ -18,6 +18,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   {
     controllers = new Hashtable<Integer, TrainController>();
     msgs = new LinkedBlockingQueue<Message>();
+    TrainControllerGUI gui = new TrainControllerGUI(this);
   }
   
   
@@ -126,6 +127,11 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     TrainController newTrainController = new TrainController(t, trainContainer.getTrain(t));
     controllers.put(t, newTrainController);
     return newTrainController;
+  }
+  
+  
+  public TrainController getTrainController(int t){
+    return controllers.get(t);
   }
   
   
