@@ -9,10 +9,14 @@ public class TrainControllerGUI extends JFrame {
     TrainController tc;
     TrainControllerModule mod;
     Integer[] trainIDs;
+    boolean noTrains = true;
     
     public TrainControllerGUI(TrainControllerModule m) {
         mod = m;
-        createDropdownModel(); // Creates dropdown menu
+        while (noTrains){ // Don't open GUI until a train is created
+            createDropdownModel(); // Creates dropdown menu
+        }
+        trainContDropdown.setSelectedItem(trainIDs[0]); // Set dropdown to first train in list
         tc = mod.getTrainController(trainIDs[0]); // Sets first displayed data to first train in list
         tm = tc.getTrain();
         initComponents();
@@ -537,32 +541,44 @@ public class TrainControllerGUI extends JFrame {
     
     private void refreshUI(){
         createDropdownModel();
-        doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
-        lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
-        currentTempText.setText(tm.getTemp());
-        nextStationText.setText(tc.getNextStation());
-        velocityText.setText(tm.getVelocity());
-        authorityText.setText(tc.getAuthority());
-        engineFailureText.setBackground(tc.getEngineFail() == true ? Color.RED : Color.GRAY);
-        pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
-        brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
+        if (!noTrains){
+            doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
+            lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
+            currentTempText.setText(tm.getTemp());
+            nextStationText.setText(tc.getNextStation());
+            velocityText.setText(tm.getVelocity());
+            authorityText.setText(tc.getAuthority());
+            engineFailureText.setBackground(tc.getEngineFail() == true ? Color.RED : Color.GRAY);
+            pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
+            brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
+        }
     }
     
     private void createDropdownModel(){ // Creates Integer array of train IDs
-        trainIDs = new Integer[20];
+        trainIDs = new Integer[60];
         Enumeration<Integer> list = mod.getTrainList(); // List of train IDs
         DefaultComboBoxModel model = new DefaultComboBoxModel(); // Combo Box Model
-        for (int i = 0; list.hasMoreElements(); i++){
+        int i = 0;
+        for (i = 0; list.hasMoreElements(); i++){
             trainIDs[i] = list.nextElement();
             model.addElement(list.nextElement()); // Adds each ID to the model
         }
-        trainContDropdown.setModel(model); // Sets new model
+        if (i == 0){
+            trainContDropdown.setModel(model); // Sets new model (null model in this case)
+            noTrains = true;
+        }
+        else{
+            trainContDropdown.setModel(model); // Sets new model
+            noTrains = false;
+        }
     }
     
     private void trainContDropdownActionPerformed(java.awt.event.ActionEvent evt) {                                                  
-        tc = mod.getTrainController(trainContDropdown.getSelectedItem());
-        tm = tc.getTrain();
-        refreshUI();
+        if (!noTrains){
+            tc = mod.getTrainController(trainContDropdown.getSelectedItem());
+            tm = tc.getTrain();
+            refreshUI();
+        }
     }                                                 
 
     
@@ -571,13 +587,15 @@ public class TrainControllerGUI extends JFrame {
     }
 
     private void tempSetpointSetButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        if (Integer.parseInt(tempSetpointText.getText()) > 55 && Integer.parseInt(tempSetpointText.getText()) < 80){ // If temperature is safe, set it
+        if (!noTrains && Integer.parseInt(tempSetpointText.getText()) >= 55 && Integer.parseInt(tempSetpointText.getText()) <= 80){ // If temperature is safe, set it
             tm.setTemp(tempSetpointText.getText());
         }
     }
 
     private void lightControlButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        tc.setLights();
+        if (!noTrains){
+            tc.setLights();
+        }
     }
 
     private void authorityTextActionPerformed(java.awt.event.ActionEvent evt) {
@@ -585,7 +603,9 @@ public class TrainControllerGUI extends JFrame {
     }
 
     private void doorControlButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        tc.setDoors();
+        if (!noTrains){
+           tc.setDoors();
+        }
     }
 
     private void tempSetpointTextActionPerformed(java.awt.event.ActionEvent evt) {
@@ -597,20 +617,28 @@ public class TrainControllerGUI extends JFrame {
     }
 
     private void accelerateButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        double v = new Double(velocitySetter.getValue().toString());
-        tc.setTrainOperatorVelocity(v*0.44704);
+        if (!noTrains){
+            double v = new Double(velocitySetter.getValue().toString());
+            tc.setTrainOperatorVelocity(v*0.44704);
+        }
     }
 
     private void brakeButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        tm.setPower(0);
+        if (!noTrains){
+            tm.setPower(0);
+        }
     }
 
     private void emergencyBrakeButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        tm.setEmergencyBrake(true);
+        if (!noTrains){
+            tm.setEmergencyBrake(true);
+        }
     }
 
     private void nextStationAnnounceButton2ActionPerformed(java.awt.event.ActionEvent evt) {
-        tc.announceStation();
+        if (!noTrains){
+            tc.announceStation();
+        }
     }
 
     private void engineFailureTextActionPerformed(java.awt.event.ActionEvent evt) {
@@ -618,8 +646,10 @@ public class TrainControllerGUI extends JFrame {
     }
 
     private void gpsConnectButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        if (!tc.getGpsConnected()){
-            // connect to GPS
+        if (!noTrains){
+            if (!tc.getGpsConnected()){
+                // connect to GPS
+            }
         }
     }
 
