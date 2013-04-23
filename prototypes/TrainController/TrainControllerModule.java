@@ -99,7 +99,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
     trainContainer = t;
   }
   
-  public Enumeration <Integer> getTrainList(){
+  public Enumeration<Integer> getTrainList(){
     return controllers.keys();
   }
   
