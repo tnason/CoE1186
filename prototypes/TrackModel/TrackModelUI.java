@@ -19,7 +19,7 @@ public class TrackModelUI
 		/*TrackRenderComponent*/ renderer = new TrackRenderComponent();
 		frame.getContentPane().add(renderer);
 
-
+		/* --example for reference
 		//basic tests to see how linear blocks render
 		ConnectorNode cn1 = new ConnectorNode(0,0,0);
 		ConnectorNode cn2 = new ConnectorNode(100,0,0);
@@ -36,6 +36,7 @@ public class TrackModelUI
 		renderer.addBlock(lb2);
 		renderer.addBlock(lb3);
 		renderer.repaint();
+		*/
 	}
 	
 	public void addBlockToRender( LinearBlock block )
@@ -73,12 +74,14 @@ class TrackRenderComponent extends JComponent
 	private int metersToPixels(double meters)
 	{
 		//for now no scaling
-		return (int)meters;
+		return (int)meters/3;
 	}
 
 	@Override
 	protected void paintComponent( Graphics g )
 	{
+
+		//g.fillOval(100,100,10,10);
 		for(LinearBlock block : linearBlocks)
 		{
 			Node start = block.getStartNode();
@@ -94,7 +97,8 @@ class TrackRenderComponent extends JComponent
 			g.setColor(Color.BLACK);
 			if(block.isOccupied())
 				g.setColor(Color.RED);
-
+			if(block.getMaintenance())
+				g.setColor(Color.ORANGE);
 
 			g.drawLine(x0,y0,x1,y1);
 		}
@@ -115,7 +119,8 @@ class TrackRenderComponent extends JComponent
 			g.setColor(Color.BLACK);
 			if(block.isOccupied())
 				g.setColor(Color.RED);
-
+			if(block.getMaintenance())
+				g.setColor(Color.ORANGE);
 			g.drawLine(x0,y0,x1,y1);
 		}
 	}

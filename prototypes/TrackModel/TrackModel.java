@@ -7,24 +7,26 @@ import java.util.concurrent.*;
 
 public class TrackModel extends Worker implements Runnable, constData
 {
-	public TrackModel(){
+	public TrackModel()
+	{
 		blocks = new HashMap<Integer, Block>();
 		nodes = new HashMap<Integer, Node>();
-        msgs = new LinkedBlockingQueue<Message>();
+                msgs = new LinkedBlockingQueue<Message>();
 	}
 
-    private HashMap<Integer, Block> blocks;
-    private HashMap<Integer, Node> nodes;
+        private HashMap<Integer, Block> blocks;
+        private HashMap<Integer, Node> nodes;
 
-    public HashMap<Integer, Block> getBlocks(){
-    	return blocks;
-    }
+        public HashMap<Integer, Block> getBlocks(){
+    	    return blocks;
+        }
     
-    public String toString(){
+        public String toString(){
     	StringBuilder sb = new StringBuilder();
   
     	sb.append("Listing Nodes\n");
-    	for(Integer iObj : nodes.keySet()){
+    	for(Integer iObj : nodes.keySet())
+        {
     		sb.append("\t");
     		sb.append(iObj);
     		sb.append(": ");
@@ -34,7 +36,8 @@ public class TrackModel extends Worker implements Runnable, constData
     	}
     	
     	sb.append("Listing Blocks\n");
-    	for(Integer iObj : blocks.keySet()){
+    	for(Integer iObj : blocks.keySet())
+        {
     		sb.append("\t");
     		sb.append(iObj);
     		sb.append(": ");
@@ -103,24 +106,28 @@ public class TrackModel extends Worker implements Runnable, constData
     }
 //*/  
     public void init()
-    {	
+    {
+	
 	TrackModelUI userInterface = new TrackModelUI();
-
-
 
         try
         {
-            Scanner s = new Scanner(new File("_layout_new.txt"));
+
+	    //to force it to use the old prototype layout throw an error here
+
+	
+	    File f = new File("layout.txt");
+            Scanner s = new Scanner(f);
             int i = 0;
+
+	    System.out.println(null + "foo");
 
             while(s.hasNextLine())
             {
                 String line = s.nextLine();
-
+		System.out.println("\nparsing text \"" + line +"\"");
                 if(line.startsWith("#"))
                     continue;
-                if(line.equals("endlayout"))				//--end layout files with "endlayout" on a new line
-                    break;
 		
 		//assume the line structure starts with <string type> <int id> <...>
 
@@ -134,31 +141,29 @@ public class TrackModel extends Worker implements Runnable, constData
                     nodes.put(id, new YardNode(Double.parseDouble(nodeAttr[2]),
                                                Double.parseDouble(nodeAttr[3]),
                                                Double.parseDouble(nodeAttr[4])));
-                }
+		    System.out.println("new yard parsed " + nodes.get(id).toString());                
+		}
                 else if (nodeAttr[0].equals("connection"))
                 {
 		    //read <x> <y> <z>
                     nodes.put(id, new ConnectorNode(Double.parseDouble(nodeAttr[2]),
                                                     Double.parseDouble(nodeAttr[3]),
                                                     Double.parseDouble(nodeAttr[4])));
+		    System.out.println("new connection parsed " + nodes.get(id).toString());
                 }
 		else if (nodeAttr[0].equals("switch"))
 		{
 		    //read <x> <y> <z>
-		    nodes.put(id, new SwitchNode(Double.parseDouble(nodeAttr[2]),
+		    nodes.put(new Integer(id), new SwitchNode(Double.parseDouble(nodeAttr[2]),
                                                  Double.parseDouble(nodeAttr[3]),
                                                  Double.parseDouble(nodeAttr[4])));
 		}
-		/*
-			BE SURE TO DECLARE ALL NODES BEFORE BLOCKS!!!!!!!!
-		*/
-
 		else if (nodeAttr[0].equals("linearblock"))
 		{
 		    //read <startID> <stopID> <controllerID comma seperated list>
-		    Node start = nodes.get(nodeAttr[2]);
-		    Node stop  = nodes.get(nodeAttr[3]);
-		    
+		    Node start = nodes.get(Integer.parseInt(nodeAttr[2]));
+		    Node stop  = nodes.get(Integer.parseInt(nodeAttr[3]));
+		      
 		    String[] controllerIDStrings = nodeAttr[4].split(",");
 		    int[] controllerIDNumbers = new int[controllerIDStrings.length];
 
@@ -174,35 +179,64 @@ public class TrackModel extends Worker implements Runnable, constData
 		    start.setOutput(newBlock);
 		    stop.setInput(newBlock);
 
-		    blocks.add(id, newBlock);
-	
+		    blocks.put(new Integer(id), (Block)newBlock);
+		    System.out.println("new linearblock parsed " + blocks.get(id));
+		    
+		    userInterface.addBlockToRender(newBlock);
 		}
 		else if (nodeAttr[0].equals("arcblock"))
-		{
-		    //blocks.put(id, new ArcBlock())
+		{   
+		    //this does not actually render curves.
+		    //for now it just draws lines between endpoints.		
+
+		    //read <startID> <stopID> <controllerID comma seperated list>
+		    Node start = nodes.get(Integer.parseInt(nodeAttr[2]));
+		    Node stop  = nodes.get(Integer.parseInt(nodeAttr[3]));
+		      
+		    String[] controllerIDStrings = nodeAttr[4].split(",");
+		    int[] controllerIDNumbers = new int[controllerIDStrings.length];
+
+		    for(int idx=0;idx<controllerIDStrings.length;idx++)
+		    {
+			controllerIDNumbers[idx] = Integer.parseInt(controllerIDStrings[idx]);
+		    }
+
+		    LinearBlock newBlock = new LinearBlock(start, stop, id, controllerIDNumbers[0]);
+		    for(int idx=1; idx < controllerIDNumbers.length; idx++)
+			newBlock.addController(controllerIDNumbers[idx]);
+
+		    start.setOutput(newBlock);
+		    stop.setInput(newBlock);
+
+		    blocks.put(new Integer(id), (Block)newBlock);
+		    System.out.println("new linearblock parsed " + blocks.get(id));
+		    
+		    userInterface.addBlockToRender(newBlock);
 
 		}
 		else
 		{
 		    //this should never happen!!!!!!!
+		    System.out.println("cant parse that line? " + line);
 		}
 
                 i++;
             }
 
-
+	    userInterface.refresh();
         	
-            
-
-            //assign to the static so anyone can get at this
-            
-            
-          
+     
+ 	    System.out.println("\n\n foo" + blocks);           
+	          
         } 
         catch (Exception e)
         {
-        	System.out.println(e.getMessage());
-            Node node1 = new YardNode(0,0,0);
+
+	    
+
+            System.out.println(e.getMessage());
+            /*    
+	    Node node1 = new YardNode(0,0,0);
             Node node2 = new ConnectorNode(200,0,0);
             Node node3 = new ConnectorNode(400,0,1);
             Node node4 = new ConnectorNode(600,0,2);
@@ -262,8 +296,9 @@ public class TrackModel extends Worker implements Runnable, constData
             blocks.put(5, block5);
             blocks.put(6, block6);            
             blocks.put(7, block7);
+	    */
         }
-    
+    	
     
     }
 

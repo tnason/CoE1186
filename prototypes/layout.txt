@@ -1,104 +1,21 @@
-#use actual tabs!!!
-#we can put comments in the layout
-
-#read nodes first
-#resolve sybolic links in blocks to nodes
-
-
-node 1	
-	type : yard
-	x : 0
-	y : 0
-	z : 0
-
-
-node 2	
-	type : connection
-	x : 200
-	y : 0
-	z : 0
-
-node 3	
-	type : connection
-	x : 400
-	y : 0
-	z : 1
-
-node 4	
-	type : connection
-	x : 600
-	y : 0
-	z : 2
-
-node 5	
-	type : connection
-	x : 800
-	y : 0
-	z : 2
-
-node 6	
-	type : connection
-	x : 1000
-	y : 0
-	z : 1
-
-node 7	
-	type : connection
-	x : 1200
-	y : 0
-	z : 0	
-	
-node 8	
-	type : yard
-	x : 1400
-	y : 0
-	z : 0
-
-#----------------------------------------------------------	
-	
-block 1
-	type : linear
-	start : 1
-	stop : 2
-	controller : 0
-	
-block 2
-	type : linear
-	start : 2
-	stop : 3
-	controller : 0
-
-block 3
-	type : linear
-	start : 3
-	stop : 4
-	controller : 0
-
-block 4
-	type : linear
-	start : 4
-	stop : 5
-	controller : 0, 1	
-	
-block 5
-	type : linear
-	start : 5
-	stop : 6
-	controller : 1
-	
-block 6
-	type : linear
-	start : 6
-	stop : 7
-	controller : 1
-	
-block 7
-	type : linear
-	start : 7
-	stop : 8
-	controller : 1
-	
-	
-	
-	
-	
+#first yard node
+yard 0 100 100 0
+connection 1 200 100 0 
+connection 2 300 100 0
+switch 3 400 100 0
+connection 4 500 100 0
+connection 5 600 100 0
+connection 6 500 200 0
+connection 7 600 250 0
+yard 8 700 100 0
+yard 9 700 300 0
+#after nodes are entered blocks can be entered
+linearblock 0 0 1 0 
+linearblock 1 1 2 0
+linearblock 2 2 3 0
+linearblock 3 3 4 0
+linearblock 4 4 5 0
+linearblock 5 5 8 0
+linearblock 6 3 6 0
+linearblock 7 6 7 0
+linearblock 8 7 9 0
