@@ -11,7 +11,7 @@ public interface constData
 	public enum msg
 	{
 		MBO_TnCt_Send_Moving_Block_Authority,
-		Sch_MBO_Notify_Train_Added_Removed,
+		Sch_MBO_Notify_Train_Added_Removed,//Deprecated
 		Sch_CTC_Send_Schedule,
 		CTC_Sch_Generate_Schedule,
 		CTC_TcMd_Send_Track_Closing,
@@ -45,6 +45,7 @@ public interface constData
 		MBO_TnMd_Request_Velocity,
 		TnMd_MBO_Send_Velocity,
 		TnMd_Sch_Station_Arrival,
+		Sch_MBO_Send_Train_Info
 		placeHolder
 	}
 
