@@ -7,13 +7,15 @@ public class TrainController
   
   private boolean underground = false;
   private boolean inStation = false;
-  private String nextStation = "";
+  private String oldNextStation = ""; // next station one block ago
+  private String nextStation = ""; // next station
   private boolean daytime = false; // True = day, False = night
   private boolean doorsOpen = false;
   private boolean lightsOn = false;
   private boolean engineFail = false;
   private boolean signalPickupFail = false;
   private boolean brakeFail = false;
+  private boolean gpsConnected = false;
   
   private final double KP = 5000; // Proportional gain
   private double ek = 0; // Proportional error
@@ -25,6 +27,7 @@ public class TrainController
   
   private double trainOperatorVelocity = 0; // Velocity sent from train operator
   private double ctcOperatorVelocity = 0; // Velocity sent from CTC operator
+  private double velocitySetpoint = 0; // Velocity setpoint
   private double velocity = 0; // Current velocity of train
   private double trackLimit = 0; // Track's speed limit
   private final double trainLimit = 19.4444; // Train's speed limit (70 km/hr = 19.44 m/s)
@@ -33,6 +36,7 @@ public class TrainController
   private double ctcFixedBlockAuth = 0; // Fixed block authority sent from CTC operator
   private double movingBlockAuth = 0; // Moving block authority sent from MBO
   private double ctcMovingBlockAuth = 0; // Moving block authority sent from CTC operator
+  private double authority = 0; // Safest authority
   
   
   public TrainController(int id, TrainModel t)
@@ -40,6 +44,7 @@ public class TrainController
     trainID = id;
     tm = t;
     // Todo: connect to GPS here
+    gpsConnected = true;
     
     // Test variables -- Remove later
     velocity = 5;
@@ -54,7 +59,7 @@ public class TrainController
   }
   
   
-  public void setPower() // this method is called whenever an authority or new speed limit is received
+  public void setPower() // this method is called whenever an authority, speed limit, or speed setpoint is received
   {
     // get failure flags and update UI
     // get time for UI
@@ -66,12 +71,12 @@ public class TrainController
 	else
 	{
 		velocity = tm.getVelocity();
-		double authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
+		authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
 		// Max train deceleration = -1.2098 m/s^2
 		// Using vf^2 = vi^2 + 2ad = 0 (final speed cannot be > 0), vi = sqrt(-2ad) = (2*1.2098*authority)
 		double authorityVelocityLimit = Math.sqrt(2.4196*authority);
 		
-		double velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
+		velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
 		
     if (velocitySetpoint > Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
 		{
@@ -90,42 +95,47 @@ public class TrainController
   }
   
   
-  public void setDoors() // this method is called every time the train enters a new block
+  public void setDoors() // this method is called every time the train enters a new block or manually
   {
     velocity = tm.getVelocity();
-    // get door status from train model
+    doorsOpen = tm.getDoors();
     
     if (velocity == 0 && inStation && !doorsOpen)
     {
-      // open doors
+      tm.setDoors(true);
     }
     else if (velocity != 0 && doorsOpen)
     {
-      // close doors
+      tm.setDoors(false);
     }
   }
   
-  public void setLights() // this method is called every time the train enters a new block
+  public void setLights() // this method is called every time the train enters a new block or manually
   {
     // get time from train model and set daytime variable
+    lightsOn = tm.getLights();
     
     if (!daytime || underground && !lightsOn)
     {
-      // turn on lights
-      // change UI
+      tm.setLights(true);
     }
     else if (daytime && !underground && lightsOn)
     {
-      // turn off lights
-      // change UI
+      tm.setLights(false);
     }
   }
   
   
-  public void announceStation() // this method is called whenever a station name is sent to the train controller
+  public void announceStation(boolean automatic) // this method is called every time the train enters a new block or manually
   {
-    // announce station on train model
-    // update UI so that button cannot be pressed
+    if (automatic && !oldNextStation.equals(nextStation))
+    {
+        // announce station
+    }
+    else if (!automatic)
+    {
+    	// announce station
+    }
   }
   
   
@@ -185,7 +195,8 @@ public class TrainController
   }
   
   
-  public void setInStation(boolean i){
+  public void setInStation(boolean i)
+  {
     inStation = i;
     setDoors();
   }
@@ -193,41 +204,67 @@ public class TrainController
   
   public void setNextStation(String s)
   {
+    oldNextStation = nextStation;
     nextStation = s;
-    announceStation();
+    announceStation(true);
   }
   
-    public double getAuthority(){
+  public double getAuthority()
+  {
   	return authority;
   }
   
   
-  public boolean getEngineFail(){
+  public double getVelocity()
+  {
+  	return velocity;
+  }
+  
+  
+  public double getVelocitySetpoint()
+  {
+  	return velocitySetpoint;
+  }
+  
+  
+  public double getPower()
+  {
+  	return power;
+  }
+  
+  
+  public boolean getEngineFail()
+  {
   	return engineFail;	
   }
   
   
-  public boolean getSignalPickupFail(){
+  public boolean getSignalPickupFail()
+  {
   	return signalPickupFail;
   }
   
   
-  public boolean getBrakeFail(){
+  public boolean getBrakeFail()
+  {
   	return brakeFail;
   }
   
   
-  public String getNextStation(){
+  public String getNextStation()
+  {
   	return nextStation;
   }
   
   
-  public boolean getGpsConnected(){
+  public boolean getGpsConnected()
+  {
   	return gpsConnected;
   }
   
   
-  public TrainModel getTrain(){
+  public TrainModel getTrain()
+  {
   	return tm;
   }
 }
