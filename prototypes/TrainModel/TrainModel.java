@@ -395,8 +395,17 @@ public class TrainModel implements constData
 		return 0.0;
 	}
 	
-	public Block getOccupiedBlock(){
-		return null;
+	public void updateTrainController(){
+		// NOTE: This class needs a reference to a TrainController for updating the train controller
+		// Call TrainControllerModule.getTrainController(int trainID); This returns a TrainController
+		// Whenever a new block is traversed, call:
+		// tc.setUnderground(blockName.isUnderground());
+		// tc.setInStation(blockName.isStation());
+		// tc.setNextStation(blockName.getStationName());
+		// tc.setTrackLimit(blockName.getSpeedLimit());
+		// tc.setLights();
+		// tc.setDoors();
+		// Thanks.  --Ben
 	}
 	
 	public void setTemp(double t){
