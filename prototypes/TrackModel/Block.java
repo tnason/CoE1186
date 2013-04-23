@@ -140,6 +140,10 @@ public abstract class Block {
 		return false;
 	}
 	
+	public boolean isStation(){
+		return false;
+	}
+	
 	public Node getStartNode(){
 		return startNode;
 	}
