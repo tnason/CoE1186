@@ -10,7 +10,7 @@ public class TrainControllerGUI extends JFrame {
     TrainControllerModule mod;
     Integer[] trainIDs;
     boolean noTrains = true;
-    DefaultTableModel model;
+    javax.swing.table.DefaultTableModel model;
     
     public TrainControllerGUI(TrainControllerModule m) {
         mod = m;
@@ -60,14 +60,14 @@ public class TrainControllerGUI extends JFrame {
         if (!noTrains){
             doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
             lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
-            currentTempText.setText(tm.getTemp());
+            currentTempText.setText(Double.toString(tm.getTemp()));
             nextStationText.setText(tc.getNextStation());
-            velocityText.setText(tm.getVelocity());
-            authorityText.setText(tc.getAuthority());
+            velocityText.setText(Double.toString(tm.getVelocity()));
+            authorityText.setText(Double.toString(tc.getAuthority()));
             engineFailureText.setBackground(tc.getEngineFail() == true ? Color.RED : Color.GRAY);
             pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
             brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
-            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
+            model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
             model.addRow(new Object[]{"time", tc.getVelocity(), tc.getVelocitySetpoint(), tc.getPower()});
         }
     }
