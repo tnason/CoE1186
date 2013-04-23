@@ -76,6 +76,11 @@ public class Environment implements constData
 			while(messageQ.peek() != null)
 			{
 				Message inbox = messageQ.poll();
+				
+				if (!mboThread.isAlive())
+				{
+				    mboThread.dumpStack();
+				}
 
 				if(inbox.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority)
 					System.out.println("NEW " + inbox.getType()+" " + inbox.getData().toString() + " "+inbox.getSender()+"\n");
