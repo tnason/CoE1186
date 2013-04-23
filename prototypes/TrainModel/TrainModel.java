@@ -395,6 +395,10 @@ public class TrainModel implements constData
 		return 0.0;
 	}
 	
+	public Block getOccupiedBlock(){
+		return null;
+	}
+	
 	public void setTemp(double t){
 		
 	}
