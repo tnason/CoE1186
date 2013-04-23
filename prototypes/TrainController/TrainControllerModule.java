@@ -129,6 +129,11 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   }
   
   
+  public TrainController getTrainController(int t){
+    return controllers.get(t);
+  }
+  
+  
   public void destroyTrainController(int t)
   {
     // Todo: remove from dropdown list of trains in GUI here
