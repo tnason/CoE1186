@@ -1,0 +1,95 @@
+Scheduler/OperatorScheduleTableModel.java:10: warning: [serial] serializable class OperatorScheduleTableModel has no definition of serialVersionUID
+public class OperatorScheduleTableModel extends DefaultTableModel
+       ^
+TrackModel/TrackModelUI.java:41: warning: [serial] serializable class TrackRenderComponent has no definition of serialVersionUID
+class TrackRenderComponent extends JComponent
+^
+TrainController/TrainController.java:201: error: cannot find symbol
+    return authority;
+  	       ^
+  symbol:   variable authority
+  location: class TrainController
+TrainController/TrainController.java:226: error: cannot find symbol
+  	return gpsConnected;
+  	       ^
+  symbol:   variable gpsConnected
+  location: class TrainController
+TrainController/TrainControllerGUI.java:72: error: cannot find symbol
+            model.addRow(new Object[]{"time", tc.getVelocity(), tc.getVelocitySetpoint(), tc.getPower()});
+                                                ^
+  symbol:   method getVelocity()
+  location: variable tc of type TrainController
+TrainController/TrainControllerGUI.java:72: error: cannot find symbol
+            model.addRow(new Object[]{"time", tc.getVelocity(), tc.getVelocitySetpoint(), tc.getPower()});
+                                                                  ^
+  symbol:   method getVelocitySetpoint()
+  location: variable tc of type TrainController
+TrainController/TrainControllerGUI.java:72: error: cannot find symbol
+            model.addRow(new Object[]{"time", tc.getVelocity(), tc.getVelocitySetpoint(), tc.getPower()});
+                                                                                            ^
+  symbol:   method getPower()
+  location: variable tc of type TrainController
+TrainController/TrainControllerGUI.java:79: warning: [rawtypes] found raw type: DefaultComboBoxModel
+        DefaultComboBoxModel model = new DefaultComboBoxModel(); // Combo Box Model
+        ^
+  missing type arguments for generic class DefaultComboBoxModel<E>
+  where E is a type-variable:
+    E extends Object declared in class DefaultComboBoxModel
+TrainController/TrainControllerGUI.java:79: warning: [rawtypes] found raw type: DefaultComboBoxModel
+        DefaultComboBoxModel model = new DefaultComboBoxModel(); // Combo Box Model
+                                         ^
+  missing type arguments for generic class DefaultComboBoxModel<E>
+  where E is a type-variable:
+    E extends Object declared in class DefaultComboBoxModel
+TrainController/TrainControllerGUI.java:83: warning: [unchecked] unchecked call to addElement(E) as a member of the raw type DefaultComboBoxModel
+            model.addElement(list.nextElement()); // Adds each ID to the model
+                            ^
+  where E is a type-variable:
+    E extends Object declared in class DefaultComboBoxModel
+TrainController/TrainControllerGUI.java:86: warning: [unchecked] unchecked call to setModel(ComboBoxModel<E>) as a member of the raw type JComboBox
+            trainContDropdown.setModel(model); // Sets new model (null model in this case)
+                                      ^
+  where E is a type-variable:
+    E extends Object declared in class JComboBox
+TrainController/TrainControllerGUI.java:90: warning: [unchecked] unchecked call to setModel(ComboBoxModel<E>) as a member of the raw type JComboBox
+            trainContDropdown.setModel(model); // Sets new model
+                                      ^
+  where E is a type-variable:
+    E extends Object declared in class JComboBox
+TrainController/TrainControllerGUI.java:100: warning: [rawtypes] found raw type: JComboBox
+        trainContDropdown = new javax.swing.JComboBox();
+                                           ^
+  missing type arguments for generic class JComboBox<E>
+  where E is a type-variable:
+    E extends Object declared in class JComboBox
+TrainController/TrainControllerGUI.java:139: warning: [rawtypes] found raw type: DefaultComboBoxModel
+        trainContDropdown.setModel(new DefaultComboBoxModel(trainIDs) );
+                                       ^
+  missing type arguments for generic class DefaultComboBoxModel<E>
+  where E is a type-variable:
+    E extends Object declared in class DefaultComboBoxModel
+TrainController/TrainControllerGUI.java:506: warning: [serial] serializable class <anonymous TLTTC.TrainControllerGUI$15> has no definition of serialVersionUID
+        ) {
+          ^
+TrainController/TrainControllerGUI.java:582: error: method getTrainController in class TrainControllerModule cannot be applied to given types;
+            tc = mod.getTrainController(trainContDropdown.getSelectedItem());
+                    ^
+  required: int
+  found: Object
+  reason: actual argument Object cannot be converted to int by method invocation conversion
+TrainController/TrainControllerGUI.java:595: error: cannot find symbol
+            tm.setTemp(tempSetpointText.getText());
+              ^
+  symbol:   method setTemp(String)
+  location: variable tm of type TrainModel
+TrainController/TrainControllerGUI.java:693: warning: [rawtypes] found raw type: JComboBox
+    private javax.swing.JComboBox trainContDropdown;
+                       ^
+  missing type arguments for generic class JComboBox<E>
+  where E is a type-variable:
+    E extends Object declared in class JComboBox
+TrainController/TrainControllerGUI.java:8: warning: [serial] serializable class TrainControllerGUI has no definition of serialVersionUID
+public class TrainControllerGUI extends JFrame {
+       ^
+7 errors
+12 warnings
