@@ -4,43 +4,43 @@ import java.util.concurrent.*;
 
 public class TrainControllerModule extends Worker implements Runnable, constData
 {
-  private Module name = Module.trainController;
-  private Hashtable<Integer, TrainController> controllers;
-  private LinkedBlockingQueue<Message> msgs;
+  private Module name = Module.trainController; // Name of Module
+  private Hashtable<Integer, TrainController> controllers; // Hashtable of TrainControllers
+  private LinkedBlockingQueue<Message> msgs; // Message queue
   
-  private int trainID;
-  private TrainController tc;
-  private TrainControllerGUI gui;
+  private int trainID; // Local train ID
+  private TrainController tc; // Local train controller
+  private TrainControllerGUI gui; // GUI
   
-  private TrainContainer trainContainer;
+  private TrainContainer trainContainer; // Reference to TrainModel container
   
   
   public TrainControllerModule()
   {
-    controllers = new Hashtable<Integer, TrainController>();
-    msgs = new LinkedBlockingQueue<Message>();
+    controllers = new Hashtable<Integer, TrainController>(); // Instantiates Hashtable
+    msgs = new LinkedBlockingQueue<Message>(); // Instantiates message queue
 
-    gui = new TrainControllerGUI(this);
+    gui = new TrainControllerGUI(this); // Starts up GUI thread
     new Thread(gui).start();
   }
   
   
   public void run()
   {
-    while(true)
+    while(true) // Runs continuously
     {
-      if(msgs.peek() != null)
+      if(msgs.peek() != null) // If message is in the queue
       {
-        Message m = msgs.poll();
-        if(name == m.getDest())
+        Message m = msgs.poll(); // Gets message
+        if(name == m.getDest()) // If message is intended for train controller
         {
           //System.out.println("\nRECEIVED MSG: source->"+m.getSource() + " : dest->"+m.getDest()+"\n");
-          if(m.getData() != null && m.getData().containsKey("trainID"))
+          if(m.getData() != null && m.getData().containsKey("trainID")) // If message has data and has a train ID
           {
-            trainID = (int)(m.getData().get("trainID"));
-            if (controllers.containsKey(trainID))
+            trainID = (int)(m.getData().get("trainID")); // Gets train ID
+            if (controllers.containsKey(trainID)) // If Hashtable contains this train controller
             {
-              tc = controllers.get(trainID); // Local TrainController
+              tc = controllers.get(trainID); // Creates local TrainController
             }
             
             switch (m.getType())
@@ -68,12 +68,12 @@ public class TrainControllerModule extends Worker implements Runnable, constData
                 break;
             }
           }
-          else
+          else // Otherwise, no train ID was sent
           {
             System.out.println("ERROR! No train ID in message sent to train controller!");
           }
         }
-        else
+        else // Otherwise, pass message along to next module
         {
           //System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : " + m.getDest()+"), (type : " + m.getType()+")");
           m.updateSender(name);
@@ -84,31 +84,31 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   }
   
   
-  public void setMsg(Message m)
+  public void setMsg(Message m) // Add message to queue
   {
     msgs.add(m);
   }
   
   
-  public void send(Message m)
+  public void send(Message m) // Send message
   {
     //System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+" " + m.getType() + "\n");
     Environment.passMessage(m);
   }
   
   
-  public void init(TrainContainer t)
+  public void init(TrainContainer t) // Associates TrainContainer with this
   {
     trainContainer = t;
   }
   
-  public Enumeration<Integer> getTrainList(){
+  public Enumeration<Integer> getTrainList(){ // Returns list of train IDs for GUI's use
     return controllers.keys();
   }
   
   
   // Methods for Train Model's use
-  public TrainController createTrainController(int t)
+  public TrainController createTrainController(int t) // Creates new train controller
   {
     TrainController newTrainController = new TrainController(t, trainContainer.getTrain(t));
     controllers.put(t, newTrainController);
@@ -117,14 +117,14 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   }
   
   
-  public TrainController getTrainController(int t){
+  public TrainController getTrainController(int t) // Gets a train controller object
+  { 
     return controllers.get(t);
   }
   
   
-  public void destroyTrainController(int t)
+  public void destroyTrainController(int t) // Removes train controller when train is destroyed
   {
-    // Todo: remove from dropdown list of trains in GUI here
     controllers.remove(t);
   }
 }
