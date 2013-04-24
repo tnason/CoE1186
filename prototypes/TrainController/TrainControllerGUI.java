@@ -19,7 +19,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     
     public void run() {
         initComponents();
-        while (noTrains){ // Don't open GUI until a train is created
+        while (noTrains){
             createDropdownModel(); // Creates dropdown menu
         }
         trainContDropdown.setSelectedItem(trainIDs[0]); // Set dropdown to first train in list
@@ -72,32 +72,32 @@ public class TrainControllerGUI extends JFrame implements Runnable {
             pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
             brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
             model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
-            model.addRow(new Object[]{"time", tc.getVelocity(), tc.getVelocitySetpoint(), tc.getPower()});
+            model.addRow(new Object[]{"time", tc.getVelocity()*2.23694, tc.getVelocitySetpoint()*2.23694, tc.getPower()});
         }
     }
     
     public void createDropdownModel(){ // Creates Integer array of train IDs
-        trainIDs = new Integer[60];
-        Enumeration<Integer> list = mod.getTrainList(); // List of train IDs
-        DefaultComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>(); // Combo Box Model
-        int i = 0;
-        for (i = 0; list.hasMoreElements(); i++){
-            Integer temp = list.nextElement();
-            trainIDs[i] = temp;
-            model.addElement(temp); // Adds each ID to the model
-        }
-        if (i == 0){
-            noTrains = true;
-        }
-        else{
-            trainContDropdown.setModel(model); // Sets new model
-            noTrains = false;
-        }
+            trainIDs = new Integer[60];
+            Enumeration<Integer> list = mod.getTrainList(); // List of train IDs
+            DefaultComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>(); // Combo Box Model
+            int i = 0;
+            for (i = 0; list.hasMoreElements(); i++){
+                Integer temp = list.nextElement();
+                trainIDs[i] = temp;
+                model.addElement(temp); // Adds each ID to the model
+            }
+            if (i == 0){
+                noTrains = true;
+            }
+            else{
+                trainContDropdown.setModel(model); // Sets new model
+                noTrains = false;
+            }
     }
     
     
     @SuppressWarnings("serial")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
         trainContDropdown = new javax.swing.JComboBox<Integer>();
@@ -486,21 +486,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
 
         powerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Time", "Velocity (mph)", "Setpoint (mph)", "Power (W)"
@@ -577,7 +563,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         );
 
         pack();
-    }// </editor-fold>                        
+    }// </editor-fold>
     
     private void trainContDropdownActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         if (!noTrains){
@@ -659,7 +645,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         }
     }                                                
 
-    // Variables declaration - do not modify                     
+    // Variables declaration - do not modify
     private javax.swing.JButton accelerateButton;
     private javax.swing.JLabel authorityLabel;
     private javax.swing.JTextField authorityText;
@@ -696,7 +682,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     private javax.swing.JLabel velocityLabel;
     private javax.swing.JSpinner velocitySetter;
     private javax.swing.JTextField velocityText;
-    // End of variables declaration                   
+    // End of variables declaration
 
 private class UpdateGUI implements Runnable {
     public void run() {
