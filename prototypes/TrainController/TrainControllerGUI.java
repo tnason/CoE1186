@@ -1,7 +1,6 @@
 package TLTTC;
 
 import javax.swing.*;
-import javax.swing.table.*;
 import java.util.*;
 import java.awt.*;
 
@@ -17,14 +16,15 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         mod = m;
     }
     
-    public void run(){
-        initComponents();
+    
+    public void run() {
         while (noTrains){ // Don't open GUI until a train is created
             createDropdownModel(); // Creates dropdown menu
         }
         trainContDropdown.setSelectedItem(trainIDs[0]); // Set dropdown to first train in list
         tc = mod.getTrainController(trainIDs[0]); // Sets first displayed data to first train in list
         tm = tc.getTrain();
+        initComponents();
         open();
     }
 
@@ -64,12 +64,10 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         if (!noTrains){
             doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
             lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
-
-            currentTempText.setText(Double.toString(tm.getTemperature()));
+            currentTempText.setText(Double.toString(tm.getTemp()));
             nextStationText.setText(tc.getNextStation());
             velocityText.setText(Double.toString(tm.getVelocity()));
             authorityText.setText(Double.toString(tc.getAuthority()));
-
             engineFailureText.setBackground(tc.getEngineFail() == true ? Color.RED : Color.GRAY);
             pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
             brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
@@ -78,19 +76,17 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         }
     }
     
-    private void createDropdownModel(){ // Creates Integer array of train IDs
+    public void createDropdownModel(){ // Creates Integer array of train IDs
         trainIDs = new Integer[60];
         Enumeration<Integer> list = mod.getTrainList(); // List of train IDs
         DefaultComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>(); // Combo Box Model
         int i = 0;
         for (i = 0; list.hasMoreElements(); i++){
-            Integer temp = list.nextElement();
-            trainIDs[i] = temp;
-            model.addElement(temp); // Adds each ID to the model
+            trainIDs[i] = list.nextElement();
+            model.addElement(list.nextElement()); // Adds each ID to the model
         }
-        if (i == 0)
-        {
-           noTrains = true;
+        if (i == 0){
+            noTrains = true;
         }
         else{
             trainContDropdown.setModel(model); // Sets new model
@@ -100,7 +96,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     
     
     @SuppressWarnings("serial")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         trainContDropdown = new javax.swing.JComboBox<Integer>();
@@ -580,7 +576,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         );
 
         pack();
-    }// </editor-fold>
+    }// </editor-fold>                        
     
     private void trainContDropdownActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         if (!noTrains){
@@ -597,7 +593,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
 
     private void tempSetpointSetButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                      
         if (!noTrains && Integer.parseInt(tempSetpointText.getText()) >= 55 && Integer.parseInt(tempSetpointText.getText()) <= 80){ // If temperature is safe, set it
-            tm.setTemperature(Double.parseDouble(tempSetpointText.getText()));
+            tm.setTemp(Double.parseDouble(tempSetpointText.getText()));
         }
     }                                                     
 
@@ -662,7 +658,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         }
     }                                                
 
-    // Variables declaration - do not modify
+    // Variables declaration - do not modify                     
     private javax.swing.JButton accelerateButton;
     private javax.swing.JLabel authorityLabel;
     private javax.swing.JTextField authorityText;
@@ -699,7 +695,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     private javax.swing.JLabel velocityLabel;
     private javax.swing.JSpinner velocitySetter;
     private javax.swing.JTextField velocityText;
-    // End of variables declaration
+    // End of variables declaration                   
 
 private class UpdateGUI implements Runnable {
     public void run() {
