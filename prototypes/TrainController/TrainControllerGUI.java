@@ -18,13 +18,13 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     }
     
     public void run(){
+        initComponents();
         while (noTrains){ // Don't open GUI until a train is created
             createDropdownModel(); // Creates dropdown menu
         }
         trainContDropdown.setSelectedItem(trainIDs[0]); // Set dropdown to first train in list
         tc = mod.getTrainController(trainIDs[0]); // Sets first displayed data to first train in list
         tm = tc.getTrain();
-        initComponents();
         open();
     }
 
