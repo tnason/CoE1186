@@ -110,14 +110,14 @@ public class TrainController
   }
   
   
-  private double setPower2(double pow, double uK, double eK, double vel, double fixedBlock, double ctcFixedBlock, double movingBlockAuth, double ctcMovingBlockAuth, double trainOpVel, double ctcOpVel, double trackLim)
+  private double setPower2(double pow, double uK, double eK, double vel, double fixedBlock, double ctcFixedBlock, double movingBlock, double ctcMovingBlock, double trainOpVel, double ctcOpVel, double trackLim)
   { // Redundant method used because train controller is safety-critical
 	double auth = Math.min(Math.min(movingBlock, Math.min(ctcFixedBlock, ctcMovingBlock)), fixedBlock);
 	double authLim = Math.sqrt(auth*2.4196);
 	double velSetpoint = Math.max(ctcOpVel, trainOpVel);
 	if (velSetpoint > Math.min(trainLimit, Math.min(authLim, trackLim)))
 	{
-		velSepoint = Math.min(trainLimit, Math.min(authLim, trackLim));
+		velSetpoint = Math.min(trainLimit, Math.min(authLim, trackLim));
 	}
 	
 	if (pow < trainMaxPower)
