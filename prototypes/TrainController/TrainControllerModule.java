@@ -111,6 +111,7 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   {
     TrainController newTrainController = new TrainController(t, trainContainer.getTrain(t));
     controllers.put(t, newTrainController);
+    gui.createDropdownModel();
     return newTrainController;
   }
   
