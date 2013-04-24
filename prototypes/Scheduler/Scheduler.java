@@ -259,7 +259,7 @@ public class Scheduler extends Worker implements Runnable, constData
 		trainID = (int)message.getData().get("trainID");
 		//sendTrainUpdate(); //Notify MBO that a train was added to the track
 
-		if((boolean)message.getData().get("isGreenLine"))
+		if(message.getData().get("isGreenLine") != null && (boolean) message.getData().get("isGreenLine"))
 		{
 			greenTrains.add(new Train(trainID, System.currentTimeMillis()));
 		}
