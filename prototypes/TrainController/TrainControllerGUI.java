@@ -84,8 +84,9 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         DefaultComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>(); // Combo Box Model
         int i = 0;
         for (i = 0; list.hasMoreElements(); i++){
-            trainIDs[i] = list.nextElement();
-            model.addElement(list.nextElement()); // Adds each ID to the model
+            Integer temp = list.nextElement();
+            trainIDs[i] = temp;
+            model.addElement(temp); // Adds each ID to the model
         }
         if (i == 0)
         {
