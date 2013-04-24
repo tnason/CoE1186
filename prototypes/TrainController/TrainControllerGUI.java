@@ -60,7 +60,6 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     
     
     private void refreshUI(){
-        createDropdownModel();
         if (!noTrains){
             doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
             lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
