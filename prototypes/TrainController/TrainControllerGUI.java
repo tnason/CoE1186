@@ -72,7 +72,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
             pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
             brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
             model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
-            model.addRow(new Object[]{"time", tc.getVelocity()*2.23694, tc.getVelocitySetpoint()*2.23694, tc.getPower()});
+            model.addRow(new Object[]{"time", tm.getVelocity()*2.23694, tc.getVelocitySetpoint()*2.23694, tc.getPower()});
         }
     }
     
