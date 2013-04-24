@@ -84,7 +84,7 @@ public class Scheduler extends Worker implements Runnable, constData
 
 	public boolean updateTimetable()
 	{
-		return updateTimetable(true) && updateTimetable(false);
+		return updateTimetable(true);// && updateTimetable(false);
 	}
 
 	public boolean updateTimetable(boolean isGreenLine)
