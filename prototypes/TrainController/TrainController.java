@@ -104,8 +104,6 @@ public class TrainController
 			power = oldPower;
 		}
 		tm.setPower(power); // Sets power of train
-
-    System.out.println("POWER: " + power + " vsp " +velocitySetpoint +" vel "+ velocity);
 	}
   }
   
