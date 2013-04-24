@@ -97,6 +97,8 @@ public class TrainController
 		power = ((KP*ek)+(KI*uk));
 		tm.setPower(power);
 
+    System.out.println("POWER: " + power + " vsp " +velocitySetpoint +" vel "+ velocity);
+
 	}
   }
   

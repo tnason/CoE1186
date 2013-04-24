@@ -130,7 +130,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 									//deprecated
 
 									//send TnMd_Sch_Notify_Yard
-									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID","blockID"}, new Object[] {(Object)false, mine.getData().get("trainID"), (Object)(bl.getID())});
+									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID","blockID","isGreenLine"}, new Object[] {(Object)false, mine.getData().get("trainID"), (Object)(bl.getID()), (Object)true});
 									send(outgoingMessage);
 								}
 								break;

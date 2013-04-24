@@ -84,13 +84,7 @@ public class Scheduler extends Worker implements Runnable, constData
 
 	public boolean updateTimetable()
 	{
-<<<<<<< HEAD
-		updateTimetable(true);
-		updateTimetable(false);
-		return false;
-=======
 		return updateTimetable(true) && updateTimetable(false);
->>>>>>> 6ba984298823e45a1ffb24b801ad3bc2155afd4a
 	}
 
 	public boolean updateTimetable(boolean isGreenLine)
@@ -209,10 +203,12 @@ public class Scheduler extends Worker implements Runnable, constData
 							if((boolean)message.getData().get("entry"))
 							{
 								receivedTrainReturn(message);
+								sendTrainInfo();
 							}
 							else
 							{
 								receivedTrainDispatch(message);
+								sendTrainInfo();
 							}
 							break;	
 					}
@@ -265,7 +261,7 @@ public class Scheduler extends Worker implements Runnable, constData
 		trainID = (int)message.getData().get("trainID");
 		//sendTrainUpdate(); //Notify MBO that a train was added to the track
 
-		if((boolean)message.getData().get("isGreenLine"))
+		if(message.getData().get("isGreenLine") != null && (boolean)message.getData().get("isGreenLine"))
 		{
 			greenTrains.add(new Train(trainID, System.currentTimeMillis()));
 		}
