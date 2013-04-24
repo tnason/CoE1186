@@ -26,8 +26,8 @@ public class TrackController extends Worker implements constData, Runnable
 			if(msgs.peek() != null)
      		{
         	Message m = msgs.poll();
-          if(m.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority)
-            System.out.println("THROUGH: " +m.getType()+" "+ m.getData().toString());
+          //if(m.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority)
+            //System.out.println("THROUGH: " +m.getType()+" "+ m.getData().toString());
 
           if(name == m.getDest())
 			    {
@@ -74,7 +74,7 @@ public class TrackController extends Worker implements constData, Runnable
     {
         for(Block blk : blockUnderController.get(i).values())
         {
-          System.out.println("Controller " + i + " block " + blk.getID() );
+          System.out.println("Controller " + i + " block " + blk.getID() + " " + blk.getStopNode().getNodeType());
        }
       System.out.println();
     }

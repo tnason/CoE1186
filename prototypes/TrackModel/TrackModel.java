@@ -196,7 +196,7 @@ public class TrackModel extends Worker implements Runnable, constData
             Node node3 = new ConnectorNode(400,0,1);
             Node node4 = new ConnectorNode(600,0,2);
             Node node5 = new ConnectorNode(800,0,2);
-            Node node6 = new ConnectorNode(1000,0,1);
+            Node node6 = new SwitchNode(1000,0,1);
             Node node7 = new ConnectorNode(1200,0,0);
             Node node8 = new YardNode(1400,0,0);            
             
