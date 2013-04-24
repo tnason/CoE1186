@@ -127,5 +127,6 @@ public class TrainControllerModule extends Worker implements Runnable, constData
   public void destroyTrainController(int t) // Removes train controller when train is destroyed
   {
     controllers.remove(t);
+    gui.createDropdownModel();
   }
 }
