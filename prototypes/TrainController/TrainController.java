@@ -11,17 +11,17 @@ public class TrainController
   private int trainID;
   private TrainModel tm;
   
-  private boolean underground = false;
-  private boolean inStation = false;
-  private String oldNextStation = ""; // next station one block ago
-  private String nextStation = ""; // next station
+  private boolean underground = false; // Underground status of block
+  private boolean inStation = false; // Station status of block
+  private String oldNextStation = ""; // Next station one block ago
+  private String nextStation = ""; // Next station
   private boolean daytime = false; // True = day, False = night
-  private boolean doorsOpen = false;
-  private boolean lightsOn = false;
-  private boolean engineFail = false;
-  private boolean signalPickupFail = false;
-  private boolean brakeFail = false;
-  private boolean gpsConnected = false;
+  private boolean doorsOpen = false; // Doors status
+  private boolean lightsOn = false; // Lights status
+  private boolean engineFail = false; // Engine failure status
+  private boolean signalPickupFail = false; // Signal pickup failure status
+  private boolean brakeFail = false; // Brake failure status
+  private boolean gpsConnected = false; // GPS connection status
   
   private final double KP = 80000; // Proportional gain
   private double ek = 0; // Proportional error
@@ -47,10 +47,10 @@ public class TrainController
   
   public TrainController(int id, TrainModel t)
   {
-    trainID = id;
-    tm = t;
+    trainID = id; // Sets train ID
+    tm = t; // Associates train model with train controller
     // Todo: connect to GPS here
-    gpsConnected = true;
+    gpsConnected = true; // Connects to GPS
     
     // Test variables -- Remove later
     velocity = 5;
@@ -76,7 +76,11 @@ public class TrainController
     }
 	else
 	{
-		velocity = tm.getVelocity();
+		double oldPower = power; // Power one time step ago.  Used in case redudant method, setPower2, calculates different power
+		
+		velocity = tm.getVelocity(); // Gets current velocity of train
+		double power2 = setPower2(power, uk, ek, velocity, fixedBlockAuth, ctcFixedBlockAuth, movingBlockAuth, ctcMovingBlockAuth, trainOperatorVelocity, ctcOperatorVelocity, trackLimit);
+		// ^ Calculates power of train in another way (redundant/safety-critical method)
 		authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
 		// Max train deceleration = -1.2098 m/s^2
 		// Using vf^2 = vi^2 + 2ad = 0 (final speed cannot be > 0), vi = sqrt(-2ad) = (2*1.2098*authority)
@@ -89,54 +93,89 @@ public class TrainController
 		  velocitySetpoint = Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit); // set to next highest allowable velocity
 		}
 
-		if (power < trainMaxPower)
+		if (power < trainMaxPower) // If power command is allowable, add integral gain to current integral gain
 		{
-		  uk = uk + (T/2)*(ek + (velocitySetpoint - velocity));
+		  uk = uk + (T/2.0)*(ek + (velocitySetpoint - velocity));
 		}
-		ek = velocitySetpoint - velocity; // kth sample of velocity error
-		power = ((KP*ek)+(KI*uk));
-		tm.setPower(power);
+		ek = velocitySetpoint - velocity; // Calculates proportional gain
+		power = ((KP*ek)+(KI*uk)); // Calculates power
+		if (power < power2*0.99 || power > power2*1.01) // If redundant power does not agree with this power, send old power command
+		{
+			power = oldPower;
+		}
+		tm.setPower(power); // Sets power of train
 
     System.out.println("POWER: " + power + " vsp " +velocitySetpoint +" vel "+ velocity);
-
 	}
   }
   
   
-  public void setDoors() // this method is called every time the train enters a new block or manually
+  private double setPower2(double pow, double uK, double eK, double vel, double fixedBlock, double ctcFixedBlock, double movingBlockAuth, double ctcMovingBlockAuth, double trainOpVel, double ctcOpVel, double trackLim)
+  { // Redundant method used because train controller is safety-critical
+	double auth = Math.min(Math.min(movingBlock, Math.min(ctcFixedBlock, ctcMovingBlock)), fixedBlock);
+	double authLim = Math.sqrt(auth*2.4196);
+	double velSetpoint = Math.max(ctcOpVel, trainOpVel);
+	if (velSetpoint > Math.min(trainLimit, Math.min(authLim, trackLim)))
+	{
+		velSepoint = Math.min(trainLimit, Math.min(authLim, trackLim));
+	}
+	
+	if (pow < trainMaxPower)
+	{
+		uK = (T*((-vel + eK + velSetpoint)/2.0)) + uK;
+	}
+	eK = -vel + velSetpoint;
+	pow = ((uk*KI)+(eK*KP));
+	return pow;
+  }
+  
+  
+  public void setDoors(boolean automatic) // This method is called every time the train enters a new block or manually
   {
-    velocity = tm.getVelocity();
-    doorsOpen = tm.getDoors();
+    velocity = tm.getVelocity(); // Current train velocity
+    doorsOpen = tm.getDoors(); // Current train door status
     
-    if (velocity == 0 && inStation && !doorsOpen)
+    if (velocity == 0 && inStation && !doorsOpen && automatic) // If train is stopped and doors are closed in a station, open the doors
     {
       tm.setDoors(true);
     }
-    else if (velocity != 0 && doorsOpen)
+    else if (velocity != 0 && doorsOpen && automatic) // If train is moving and doors are open, close the doors
     {
       tm.setDoors(false);
     }
+	else if (velocity == 0 && !automatic && !doorsOpen) // If stopped anywhere, allow operator to open doors
+	{
+	  tm.setDoors(true);
+	}
+	else if (doorsOpen && !automatic) // If doors are open, allow operator to close doors
+	{
+	  tm.setDoors(false);
+	}
   }
   
-  public void setLights() // this method is called every time the train enters a new block or manually
+  public void setLights(boolean automatic) // This method is called every time the train enters a new block or manually
   {
     // get time from train model and set daytime variable
-    lightsOn = tm.getLights();
+    lightsOn = tm.getLights(); // Current light status
     
-    if (!daytime || underground && !lightsOn)
+    if (!daytime || underground && !lightsOn && automatic) // If nighttime or underground and lights are off, turn them on
     {
       tm.setLights(true);
     }
-    else if (daytime && !underground && lightsOn)
+    else if (daytime && !underground && lightsOn && automatic) // If daytime and aboveground and lights are on, turn them off
     {
       tm.setLights(false);
     }
+	else if (!automatic && !lightsOn) // If lights are off, allow operator to turn them on
+	{
+	  tm.setLights(true);
+	}
   }
   
   
   public void announceStation(boolean automatic) // this method is called every time the train enters a new block or manually
   {
-    /*if (automatic && !oldNextStation.equals(nextStation))
+    /*if (automatic && !oldNextStation.equals(nextStation)) // If a new station name is processed, automatically announce it
     {
         VoiceManager voiceManager = VoiceManager.getInstance();
         Voice speaker = voiceManager.getVoice("kevin16");
@@ -144,7 +183,7 @@ public class TrainController
         speaker.speak("Next stop " + nextStation + " on " + trainID);
         speaker.deallocate();
     }
-    else if (!automatic)
+    else if (!automatic) // If button is pressed on GUI, announce station name
     {
     	VoiceManager voiceManager = VoiceManager.getInstance();
         Voice speaker = voiceManager.getVoice("kevin16");
@@ -207,14 +246,14 @@ public class TrainController
   public void setUnderground(boolean u)
   {
     underground = u;
-    setLights();
+    setLights(true);
   }
   
   
   public void setInStation(boolean i)
   {
     inStation = i;
-    setDoors();
+    setDoors(true);
   }
   
   
