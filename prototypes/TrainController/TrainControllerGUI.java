@@ -64,7 +64,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         if (!noTrains){
             doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
             lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
-            currentTempText.setText(Double.toString(tm.getTemp()));
+            currentTempText.setText(Double.toString(tm.getTemperature()));
             nextStationText.setText(tc.getNextStation());
             velocityText.setText(Double.toString(tm.getVelocity()));
             authorityText.setText(Double.toString(tc.getAuthority()));
@@ -593,7 +593,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
 
     private void tempSetpointSetButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                      
         if (!noTrains && Integer.parseInt(tempSetpointText.getText()) >= 55 && Integer.parseInt(tempSetpointText.getText()) <= 80){ // If temperature is safe, set it
-            tm.setTemp(Double.parseDouble(tempSetpointText.getText()));
+            tm.setTemperature(Double.parseDouble(tempSetpointText.getText()));
         }
     }                                                     
 
