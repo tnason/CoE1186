@@ -61,7 +61,8 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     
     
     private void refreshUI(){
-        if (!noTrains){
+        if (!noTrains)
+        {
             doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
             lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
             currentTempText.setText(Double.toString(tm.getTemperature()));
@@ -73,6 +74,20 @@ public class TrainControllerGUI extends JFrame implements Runnable {
             brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
             model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
             model.addRow(new Object[]{"time", tm.getVelocity()*2.23694, tc.getVelocitySetpoint()*2.23694, tc.getPower()});
+        }
+        else
+        {
+            doorControlButton.setText("No Train!");
+            lightControlButton.setText("No Train!");
+            currentTempText.setText("-");
+            nextStationText.setText("-");
+            velocityText.setText("-");
+            authorityText.setText("-");
+            engineFailureText.setBackground(Color.GRAY);
+            pickupFailureText.setBackground(Color.GRAY);
+            brakeFailureText.setBackground(Color.GRAY);
+            model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
+            model.setRowCount(0);
         }
     }
     
@@ -569,6 +584,8 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         if (!noTrains){
             tc = mod.getTrainController((Integer)(trainContDropdown.getSelectedItem()));
             tm = tc.getTrain();
+            model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
+            model.setRowCount(0);
             refreshUI();
         }
     }                                                 
