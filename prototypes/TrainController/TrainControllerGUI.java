@@ -25,6 +25,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         trainContDropdown.setSelectedItem(trainIDs[0]); // Set dropdown to first train in list
         tc = mod.getTrainController(trainIDs[0]); // Sets first displayed data to first train in list
         tm = tc.getTrain();
+    
         open();
     }
 
@@ -65,7 +66,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
             lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
             currentTempText.setText(Double.toString(tm.getTemperature()));
             nextStationText.setText(tc.getNextStation());
-            velocityText.setText(Double.toString(tm.getVelocity()));
+            velocityText.setText(Double.toString(tm.getVelocity()*2.23694));
             authorityText.setText(Double.toString(tc.getAuthority()));
             engineFailureText.setBackground(tc.getEngineFail() == true ? Color.RED : Color.GRAY);
             pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
