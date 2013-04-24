@@ -125,7 +125,7 @@ public class TrainController
 		uK = (T*((-vel + eK + velSetpoint)/2.0)) + uK;
 	}
 	eK = -vel + velSetpoint;
-	pow = ((uk*KI)+(eK*KP));
+	pow = ((uK*KI)+(eK*KP));
 	return pow;
   }
   
