@@ -251,10 +251,10 @@ public class TrainModel implements constData
 		acceleration = endAccel;
 	    
         stepCounter++;
-		/*if(stepCounter % 50 == 0)
+		if(stepCounter % 50 == 0)
 		{
 		System.out.println("!!TRAIN  MOTION___: p: " + position + " v: " + velocity + " a: " + acceleration);
-		}*/
+		}
 
 
 		time += actualTimeStep;
@@ -337,6 +337,8 @@ public class TrainModel implements constData
 					//send TnMd_Sch_Notify_Yard
 					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID", "blockID"}, new Object[] {true, trainID, occupiedBlocks.get(0).getID()});
 					Environment.passMessage(outgoingMessage);
+
+					// I need you to call TrainControllerModule.destroyTrainController(int trainID) when train is destroyed --Ben
 
 					//no, really... destruct!
 					//well... get yourself unlisted first.
