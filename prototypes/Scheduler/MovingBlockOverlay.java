@@ -279,8 +279,8 @@ public class MovingBlockOverlay extends Worker implements constData
 
 	private void receivedTrainUpdate(Message message)
 	{
-		greenTrains = (ArrayList<Train>)message.getData().get("greenTrains");
-		redTrains = (ArrayList<Train>)message.getData().get("redTrains");
+		greenTrains = (ArrayList<Train>)message.getData().get("greenLine");
+		redTrains = (ArrayList<Train>)message.getData().get("redLine");
 	}
 
 	/*
