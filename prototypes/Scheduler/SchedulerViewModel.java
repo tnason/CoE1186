@@ -1,3 +1,10 @@
+//Marcus Hayes
+//Computer Engineeering
+//Senior
+//ECE 1186
+//Th 6-9
+//TLTTC - Scheduler/MBO
+
 package TLTTC;
 
 import java.awt.*;
@@ -80,42 +87,24 @@ public class SchedulerViewModel
 	{
 	}
 
+	/*action listener to update the UI when the schedule or timetable changes*/
+
 	private class MySchedulerListener implements SchedulerListener
 	{
 		public void timetableChanged(SchedulerEvent e)
 		{
 			myTimetable.update(scheduler.getTimetable());
-			/*
-			Iterator<TimesObject> i;
-			TimesObject t;
 
-			i = scheduler.getTimetable().getIterator();
-
-			while(i.hasNext())
-			{
-				t = i.next();
-				myTimetable.addRow(new Object[]{t.stationName, t.trainNumber, new Time(t.time), t.status.toString()});
-			}
-			*/
 		}
 
 		public void operatorScheduleChanged(SchedulerEvent e)
 		{
 			mySchedule.update(scheduler.getOperatorSchedule());
-/*
-			Iterator<Operator> i;
-			Operator s;
 
-			i = myScheduler.getOperatorSchedule().getIterator();
-
-			while(i.hasNext())
-			{
-				s = i.next();
-				mySchedule.addRow(new Object[]{s.firstName, s.lastName, s.trainNumber, new Time(s.shiftStart), new Time(s.breakStart), new Time(s.breakEnd), new Time(s.shiftEnd), s.status.toString()});
-			}
-*/
 		}
 	}
+
+	/*action listener to request updates from the scheduler*/
 
 	private class MyButtonListener implements ActionListener
 	{

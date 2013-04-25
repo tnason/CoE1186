@@ -1,3 +1,10 @@
+//Marcus Hayes
+//Computer Engineeering
+//Senior
+//ECE 1186
+//Th 6-9
+//TLTTC - Scheduler/MBO
+
 package TLTTC;
 
 public class Train implements Comparable<Train>
@@ -42,6 +49,8 @@ public class Train implements Comparable<Train>
 		blockValid = true;
 		this.time = time;
 	}
+
+	/*Setters for location and stopping distance, and setters for flags to ensure the data is accurate*/
 
 	public boolean isLocationValid()
 	{
@@ -119,6 +128,9 @@ public class Train implements Comparable<Train>
 		this.nextNode = nextNode;
 		this.time = time;
 	}
+
+	/*Comparator to ensure that the trains in a list are sorted in order as they are traversing the track*/
+	/*NOT YET IMPLEMENTED*/
 
 	public int compareTo(Train train)
 	{
