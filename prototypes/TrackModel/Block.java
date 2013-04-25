@@ -83,12 +83,12 @@ public abstract class Block {
 
 	public void setOccupation(boolean state){
 		occupied = state;
-		TrackModel.refreshView();
+		//TrackModel.refreshView();
 	}
 
 	public void setMaintenance(boolean state){
 		maintenance = state;
-		TrackModel.refreshView();
+		//TrackModel.refreshView();
 	}
 
 	public boolean getMaintenance()
@@ -152,6 +152,16 @@ public abstract class Block {
 	
 	public Node getStopNode(){
 		return stopNode;
+	}
+
+	public void setStartNode(Node start)
+	{
+		startNode = start;
+	}
+
+	public void setStopNode(Node stop)
+	{
+		stopNode = stop;
 	}
 	
 	public int getAllowedDirection(){
