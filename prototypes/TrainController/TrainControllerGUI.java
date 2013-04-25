@@ -606,7 +606,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
 
     private void lightControlButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                   
         if (!noTrains){
-            tc.setLights(true); // CAMERON : Changed to always true (?)
+            tc.setLights(false);
         }
     }                                                  
 
@@ -616,7 +616,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
 
     private void doorControlButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         if (!noTrains){
-           tc.setDoors(true);// CAMERON : Changed to always true (?)
+           tc.setDoors(false);
         }
     }                                                 
 
