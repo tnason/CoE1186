@@ -7,6 +7,14 @@ import java.util.concurrent.*;
 
 public class TrackModel extends Worker implements Runnable, constData
 {
+    private LinkedBlockingQueue<Message> msgs;
+    private Module name = Module.trackModel;
+    TrackModelUI userInterface;
+    private HashMap<Integer, Block> blocks;
+    private HashMap<Integer, Node> nodes;
+    private int yn = -1;
+
+
 	public TrackModel()
 	{
 	    blocks = new HashMap<Integer, Block>();
@@ -14,19 +22,14 @@ public class TrackModel extends Worker implements Runnable, constData
         msgs = new LinkedBlockingQueue<Message>();
 	}
 
-    private HashMap<Integer, Block> blocks;
-    private HashMap<Integer, Node> nodes;
-
-    private int yn = -1;
-
     public HashMap<Integer, Block> getBlocks()
     {
     	return blocks;
     }
     
-    public String toString(){
-        StringBuilder sb = new StringBuilder();
-  
+    public String toString()
+	{
+        StringBuilder sb = new StringBuilder();  
         sb.append("Listing Nodes\n");
         for(Integer iObj : nodes.keySet())
         {
@@ -36,7 +39,6 @@ public class TrackModel extends Worker implements Runnable, constData
         	sb.append(nodes.get(iObj).toString());
         	sb.append("\n");	
         }
-    	
     	sb.append("Listing Blocks\n");
     	for(Integer iObj : blocks.keySet())
         {
@@ -61,10 +63,6 @@ public class TrackModel extends Worker implements Runnable, constData
     	blocks.get(new Integer(blockID)).setOccupation(state);    	
     }
     
-    private LinkedBlockingQueue<Message> msgs;
-    private Module name = Module.trackModel;
-    TrackModelUI userInterface;
-
     public void run() {
 
         long refreshRender = System.currentTimeMillis()+1000;
@@ -110,21 +108,11 @@ public class TrackModel extends Worker implements Runnable, constData
         }
     }
 
-
-/*
-    static TrackModelUI staticUI; 
-
-    public static void refreshView()
-    {
-        staticUI.refresh();
-    }
-*/
     public void init()
     {
 	    TrackModelForm form = new TrackModelForm();
     	form.setVisible(true);
 	    userInterface = new TrackModelUI();
-    	//staticUI = userInterface;
 
         try
         {
@@ -234,41 +222,31 @@ public class TrackModel extends Worker implements Runnable, constData
                 i++;
             }
 
-        System.out.println("\n\nshit+"+blocks.get(63)+"\n\n");
+	/*
 
+			Block b1 = blocks.get(1);
+			Block b12 = blocks.get(12);
+			Block b13 = blocks.get(13);
 
-		blocks.get(13).setOccupation(true);
+			System.out.println("\n\n\n block1="+b1+"\n\nblock12="+b12+"\n\nblock13="+b13+"\n\n\n");
 
-/*
+		        //hardcoded switches, replace if time permits
+			SwitchNode switch1 = new SwitchNode(1300, 100, 0);
+			switch1.setDivergingOutput(b1);
+			switch1.setOutput(b12);
+			switch1.setInput(b13);
 
-	    Block b1 = blocks.get(1);
-	    Block b12 = blocks.get(12);
-	    Block b13 = blocks.get(13);
-
-	    System.out.println("\n\n\n block1="+b1+"\n\nblock12="+b12+"\n\nblock13="+b13+"\n\n\n");
-
-            //hardcoded switches, replace if time permits
-	    SwitchNode switch1 = new SwitchNode(1300, 100, 0);
-	    switch1.setDivergingOutput(b1);
-	    switch1.setOutput(b12);
-	    switch1.setInput(b13);
-
-	    nodes.put(137, switch1);
-	    b1.setStartNode(switch1);
-	    b12.setStopNode(switch1);
-	    b13.setStartNode(switch1);
-*/		
+			nodes.put(137, switch1);
+			b1.setStartNode(switch1);
+			b12.setStopNode(switch1);
+			b13.setStartNode(switch1);
+	*/		
 	
-	    userInterface.refresh();
+			userInterface.refresh();
         	
-                
-	          
         } 
         catch (Exception e)
         {
-
-	    
-
             System.out.println(e.getMessage());
         }
     }
@@ -284,7 +262,6 @@ public class TrackModel extends Worker implements Runnable, constData
         Environment.passMessage(m);
     }
     
-
     //handlers-----------------------------------
 
     //TnCt_TcMd_Request_Track_Speed_Limit
@@ -293,7 +270,6 @@ public class TrackModel extends Worker implements Runnable, constData
       //gets a block id 
     }
 
-
     //pass throughs------------------------------
 
     //CTC_TnMd_Request_Train_Creation
@@ -301,5 +277,4 @@ public class TrackModel extends Worker implements Runnable, constData
     {
     
     }
-//*/
 }

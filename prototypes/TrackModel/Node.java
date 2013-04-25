@@ -1,31 +1,7 @@
 package TLTTC;
 
 public abstract class Node implements constData
- {
-	public Node(){
-		nodeType = NodeType.Node;
-	}
-	
-	public String toString(){
-		StringBuilder sb = new StringBuilder();
-		sb.append("Node x=");
-		sb.append(xPos);
-		sb.append(" y=");
-		sb.append(yPos);
-		sb.append(" z=");
-		sb.append(zPos);
-		
-		
-		return sb.toString();
-	}
-	
-	public void setInput(Block b){
-		input = b;
-	}
-	public void setOutput(Block b){
-		output = b;
-	}
-	
+{
 	/*Unique identifier*/
 	protected int nodeID;
 	
@@ -41,11 +17,41 @@ public abstract class Node implements constData
 	
 	/*keep track of the type of node*/
 	protected NodeType nodeType;
-	public NodeType getNodeType(){
-		return nodeType;
+
+
+
+
+	public Node(){
+		nodeType = NodeType.Node;
 	}
 	
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("Node x=");
+		sb.append(xPos);
+		sb.append(" y=");
+		sb.append(yPos);
+		sb.append(" z=");
+		sb.append(zPos);		
+		return sb.toString();
+	}
 	
+	public void setInput(Block b)
+	{
+		input = b;
+	}
+
+	public void setOutput(Block b)
+	{
+		output = b;
+	}
+
+	public NodeType getNodeType()
+	{
+		return nodeType;
+	}
+		
 	/*getters for coordinates*/
 	public double getX(){
 		return xPos;
