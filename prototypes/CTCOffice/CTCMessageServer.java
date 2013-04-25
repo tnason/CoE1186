@@ -91,6 +91,7 @@ public class CTCMessageServer extends Worker implements Runnable, constData
                 bID = (Integer) m.getData().get("blockID");
                 try 
                 {
+                    boolean isStation = (boolean) m.getData().get("isStation");
                     tID = (Integer) m.getData().get("trainID");
                     if (tID != null)
                     {
@@ -99,6 +100,10 @@ public class CTCMessageServer extends Worker implements Runnable, constData
                     else
                     {
                         controller.updateOccupancy(bID);
+                    }
+                    if (isStation)
+                    {
+                        controller.reachedNextStation();
                     }
                 }
                 catch (Exception e)

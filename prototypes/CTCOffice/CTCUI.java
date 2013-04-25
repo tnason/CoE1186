@@ -508,9 +508,9 @@ public class CTCUI extends javax.swing.JFrame {
     
     private Integer getCurrentTrainSelection(String selection)
     {
-        String[] splitText = selection.split(" ");
         try
         {
+            String[] splitText = selection.split(" ");
             return Integer.parseInt(splitText[1]);
         }
         catch (Exception e)
