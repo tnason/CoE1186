@@ -56,7 +56,7 @@ class TrackRenderComponent extends JComponent
 	private int metersToPixels(double meters)
 	{
 		//for now no scaling
-		return (int)meters/2;
+		return (int)meters/8;
 	}
 
 	@Override
