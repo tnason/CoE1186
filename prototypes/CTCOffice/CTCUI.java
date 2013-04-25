@@ -414,17 +414,34 @@ public class CTCUI extends javax.swing.JFrame {
         // grab the row data and set it to the detail views
         int row = event.getFirstIndex();
         jTextField4.setText((String) _dataModel.getValueAt(row, 0)); // setting the train 
-        jTextField1.setText((String) _dataModel.getValueAt(row, 2)); // setting the speed
-        jTextField2.setText((String) _dataModel.getValueAt(row, 3)); // setting authority
-        jTextField3.setText((String) _dataModel.getValueAt(row, 4)); // setting station
+        jTextField1.setText( "" + (Double) _dataModel.getValueAt(row, 3)); // setting the speed
+        try 
+        {
+            jTextField2.setText( "" + (Integer) _dataModel.getValueAt(row, 4)); // setting authority
+        }
+        catch (Exception e)
+        {
+            jTextField2.setText( "" + (Double) _dataModel.getValueAt(row, 4)); // setting authority
+        }
+        jTextField3.setText((String) _dataModel.getValueAt(row, 5)); // setting station
         
         Integer tID = getCurrentTrainSelection((String) _dataModel.getValueAt(row, 0));
         // strip the route list and rebuild it with the current selection
-        _routeModel.removeAllElements();
-        ArrayList<Integer> route = _controller.getRouteListingForTrain(tID);
-        for (Integer block : route)
+        try
         {
-            _routeModel.addElement((String) "Block " + block);
+            _routeModel.removeAllElements();
+            ArrayList<Integer> route = _controller.getRouteListingForTrain(tID);
+            if (route != null)
+            {
+                for (Integer block : route)
+                {
+                    _routeModel.addElement((String) "Block " + block);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            // fail silently
         }
     }
 
