@@ -185,4 +185,9 @@ public class CTCController implements constData
     {
         return _trainList.getTrain(tID).getRouteListing();
     }
+    
+    public void reachedNextStation ()
+    {
+        // Implement
+    }
 }
