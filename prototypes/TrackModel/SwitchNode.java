@@ -1,5 +1,8 @@
 package TLTTC;
 public class SwitchNode extends Node{
+	protected Block divergingOutput;
+	protected int   direction;
+
 	public SwitchNode(double x, double y, double z){
 		nodeType = NodeType.Switch;
 		xPos = x;
@@ -7,10 +10,7 @@ public class SwitchNode extends Node{
 		zPos = z;
 		System.out.println("made a switch!!!");	
 	}
-	
-	protected Block divergingOutput;
-	protected int   direction;
-	
+		
 	public void setDivergingOutput(Block block)
 	{
 		divergingOutput = block;
