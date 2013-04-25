@@ -9,33 +9,33 @@ public class TrackModel extends Worker implements Runnable, constData
 {
 	public TrackModel()
 	{
-		blocks = new HashMap<Integer, Block>();
-		nodes = new HashMap<Integer, Node>();
-                msgs = new LinkedBlockingQueue<Message>();
+	    blocks = new HashMap<Integer, Block>();
+	    nodes = new HashMap<Integer, Node>();
+        msgs = new LinkedBlockingQueue<Message>();
 	}
 
-        private HashMap<Integer, Block> blocks;
-        private HashMap<Integer, Node> nodes;
+    private HashMap<Integer, Block> blocks;
+    private HashMap<Integer, Node> nodes;
 
-        private int yn = -1;
+    private int yn = -1;
 
-        public HashMap<Integer, Block> getBlocks(){
-    	    return blocks;
-        }
+    public HashMap<Integer, Block> getBlocks()
+    {
+    	return blocks;
+    }
     
-        public String toString(){
-    	StringBuilder sb = new StringBuilder();
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
   
-    	sb.append("Listing Nodes\n");
-    	for(Integer iObj : nodes.keySet())
+        sb.append("Listing Nodes\n");
+        for(Integer iObj : nodes.keySet())
         {
-    		sb.append("\t");
-    		sb.append(iObj);
-    		sb.append(": ");
-    		sb.append(nodes.get(iObj).toString());
-    		sb.append("\n");
-    		
-    	}
+            sb.append("\t");
+        	sb.append(iObj);
+        	sb.append(": ");
+        	sb.append(nodes.get(iObj).toString());
+        	sb.append("\n");	
+        }
     	
     	sb.append("Listing Blocks\n");
     	for(Integer iObj : blocks.keySet())
@@ -51,16 +51,16 @@ public class TrackModel extends Worker implements Runnable, constData
     	return sb.toString();
     }
     
-    public void setBlockMaintenanceByID(int blockID, boolean state){
+    public void setBlockMaintenanceByID(int blockID, boolean state)
+    {
     	blocks.get(new Integer(blockID)).setMaintenance(state);
     }
     
-    public void setBlockOccupationByID(int blockID, boolean state){
+    public void setBlockOccupationByID(int blockID, boolean state)
+    {
     	blocks.get(new Integer(blockID)).setOccupation(state);    	
     }
     
-    
-///*    
     private LinkedBlockingQueue<Message> msgs;
     private Module name = Module.trackModel;
 
@@ -73,10 +73,6 @@ public class TrackModel extends Worker implements Runnable, constData
     
                 if(name == m.getDest())
                 {
-                    //System.out.println("TrackModel RECEIVED MESSAGE ~ (source : " + m.getSource() + "), (dest : " + m.getDest() + ")\n");
-                    //System.out.println("Unhandled...");	
-                	//_---------------my handlers in here
-
                     if(m.getType() == constData.msg.TnMd_TcMd_Request_Track_Speed_Limit){
 
                     	Hashtable<String, Object> mData = m.getData();
@@ -87,26 +83,22 @@ public class TrackModel extends Worker implements Runnable, constData
                     	response.addData("trainID", mData.get("trainID"));
                     	Environment.passMessage(response);
                     	
-                    }
-                    
+                    }                    
                 }
                 else
                 {
-
                     if(m.getType() == msg.CTC_TnMd_Request_Train_Creation)
                     {
                         m.addData("yardBlock",blocks.get(63)); // FIX THIS!
                         m.addData("yardNode", nodes.get(yn));
                     }
 
-                    //System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
                     m.updateSender(name);
                     Environment.passMessage(m);
                 }
             }
         }
     }
-//*/ 
 
     TrackModelUI userInterface;
     static TrackModelUI staticUI; 
@@ -118,122 +110,115 @@ public class TrackModel extends Worker implements Runnable, constData
 
     public void init()
     {
-	TrackModelForm form = new TrackModelForm();
-	form.setVisible(true);
-	userInterface = new TrackModelUI();
-	staticUI = userInterface;
+	    TrackModelForm form = new TrackModelForm();
+    	form.setVisible(true);
+	    userInterface = new TrackModelUI();
+    	staticUI = userInterface;
 
         try
         {
-
-	    //to force it to use the old prototype layout throw an error here
-
-	
-	    File f = new File("layout.txt");
+	        File f = new File("layout.txt");
             Scanner s = new Scanner(f);
             int i = 0;
-
-	    System.out.println(null + "foo");
 
             while(s.hasNextLine())
             {
                 String line = s.nextLine();
-		System.out.println("\nparsing text \"" + line +"\"");
+		        //System.out.println("\nparsing text \"" + line +"\"");
                 if(line.startsWith("#"))
                     continue;
 		
-		//assume the line structure starts with <string type> <int id> <...>
-
+		        //assume the line structure starts with <string type> <int id> <...>
                 String [] nodeAttr = line.split(" ");
                 int id = Integer.parseInt(nodeAttr[1]);
 
 
                 if(nodeAttr[0].equals("yard"))
                 {
-		    //read <x> <y> <z>
+		            //read <x> <y> <z>
                     nodes.put(id, new YardNode(Double.parseDouble(nodeAttr[2]),
                                                Double.parseDouble(nodeAttr[3]),
                                                Double.parseDouble(nodeAttr[4])));
-		    System.out.println("new yard parsed " + nodes.get(id).toString());  
+		            //System.out.println("new yard parsed " + nodes.get(id).toString());  
 
                     yn = id;            
-		}
+		        }
                 else if (nodeAttr[0].equals("connection"))
                 {
-		    //read <x> <y> <z>
+		            //read <x> <y> <z>
                     nodes.put(id, new ConnectorNode(Double.parseDouble(nodeAttr[2]),
                                                     Double.parseDouble(nodeAttr[3]),
                                                     Double.parseDouble(nodeAttr[4])));
-		    System.out.println("new connection parsed " + nodes.get(id).toString());
+		            //System.out.println("new connection parsed " + nodes.get(id).toString());
                 }
-		else if (nodeAttr[0].equals("switch"))
-		{
-		    //read <x> <y> <z>
-		    nodes.put(new Integer(id), new SwitchNode(Double.parseDouble(nodeAttr[2]),
+		        else if (nodeAttr[0].equals("switch"))
+		        {
+		        //read <x> <y> <z>
+		        nodes.put(new Integer(id), new SwitchNode(Double.parseDouble(nodeAttr[2]),
                                                  Double.parseDouble(nodeAttr[3]),
                                                  Double.parseDouble(nodeAttr[4])));
-		}
-		else if (nodeAttr[0].equals("linearblock"))
-		{
-		    //read <startID> <stopID> <controllerID comma seperated list>
-		    Node start = nodes.get(Integer.parseInt(nodeAttr[2]));
-		    Node stop  = nodes.get(Integer.parseInt(nodeAttr[3]));
+		        }
+		        else if (nodeAttr[0].equals("linearblock"))
+		        {
+		        //read <startID> <stopID> <controllerID comma seperated list>
+		            Node start = nodes.get(Integer.parseInt(nodeAttr[2]));
+		            Node stop  = nodes.get(Integer.parseInt(nodeAttr[3]));
 		      
-		    String[] controllerIDStrings = nodeAttr[4].split(",");
-		    int[] controllerIDNumbers = new int[controllerIDStrings.length];
+		        String[] controllerIDStrings = nodeAttr[4].split(",");
+		        int[] controllerIDNumbers = new int[controllerIDStrings.length];
 
-		    for(int idx=0;idx<controllerIDStrings.length;idx++)
-		    {
-			controllerIDNumbers[idx] = Integer.parseInt(controllerIDStrings[idx]);
+		        for(int idx=0;idx<controllerIDStrings.length;idx++)
+		        {
+			        controllerIDNumbers[idx] = Integer.parseInt(controllerIDStrings[idx]);
+		        }
+
+		        LinearBlock newBlock = new LinearBlock(start, stop, id, controllerIDNumbers[0]);
+		        for(int idx=1; idx < controllerIDNumbers.length; idx++)
+			        newBlock.addController(controllerIDNumbers[idx]);
+
+		        start.setOutput(newBlock);
+		        stop.setInput(newBlock);
+
+		        blocks.put(new Integer(id), (Block)newBlock);
+		        System.out.println("new linearblock parsed " + blocks.get(id));
+		        
+		        userInterface.addBlockToRender(newBlock);
 		    }
+		    else if (nodeAttr[0].equals("arcblock"))
+		    {   
+		        //this does not actually render curves.
+		        //for now it just draws lines between endpoints.		
 
-		    LinearBlock newBlock = new LinearBlock(start, stop, id, controllerIDNumbers[0]);
-		    for(int idx=1; idx < controllerIDNumbers.length; idx++)
-			newBlock.addController(controllerIDNumbers[idx]);
+		        //read <startID> <stopID> <controllerID comma seperated list>
+		        Node start = nodes.get(Integer.parseInt(nodeAttr[2]));
+		        Node stop  = nodes.get(Integer.parseInt(nodeAttr[3]));
+		          
+		        String[] controllerIDStrings = nodeAttr[4].split(",");
+		        int[] controllerIDNumbers = new int[controllerIDStrings.length];
 
-		    start.setOutput(newBlock);
-		    stop.setInput(newBlock);
+		        for(int idx=0;idx<controllerIDStrings.length;idx++)
+		        {
+			        controllerIDNumbers[idx] = Integer.parseInt(controllerIDStrings[idx]);
+		        }
 
-		    blocks.put(new Integer(id), (Block)newBlock);
-		    System.out.println("new linearblock parsed " + blocks.get(id));
+		        LinearBlock newBlock = new LinearBlock(start, stop, id, controllerIDNumbers[0]);
+		        for(int idx=1; idx < controllerIDNumbers.length; idx++)
+			        newBlock.addController(controllerIDNumbers[idx]);
+
+		        start.setOutput(newBlock);
+		        stop.setInput(newBlock);
+
+		        blocks.put(new Integer(id), (Block)newBlock);
+		        System.out.println("new linearblock parsed " + blocks.get(id));
 		    
-		    userInterface.addBlockToRender(newBlock);
-		}
-		else if (nodeAttr[0].equals("arcblock"))
-		{   
-		    //this does not actually render curves.
-		    //for now it just draws lines between endpoints.		
+		        userInterface.addBlockToRender(newBlock);
 
-		    //read <startID> <stopID> <controllerID comma seperated list>
-		    Node start = nodes.get(Integer.parseInt(nodeAttr[2]));
-		    Node stop  = nodes.get(Integer.parseInt(nodeAttr[3]));
-		      
-		    String[] controllerIDStrings = nodeAttr[4].split(",");
-		    int[] controllerIDNumbers = new int[controllerIDStrings.length];
-
-		    for(int idx=0;idx<controllerIDStrings.length;idx++)
-		    {
-			controllerIDNumbers[idx] = Integer.parseInt(controllerIDStrings[idx]);
-		    }
-
-		    LinearBlock newBlock = new LinearBlock(start, stop, id, controllerIDNumbers[0]);
-		    for(int idx=1; idx < controllerIDNumbers.length; idx++)
-			newBlock.addController(controllerIDNumbers[idx]);
-
-		    start.setOutput(newBlock);
-		    stop.setInput(newBlock);
-
-		    blocks.put(new Integer(id), (Block)newBlock);
-		    System.out.println("new linearblock parsed " + blocks.get(id));
-		    
-		    userInterface.addBlockToRender(newBlock);
-
-		}
-		else
-		{
-		    //this should never happen!!!!!!!
-		    System.out.println("cant parse that line? " + line);
-		}
+		        }
+		        else
+		        {
+		            //this should never happen!!!!!!!
+		            System.out.println("cant parse that line? " + line);
+		        }
 
                 i++;
             }
