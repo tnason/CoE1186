@@ -774,11 +774,13 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     private class UpdateGUI implements Runnable 
     {
         public void run() {
-            while (true){ // Refreshes UI
-                if (System.currentTimeMillis() % 500 == 0){
-                    refreshUI(); // Refresh UI every half second
-                }
+            int delay = 500; //milliseconds
+            java.awt.event.ActionListener taskPerformer = new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshUI(); // Refresh UI every half second
             }
+            };
+            new javax.swing.Timer(delay, taskPerformer).start(); 
         }
     }
 }
