@@ -107,6 +107,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 						switch (mine.getType())
 						{
 							case CTC_TnMd_Request_Train_Creation:
+								System.out.println(((Node)mine.getData().get("yardNode")).toString());
 								n = (YardNode)mine.getData().get("yardNode");
 								bl = (Block)mine.getData().get("yardBlock");
 								if(bl.isOccupied())

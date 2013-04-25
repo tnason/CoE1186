@@ -574,7 +574,7 @@ public class CTCUI extends javax.swing.JFrame {
 class TrainTableDataModel extends AbstractTableModel
 {
     private String [] columnNames = new String[] { "Train #", "Location", "Speed", "Authority", "Next Station", "Schedule" };
-    private Object [][] data;
+    private Object [][] data = new Object [10][6];
     
     public int getColumnCount()
     {
