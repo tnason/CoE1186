@@ -13,9 +13,7 @@ import java.lang.reflect.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-@SuppressWarnings("all")
-
-
+@SuppressWarnings("unchecked")
 public class CTCUI extends javax.swing.JFrame {
 
     /**
