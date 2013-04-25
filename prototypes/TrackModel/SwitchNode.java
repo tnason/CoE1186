@@ -20,6 +20,11 @@ public class SwitchNode extends Node{
 		//TODO - input bounds check
 		this.direction = direction;
 	}
+
+	public int getSwitchState()
+	{
+		return direction;
+	}
 	
 	public Block getNextBlock(Block currentBlock) throws Exception{
 		//TODO - check to make sure NULL isn't returned

@@ -6,7 +6,7 @@ import java.util.*;
 import com.sun.speech.freetts.VoiceManager;
 import com.sun.speech.freetts.audio.JavaClipAudioPlayer;*/
 
-
+ 
 public class TrainController
 {
   private int trainID;
@@ -46,7 +46,7 @@ public class TrainController
   private double ctcMovingBlockAuth = 0; // Moving block authority sent from CTC operator
   private double authority = 0; // Safest authority
   
-  
+
   public TrainController(int id, TrainModel t, TrainContainer c)
   {
     trainID = id; // Sets train ID

@@ -44,16 +44,4 @@ public class PLC
 			occupied.setCrossing(true);
 		}
 	}
-
-	public void doMethod()
-	{
-		System.out.println("Works");
-
-	}
-
-	public void doMethod(int x)
-	{
-		
-		System.out.println("Works " + x);
-	}
 }

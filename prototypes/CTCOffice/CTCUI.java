@@ -13,13 +13,15 @@ import java.lang.reflect.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-@SuppressWarnings("unchecked") 
+@SuppressWarnings("all")
+
+
 public class CTCUI extends javax.swing.JFrame {
 
     /**
      * Creates new form CTCUI
      */
-     
+     @SuppressWarnings("rawtypes")
     private CTCController _controller;
     private boolean _FixedBlockIsActive = true;
     private TrainTableDataModel _dataModel;
@@ -386,6 +388,7 @@ public class CTCUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     // jButton8 - Update Route
+     @SuppressWarnings("cast")
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) 
     {
         // first check if the input is valid - should either be Route XX or XX
@@ -393,6 +396,7 @@ public class CTCUI extends javax.swing.JFrame {
         Integer blockID = 0;
         int index;
         // now, check if anything is selected
+
         if (routeRowIsSelected)
         {
             index = selectedRouteRow;

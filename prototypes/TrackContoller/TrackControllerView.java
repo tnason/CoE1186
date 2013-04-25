@@ -2,7 +2,7 @@
 * Author(s): Cameron Dashti
 * Updated: 25 – 4 – 2013
 * Purpose: This file sets up the gui for the track controller. It allows
-*          the user to view all of the block under each contoller and preform
+*           the user to view all of the block under each contoller and preform
 *          various test meachanisms on the track.
 */
 
@@ -390,11 +390,16 @@ public class TrackControllerView extends javax.swing.JFrame
             enableCrossing.setEnabled(false);
         }
 
-        /* Something about switches.
-        if(currentBlock.isCrossing())
+        /*   switches.*/
+        if(currentBlock.getStartNode() != null && currentBlock.getStartNode().getNodeType() == constData.NodeType.Switch)
         {
-            enableCrossing.setEnabled(true);
-        }*/
+            toggleSwitch.setEnabled(true);
+        }
+
+        if(currentBlock.getStopNode() != null && currentBlock.getStopNode().getNodeType() == constData.NodeType.Switch)
+        {
+            toggleSwitch.setEnabled(true);
+        }
     }                                                    
 
     private void enableCrossing(java.awt.event.MouseEvent evt) 
@@ -433,10 +438,19 @@ public class TrackControllerView extends javax.swing.JFrame
 
     private void toggleSwitchClicked(java.awt.event.MouseEvent evt) 
     {                                     
-        // if switch can be toggled, 
+    
         if(toggleSwitch.isEnabled())
         {
-            //System.out.println("HERE switch");
+
+          if(currentBlock.getStartNode() != null && currentBlock.getStartNode().getNodeType() == constData.NodeType.Switch)
+          {
+             ((SwitchNode)currentBlock.getStartNode()).setSwitchState(Math.abs(((SwitchNode)currentBlock.getStartNode()).getSwitchState() - 1));
+          }  
+
+          if(currentBlock.getStopNode() != null && currentBlock.getStopNode().getNodeType() == constData.NodeType.Switch)
+          {
+            ((SwitchNode)currentBlock.getStopNode()).setSwitchState(Math.abs(((SwitchNode)currentBlock.getStopNode()).getSwitchState() - 1));
+          }
         }
             
     }                                      

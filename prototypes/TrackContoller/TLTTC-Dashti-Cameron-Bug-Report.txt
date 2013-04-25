@@ -1,5 +1,41 @@
-Defect:
-Number:
-Name of tester:
-Date:
-Resolution:
+Cameron Dashti
+Group: TLTTC
+Bug Report 
+4/25/13
+
+Defect: Messages routed through environment may not reach their destination.
+Number: 1
+Name of tester: Cameron Dashti
+Date: April 6, 2013
+Resolution: The use of LinkedQueues is not thread safe and trying to add a message to the 
+			Queue may be preempted. To resoleve this, use a LinkedBlockingQueue to ensure threads don't
+			interrupt eachother when trying to write and read their inboxes.
+
+Defect: PLC class is loaded at run time and not dynamically.
+Number: 2
+Name of tester: Cameron Dashti
+Date: April 20, 2013
+Resolution: Use the 'Class' class to dynamically load a class file. The PLC class should have some
+			means of signaling to the system that it is in fact a PLC program.
+
+Defect: Setting the crossing to be enabled for 30 seconds will block if use Thread.sleep().
+Number: 3
+Name of tester: Cameron Dashti
+Date: April 21, 2013
+Resolution: Don't sleep the thread when enabeling a crossing because this will block other
+			threads. Using a ScheduledThreadPoolExecutor will allow the track controller to
+			schedule a new thread that will run after a delay and will disable the crossing.
+
+Defect: Stuck in infinite loop while waiting for PLC to load.
+Number: 4
+Name of tester: Cameron Dashti
+Date: April 21, 2013
+Resolution: Polling the GUI if the PLC is loaded seems to get always be false. Putting an empty
+			print statement will casue the infinite loop to no longer get stuck.		
+
+Defect: Toggeling of switches creates errors.
+Number: 5
+Name of tester: Cameron Dashti
+Date: April 25, 2013
+Resolution: Check both ends of the block if they are null. If not null, check which end is a switch.
+			Get the current switch state and toggel the state.

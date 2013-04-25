@@ -5,7 +5,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.util.*;
 
-
+@SuppressWarnings("serial")
 public class TrackModelUI
 {
 	private TrackRenderComponent renderer;

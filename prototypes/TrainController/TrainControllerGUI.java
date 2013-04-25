@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.util.*;
 import java.awt.*;
 
+@SuppressWarnings("serial")
 public class TrainControllerGUI extends JFrame implements Runnable {
     TrainModel tm;
     TrainController tc;
@@ -58,7 +59,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         
         (new Thread(new UpdateGUI())).start();
     }
-    
+    @SuppressWarnings("deprecation")
     
     private void refreshUI(){
         if (!noTrains)
