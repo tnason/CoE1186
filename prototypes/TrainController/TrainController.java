@@ -11,6 +11,7 @@ public class TrainController
 {
   private int trainID;
   private TrainModel tm;
+  private TrainContainer cont;
   
   private boolean underground = false; // Underground status of block
   private boolean inStation = false; // Station status of block
@@ -46,10 +47,11 @@ public class TrainController
   private double authority = 0; // Safest authority
   
   
-  public TrainController(int id, TrainModel t)
+  public TrainController(int id, TrainModel t, TrainContainer c)
   {
     trainID = id; // Sets train ID
     tm = t; // Associates train model with train controller
+    cont = c; // Associates train container with train controller
     // Todo: connect to GPS here
     gpsConnected = true; // Connects to GPS
     
@@ -165,8 +167,7 @@ public class TrainController
   
   public void setLights(boolean automatic) // This method is called every time the train enters a new block or manually
   {
-    Calendar cal = Calendar.getInstance();
-    int time = cal.get(Calendar.HOUR_OF_DAY);
+    int time = getDate().getHours();
     if (time >= 9 && time < 16)
     {
     	daytime = true;
@@ -340,5 +341,10 @@ public class TrainController
   public TrainModel getTrain()
   {
   	return tm;
+  }
+  
+  public Date getTime()
+  {
+  	return cont.getSimulationTimeDate();
   }
 }
