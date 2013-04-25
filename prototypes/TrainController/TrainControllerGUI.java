@@ -24,7 +24,6 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         mod = m;
     }
 
-
     public void run() 
     {
         initComponents();
@@ -38,7 +37,6 @@ public class TrainControllerGUI extends JFrame implements Runnable {
 
         open();
     }
-
 
     public void open()
     {
@@ -74,7 +72,6 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         (new Thread(new UpdateGUI())).start();
     }
 
-
     private void refreshUI()
     {
         if (!noTrains)
@@ -83,7 +80,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
             lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
             currentTempText.setText(Double.toString(tm.getTemperature()));
             nextStationText.setText(tc.getNextStation());
-            velocityText.setText(Double.toString(tm.getVelocity()*2.23694));
+            velocityText.setText(Double.toString(tm.getVelocity() * 2.23694));
             authorityText.setText(Double.toString(tc.getAuthority()));
             engineFailureText.setBackground(tc.getEngineFail() == true ? Color.RED : Color.GRAY);
             pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
@@ -114,7 +111,6 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         powerTable.scrollRectToVisible(powerTable.getCellRect(powerTable.getRowCount()-1, 0, true));
     }
 
-
     public void createDropdownModel()
     { // Creates Integer array of train IDs
         trainIDs = new Integer[60];
@@ -135,12 +131,10 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         }
     }
 
-
     @SuppressWarnings("serial")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents()
     {
-
         setTitle("Ben Kisley - Train Controller");
         trainContDropdown = new javax.swing.JComboBox<Integer>();
         doorControlPanel = new javax.swing.JPanel();
@@ -653,7 +647,6 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         }
     }                                                 
 
-
     private void currentTempTextActionPerformed(java.awt.event.ActionEvent evt) 
     {                                                
         // TODO add your handling code here:
@@ -700,7 +693,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     {                                                 
         if (!noTrains){
             double v = new Double(velocitySetter.getValue().toString());
-            tc.setTrainOperatorVelocity(v*0.44704);
+            tc.setTrainOperatorVelocity(v * 0.44704);
         }
     }                                                
 
