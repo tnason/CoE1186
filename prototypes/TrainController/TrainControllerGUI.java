@@ -73,11 +73,6 @@ public class TrainControllerGUI extends JFrame implements Runnable {
             engineFailureText.setBackground(tc.getEngineFail() == true ? Color.RED : Color.GRAY);
             pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
             brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
-            model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
-            Date date = tc.getDate();
-            model.addRow(new Object[]{new String(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()), tm.getVelocity()*2.23694, tc.getVelocitySetpoint()*2.23694, tc.getPower()});
-            powerTable.getSelectionModel().setSelectionInterval(powerTable.getRowCount()-1, powerTable.getRowCount()-1);
-            powerTable.scrollRectToVisible(powerTable.getCellRect(powerTable.getRowCount()-1, 0, true));
         }
         else
          {
@@ -94,6 +89,16 @@ public class TrainControllerGUI extends JFrame implements Runnable {
             model.setRowCount(0);
         } 
     }
+    
+    
+    public void addRow(Date date, double vel, double setpt, double pow)
+    {
+        model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
+        model.addRow(new Object[]{new String(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()), vel*2.23694, setpt*2.23694, pow});
+        powerTable.getSelectionModel().setSelectionInterval(powerTable.getRowCount()-1, powerTable.getRowCount()-1);
+        powerTable.scrollRectToVisible(powerTable.getCellRect(powerTable.getRowCount()-1, 0, true));
+    }
+    
     
     public void createDropdownModel(){ // Creates Integer array of train IDs
             trainIDs = new Integer[60];
