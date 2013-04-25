@@ -77,9 +77,10 @@ public class TrainContainer extends Worker implements Runnable, constData
 		return n;
 	}
 
-	public void init(TrainControllerModule other, SystemClock sys, SatelliteContainer sat)
+	public void init(TrainControllerModule other, TrackModelModule tkm, SystemClock sys, SatelliteContainer sat)
 	{
 		trc = other;
+		this.tkm = tkm;
 		clock = sys;
 		this.sat = sat;
 		timerTrigger = (long)(TIME_STEP * 1000.0)/(long)clock.SIMULATION_SPEEDUP;
@@ -107,8 +108,12 @@ public class TrainContainer extends Worker implements Runnable, constData
 						switch (mine.getType())
 						{
 							case CTC_TnMd_Request_Train_Creation:
-								n = (YardNode)mine.getData().get("yardNode");
-								bl = (Block)mine.getData().get("yardBlock");
+								//Not passed because people can't read the messaging interface.... smh
+								//n = (YardNode)mine.getData().get("yardNode");
+								//bl = (Block)mine.getData().get("yardBlock");
+								
+								bl = (Block)tkm.getBlocks().get(63); //hardcode the yard
+								n = (Node)bl.getStartNode();			
 								if(bl.isOccupied())
 								{
 									//fail silently
@@ -117,7 +122,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 								{
 									System.out.println("	!!!!!!!!!!!!!!!!!NEW TRAIN!!!!!!!!");
 
-									tm = newTrain((int)mine.getData().get("trainID"), bl, TIME_STEP);
+									tm = newTrain((int)mine.getData().get("trainID"), bl, n, TIME_STEP);
 									
 									tm.setYardNode(n);
 									//send associated messages!!!

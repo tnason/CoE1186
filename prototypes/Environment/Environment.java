@@ -59,7 +59,7 @@ public class Environment implements constData
 		((TrackModel)tkm).init();
 		((Scheduler)sch).init((TrackModel)tkm);
 		((TrainControllerModule)trc).init((TrainContainer)trm);
-		((TrainContainer)trm).init((TrainControllerModule)trc, sysClk, sat);
+		((TrainContainer)trm).init((TrainControllerModule)trc, (TrackModel)tkm, sysClk, sat);
 		((TrackController)tkc).init(tkm);
 		((MovingBlockOverlay)mbo).init(sat);
 		
