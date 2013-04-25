@@ -420,9 +420,12 @@ public class CTCUI extends javax.swing.JFrame {
         // strip the route list and rebuild it with the current selection
         _routeModel.removeAllElements();
         ArrayList<Integer> route = _controller.getRouteListingForTrain(tID);
-        for (Integer block : route)
+        if (route != null)
         {
-            _routeModel.addElement((String) "Block " + block);
+            for (Integer block : route)
+            {
+                _routeModel.addElement((String) "Block " + block);
+            }
         }
     }
 
