@@ -1,5 +1,7 @@
 /*
- *
+ * Author: Sean Moore
+ * Last Updated: 4/21/13
+ * Purpose: List of all trains currently in service
  */
  
 package TLTTC;

@@ -1,6 +1,7 @@
-/**
- *
- * @author seanmoore
+/*
+ * Author: Sean Moore
+ * Last Updated: 4/21/13
+ * Purpose: View for CTC
  */
  
 package TLTTC;

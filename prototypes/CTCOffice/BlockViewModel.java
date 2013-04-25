@@ -1,5 +1,7 @@
 /*
- *
+ * Author: Sean Moore
+ * Last Updated: 4/22/13
+ * Purpose: Virtual model for blocks within the system (local access of variables, etc.)
  */
 
 // Imports and Packages

@@ -1,5 +1,7 @@
 /*
- *
+ * Author: Sean Moore
+ * Last Updated: 4/25/13
+ * Purpose: Virtual model for train schedule (local access of variables)
  */
  
 package TLTTC;

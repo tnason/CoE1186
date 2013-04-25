@@ -1,5 +1,7 @@
 /*
- *
+ * Author: Sean Moore
+ * Last Updated: 4/21/13
+ * Purpose: Controller list to access virtual controllers
  */
 
 // Imports and Packages
