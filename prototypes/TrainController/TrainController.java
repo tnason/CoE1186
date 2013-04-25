@@ -1,5 +1,6 @@
 package TLTTC;
 
+import java.util.*;
 // lib/freetts.jar needs to be added to classpath during compilation
 /*import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
