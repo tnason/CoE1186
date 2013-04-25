@@ -1,3 +1,9 @@
+/*
+ * Author(s): Ben Kisley
+ * Updated: 04 - 25- 2013
+ * Purpose: This class handles messages from other modules and holds all train controller objects.
+*/
+
 package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
