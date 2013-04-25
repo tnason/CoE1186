@@ -197,7 +197,7 @@ public class TrainController
 
     public void announceStation(boolean automatic) // this method is called every time the train enters a new block or manually
     {
-        if (automatic && !oldNextStation.equals(nextStation)) // If a new station name is processed, automatically announce it
+        /*if (automatic && !oldNextStation.equals(nextStation)) // If a new station name is processed, automatically announce it
         {
             oldNextStation = nextStation;
             /*
@@ -206,9 +206,9 @@ public class TrainController
             speaker.allocate();
             speaker.speak("Next stop " + nextStation + " on " + trainID);
             speaker.deallocate();*/
-            System.out.println("Next station on train " + trainID + " = " + nextStation);
-        }  
-        else if (!automatic) // If button is pressed on GUI, announce station name
+           // System.out.println("Next station on train " + trainID + " = " + nextStation);
+        //}
+        if (!automatic) // If button is pressed on GUI, announce station name
         {
             /*VoiceManager voiceManager = VoiceManager.getInstance();
             Voice speaker = voiceManager.getVoice("kevin16");
