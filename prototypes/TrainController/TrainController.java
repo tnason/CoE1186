@@ -343,7 +343,7 @@ public class TrainController
   	return tm;
   }
   
-  public Date getTime()
+  public Date getDate()
   {
   	return cont.getSimulationTimeDate();
   }
