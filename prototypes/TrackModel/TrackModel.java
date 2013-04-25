@@ -222,26 +222,113 @@ public class TrackModel extends Worker implements Runnable, constData
                 i++;
             }
 
-	/*
+    
+                    
 
-			Block b1 = blocks.get(1);
-			Block b12 = blocks.get(12);
-			Block b13 = blocks.get(13);
+            //---------------------------------------------
+            Node  oldNode12 = nodes.get(12);
+            SwitchNode newNode12 = new SwitchNode(oldNode12.getX(), oldNode12.getY(), oldNode12.getZ());
+            //input
+            Block block28 = blocks.get(28);
+            //System.out.println("block 28=" + block28);
+            //output
+            Block block29 = blocks.get(29);
+            //System.out.println("block 29=" + block29);
+            //diverging output
+            Block block150 = blocks.get(150);
+            //System.out.println("block 150=" + block150);
 
-			System.out.println("\n\n\n block1="+b1+"\n\nblock12="+b12+"\n\nblock13="+b13+"\n\n\n");
+            newNode12.setInput(block28);
+            newNode12.setOutput(block29);
+            newNode12.setDivergingOutput(block150);
+            block28.setStopNode(newNode12);
+            block29.setStartNode(newNode12);
+            block150.setStopNode(newNode12);
+            nodes.put(28, newNode12);
+            
+            //---------------------------------------------
+            Node oldNode137 = nodes.get(137);
+            SwitchNode newNode137 = new SwitchNode(oldNode137.getX(), oldNode137.getY(), oldNode137.getZ());
+            //input
+            Block block13 = blocks.get(13);
+            //System.out.println("block 13=" + block13);
+            //output
+            Block block12 = blocks.get(12);
+            //System.out.println("block 12=" + block12);
+            //diverging output
+            Block block1 = blocks.get(1);
+            //System.out.println("block 1=" + block1);    
 
-		        //hardcoded switches, replace if time permits
-			SwitchNode switch1 = new SwitchNode(1300, 100, 0);
-			switch1.setDivergingOutput(b1);
-			switch1.setOutput(b12);
-			switch1.setInput(b13);
+            newNode137.setInput(block13);
+            newNode137.setOutput(block12);
+            newNode137.setDivergingOutput(block1);
+            block13.setStopNode(newNode137);
+            block12.setStopNode(newNode137);
+            block1.setStartNode(newNode137);
+            nodes.put(137, newNode137);
+             
+            //---------------------------------------------
+            Node oldNode60 = nodes.get(60);
+            SwitchNode newNode60 = new SwitchNode(oldNode60.getX(), oldNode60.getY(), oldNode60.getZ());
+            //input
+            Block block76 = blocks.get(76);
+            //System.out.println("block 76=" + block76);  
+            //output
+            Block block77 = blocks.get(77);
+            //System.out.println("block 77=" + block77);  
+            //diverging output            
+            Block block101 = blocks.get(101);
+            //System.out.println("block 101=" + block101);  
+            
+            newNode60.setInput(block76);
+            newNode60.setOutput(block77);
+            newNode60.setDivergingOutput(block101);           
+            block76.setStopNode(newNode60);
+            block77.setStartNode(newNode60);
+            block101.setStartNode(newNode60);
+            nodes.put(60, newNode60);                
+                    
+	        //---------------------------------------------
+            Node oldNode69 = nodes.get(69);
+            SwitchNode newNode69 = new SwitchNode(oldNode69.getX(), oldNode69.getY(), oldNode69.getZ());
+            //input      
+            Block block85 = blocks.get(85);
+            //System.out.println("block 85=" + block85);  
+            //output
+            Block block86 = blocks.get(86);
+            //System.out.println("block 86=" + block86);  
+            //diverging output  
+            Block block100 = blocks.get(100);
+            //System.out.println("block 100=" + block100);  
 
-			nodes.put(137, switch1);
-			b1.setStartNode(switch1);
-			b12.setStopNode(switch1);
-			b13.setStartNode(switch1);
-	*/		
-	
+            newNode69.setInput(block85);
+            newNode69.setOutput(block86);
+            newNode69.setDivergingOutput(block100); 
+
+            block85.setStopNode(newNode69);
+            block86.setStartNode(newNode69);
+            block100.setStopNode(newNode69);
+            nodes.put(69, newNode69);
+            	
+
+            blocks.get(2).setStationName("Poineer");
+            blocks.get(9).setStationName("Edgebrook");
+            blocks.get(22).setStationName("Whited");
+            blocks.get(31).setStationName("South Bank");
+            blocks.get(39).setStationName("Central");
+            blocks.get(48).setStationName("Inglewood");
+            blocks.get(57).setStationName("Overbrook");
+            blocks.get(65).setStationName("Glenbury");
+            blocks.get(73).setStationName("Dormont");
+	        blocks.get(77).setStationName("Mt Lebanon");
+            blocks.get(88).setStationName("Poplar");
+            blocks.get(96).setStationName("Castle Shannon");
+            blocks.get(105).setStationName("Station Dormont");
+            blocks.get(114).setStationName("Glebbury");
+            blocks.get(123).setStationName("Overbrook");
+            blocks.get(132).setStationName("Inglewood");
+            blocks.get(141).setStationName("Central");
+
 			userInterface.refresh();
         	
         } 

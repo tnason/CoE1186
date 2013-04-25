@@ -166,6 +166,7 @@ public class TrainController
 	}
   }
   
+  @SuppressWarnings("deprecation")
   public void setLights(boolean automatic) // This method is called every time the train enters a new block or manually
   {
     int time = getDate().getHours();
