@@ -52,7 +52,6 @@ public class TrainController
     trainID = id; // Sets train ID
     tm = t; // Associates train model with train controller
     cont = c; // Associates train container with train controller
-    // Todo: connect to GPS here
     gpsConnected = true; // Connects to GPS
     
     // Test variables -- Remove later
@@ -282,6 +281,12 @@ public class TrainController
     oldNextStation = nextStation;
     nextStation = s;
     announceStation(true);
+  }
+  
+  
+  public void setGpsConnected(boolean s)
+  {
+  	gpsConnected = s;
   }
   
   public double getAuthority()
