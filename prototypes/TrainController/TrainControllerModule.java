@@ -21,7 +21,6 @@ public class TrainControllerModule extends Worker implements Runnable, constData
 
     private TrainContainer trainContainer; // Reference to TrainModel container
 
-
     public TrainControllerModule()
     {
         controllers = new Hashtable<Integer, TrainController>(); // Instantiates Hashtable
@@ -30,7 +29,6 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         gui = new TrainControllerGUI(this); // Starts up GUI thread
         new Thread(gui).start();
     }
-
 
     public void run()
     {
@@ -52,12 +50,6 @@ public class TrainControllerModule extends Worker implements Runnable, constData
 
                         switch (m.getType())
                         {
-                        case Sat_TnCnt_Request_Traversed_Block_Stats: //???????????
-
-                            break;
-                        case Sat_TnCt_ReceiptConfirm_Traversed_Block_Stats: //??????????
-
-                            break;
                         case MBO_TnCt_Send_Moving_Block_Authority: // Moving block authority from CTC 
                             tc.setMovingBlockAuth((double)(m.getData().get("authority")));
                             break;
@@ -90,19 +82,16 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         }
     }
 
-
     public void setMsg(Message m) // Add message to queue
     {
         msgs.add(m);
     }
-
 
     public void send(Message m) // Send message
     {
         //System.out.println("SENDING MSG: start->"+m.getSource() + " : dest->"+m.getDest()+" " + m.getType() + "\n");
         Environment.passMessage(m);
     }
-
 
     public void init(TrainContainer t) // Associates TrainContainer with this
     {
@@ -114,7 +103,6 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         return controllers.keys();
     }
 
-
     // Methods for Train Model's use
     public TrainController createTrainController(int t) // Creates new train controller
     {
@@ -124,12 +112,10 @@ public class TrainControllerModule extends Worker implements Runnable, constData
         return newTrainController;
     }
 
-
     public TrainController getTrainController(int t) // Gets a train controller object
     { 
         return controllers.get(t);
     }
-
 
     public void destroyTrainController(int t) // Removes train controller when train is destroyed
     {
