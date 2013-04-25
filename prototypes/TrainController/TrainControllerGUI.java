@@ -105,6 +105,10 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     @SuppressWarnings("deprecation")
     public void addRow(Date date, double vel, double setpt, double pow)
     {
+        if (pow > 120000)
+        {
+            pow = 120000;
+        }
         model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
         model.addRow(new Object[]{new String(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()), vel*2.23694, setpt*2.23694, pow});
         powerTable.getSelectionModel().setSelectionInterval(powerTable.getRowCount()-1, powerTable.getRowCount()-1);
