@@ -9,9 +9,30 @@ import java.util.*;
 
 public abstract class Block {
 
-	/* Cameron: able to toggle crossing? For drawing too.*/
-
+	/*updates from 4/16/13*/
+	boolean isCrossing = false;
+	boolean isStation = false;
+	String stationName;
 	boolean crossingEnabled = false;
+	/* Cameron: able to toggle crossing? For drawing too.*/
+	// In constructor of block, add controller number(s) to this list
+	protected ArrayList<Integer> controller = new ArrayList<Integer>();
+	/*unique identification number*/
+	protected int blockID;	
+	boolean occupied;
+	boolean maintenance;
+	/*keep track of nodes*/
+	protected Node startNode;
+	protected Node stopNode;
+	/*	allowable directions
+	 * 		start -> stop = 1
+	 * 		stop -> start = 2
+	 * 		any -> any    = 3
+	 */
+	protected int allowedDirections;
+
+
+
 	public void setCrossing(boolean crossingState)
 	{
 		crossingEnabled = crossingState;
@@ -21,11 +42,6 @@ public abstract class Block {
 	{
 		return crossingEnabled;
 	}
-
-	/*updates from 4/16/13*/
-	boolean isCrossing = false;
-	boolean isStation = false;
-	String stationName;
 	
 	public boolean isCrossing()
 	{
@@ -42,7 +58,8 @@ public abstract class Block {
 		return stationName;
 	}
 	
-	public Block(Node start, Node stop, int c){
+	public Block(Node start, Node stop, int c)
+	{
 		startNode = start;
 		stopNode = stop;
 		controller.add(c);
@@ -54,41 +71,19 @@ public abstract class Block {
 		stopNode = stop;
 	}
 
-	public String toString(){
+	public String toString()
+	{
 		return "Abstract Block Class";
 	}
 	
-	// In constructor of block, add controller number(s) to this list
-	protected ArrayList<Integer> controller = new ArrayList<Integer>();
-	
-	/*unique identification number*/
-	protected int blockID;
-	
-	boolean occupied;
-	boolean maintenance;
-	
-	/*keep track of nodes*/
-	protected Node startNode;
-	protected Node stopNode;
-
-
-	
-	/*	allowable directions
-	 * 		start -> stop = 1
-	 * 		stop -> start = 2
-	 * 		any -> any    = 3
-	 */
-	protected int allowedDirections;
-	
-
-	public void setOccupation(boolean state){
+	public void setOccupation(boolean state)
+	{
 		occupied = state;
-		//TrackModel.refreshView();
 	}
 
-	public void setMaintenance(boolean state){
+	public void setMaintenance(boolean state)
+	{
 		maintenance = state;
-		//TrackModel.refreshView();
 	}
 
 	public boolean getMaintenance()
@@ -168,12 +163,6 @@ public abstract class Block {
 		return allowedDirections;
 	}
 	
-	//		***Deprecated - let me know if you need this***
-	//public Block getNextBlock(int direction){
-	//	/*direction uses same number convention as allowableDirection*/
-	//	return null;
-	//}
-	
 	public Block getNextBlock(Node lastNode){
 		/*it is easier to implement if we keep track of last node passed*/
 		Node nextNode = getNextNode(lastNode);
@@ -184,39 +173,37 @@ public abstract class Block {
 			e.printStackTrace();
 		}
 		return null;
-
 	}
 	
 	public double[] getAbsolutePosition(double distance){
 		return new double[3]; //[x,y,z]
 	}
   
-  public Node getYardNode(){
-    //return a yard node if it belongs to block else return null
-	  if(startNode.getNodeType() == constData.NodeType.Yard)
-		  return startNode;
-	  if(stopNode.getNodeType() == constData.NodeType.Yard)
-		  return stopNode;
-	  return null;
-  }
+  	public Node getYardNode(){
+    	//return a yard node if it belongs to block else return null
+	  	if(startNode.getNodeType() == constData.NodeType.Yard)
+		  	return startNode;
+	  	if(stopNode.getNodeType() == constData.NodeType.Yard)
+		  	return stopNode;
+	  	return null;
+  	}
   
-  public Node getNextNode(Node lastNode){
-  	//make sure a valid node is passed in - return null if not    
-    if(lastNode == stopNode)
-    	return startNode;
-    if(lastNode == startNode)
-    	return stopNode;
-    return null;
-  }
+  	public Node getNextNode(Node lastNode){
+  		//make sure a valid node is passed in - return null if not    
+    	if(lastNode == stopNode)
+    		return startNode;
+	    if(lastNode == startNode)
+	    	return stopNode;
+	    return null;
+	}
 
-  public ArrayList<Integer> getController(){
-    // Should return a list of the controller(s) that a block is under
-    return controller;
-  }
+  	public ArrayList<Integer> getController(){
+    	// Should return a list of the controller(s) that a block is under
+    	return controller;
+  	}
 
-  public void addController(int c)
-  {
-  	controller.add(c);
-  }
-  	
+  	public void addController(int c)
+  	{
+  		controller.add(c);
+  	}	
 }
