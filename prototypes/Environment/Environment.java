@@ -55,8 +55,6 @@ public class Environment implements constData
 		((TrainControllerModule)trc).init((TrainContainer)trm);
 		((TrainContainer)trm).init((TrainControllerModule)trc, sysClk);
 		((TrackController)tkc).init(tkm);
-
-
 		
 		mboThread.start();
 		schThread.start();

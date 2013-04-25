@@ -222,15 +222,11 @@ public class Scheduler extends Worker implements Runnable, constData
 				}
 			}
 
-			Iterator<TimesObject> i;
-
-			i = timetable.getIterator();
-
 			//Checks timetable to see if train is late to arrive at a station
 
-			while(i.hasNext())
+			for(int i = 0; i < timetable.size(); i++)
 			{
-				TimesObject time = i.next();
+				TimesObject time = timetable.getTimesObject(i);
 
 				if(time.status != TrainStatus.ARRIVED && time.time < System.currentTimeMillis())
 				{
@@ -261,8 +257,8 @@ public class Scheduler extends Worker implements Runnable, constData
 
 		trainID = (int)message.getData().get("trainID");
 		//sendTrainUpdate(); //Notify MBO that a train was added to the track
-
 		if(message.getData().get("isGreenLine") != null && (boolean)message.getData().get("isGreenLine"))
+
 		{
 			greenTrains.add(new Train(trainID, System.currentTimeMillis()));
 		}
@@ -304,17 +300,15 @@ public class Scheduler extends Worker implements Runnable, constData
 	{
 		int trainID;
 		String stationName;
-		Iterator<TimesObject> i;
 		TimesObject to;
 		Train train;
 
 		trainID = (int)message.getData().get("trainID");
 		stationName = (String)message.getData().get("trainID");
-		i = timetable.search(stationName, trainID).getIterator();
 
-		while(i.hasNext())
+		for(int i = 0; i < timetable.size(); i++)
 		{
-			to = i.next();
+			to = timetable.getTimesObject(i);
 
 			if(to.status != TrainStatus.ARRIVED)
 			{
@@ -460,30 +454,17 @@ public class Scheduler extends Worker implements Runnable, constData
 
 	private synchronized void operatorScheduleChanged()
 	{
-		Iterator<SchedulerListener> i;
-		SchedulerEvent e;
-
-		e = new SchedulerEvent(this);
-		i = listeners.iterator();
-
-		while(i.hasNext())
+		for(int i = 0; i < listeners.size(); i++)
 		{
-			i.next().operatorScheduleChanged(e);
+			listeners.get(i).operatorScheduleChanged(new SchedulerEvent(this));
 		}
 	}
 
 	private synchronized void timetableChanged()
 	{
-
-		Iterator<SchedulerListener> i;
-		SchedulerEvent e;
-
-		e = new SchedulerEvent(this);
-		i = listeners.iterator();
-
-		while(i.hasNext())
+		for(int i = 0; i < listeners.size(); i++)
 		{
-			i.next().timetableChanged(e);
+			listeners.get(i).timetableChanged(new SchedulerEvent(this));
 		}
 
 	}

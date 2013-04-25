@@ -8,6 +8,11 @@ public class PLC
 
 	}
 
+	public boolean verifyPLC()
+	{
+		return true;
+	}
+
 	public void checkAuthority()
 	{
 
@@ -24,6 +29,14 @@ public class PLC
 	{
 
 
+	}
+
+	public void checkCrossing(Block occupied)
+	{
+		if(occupied.isCrossing())
+		{
+			occupied.setCrossing(true);
+		}
 	}
 
 	public void doMethod()

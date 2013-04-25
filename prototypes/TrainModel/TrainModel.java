@@ -338,6 +338,8 @@ public class TrainModel implements constData
 					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID", "blockID"}, new Object[] {true, trainID, occupiedBlocks.get(0).getID()});
 					Environment.passMessage(outgoingMessage);
 
+					// I need you to call TrainControllerModule.destroyTrainController(int trainID) when train is destroyed --Ben
+
 					//no, really... destruct!
 					//well... get yourself unlisted first.
 					//just give up then. They'll do the rest...

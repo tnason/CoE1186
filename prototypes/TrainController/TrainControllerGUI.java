@@ -61,7 +61,8 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     
     
     private void refreshUI(){
-        if (!noTrains){
+        if (!noTrains)
+        {
             doorControlButton.setText(tm.getDoors() == true ? "Close" : "Open");
             lightControlButton.setText(tm.getLights() == true ? "Turn Off" : "Turn On");
             currentTempText.setText(Double.toString(tm.getTemperature()));
@@ -73,7 +74,23 @@ public class TrainControllerGUI extends JFrame implements Runnable {
             brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
             model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
             model.addRow(new Object[]{"time", tm.getVelocity()*2.23694, tc.getVelocitySetpoint()*2.23694, tc.getPower()});
+            powerTable.getSelectionModel().setSelectionInterval(powerTable.getRowCount()-1, powerTable.getRowCount()-1);
+            powerTable.scrollRectToVisible(powerTable.getCellRect(powerTable.getRowCount()-1, 0, true));
         }
+        else
+         {
+            doorControlButton.setText("No Train!");
+            lightControlButton.setText("No Train!");
+            currentTempText.setText("-");
+            nextStationText.setText("-");
+            velocityText.setText("-");
+            authorityText.setText("-");
+            engineFailureText.setBackground(Color.GRAY);
+            pickupFailureText.setBackground(Color.GRAY);
+            brakeFailureText.setBackground(Color.GRAY);
+            model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
+            model.setRowCount(0);
+        } 
     }
     
     public void createDropdownModel(){ // Creates Integer array of train IDs
@@ -327,26 +344,27 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         powerControlPanelLayout.setHorizontalGroup(
             powerControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, powerControlPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(velocityText, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(powerControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(powerControlPanelLayout.createSequentialGroup()
+                        .addGap(54, 54, 54)
                         .addGroup(powerControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(velocityLabel)
-                            .addComponent(mphText))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(velocitySetter, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(mphText2))
-                    .addGroup(powerControlPanelLayout.createSequentialGroup()
-                        .addGroup(powerControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(authorityLabel)
                             .addGroup(powerControlPanelLayout.createSequentialGroup()
-                                .addComponent(authorityText, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(authorityText, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(metersText))
-                            .addComponent(authorityLabel))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(metersText)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(powerControlPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(powerControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(velocityLabel)
+                            .addComponent(velocityText, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(mphText)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(velocitySetter, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(mphText2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(powerControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(accelerateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -531,7 +549,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(faultsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(gpsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -569,6 +587,8 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         if (!noTrains){
             tc = mod.getTrainController((Integer)(trainContDropdown.getSelectedItem()));
             tm = tc.getTrain();
+            model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
+            model.setRowCount(0); 
             refreshUI();
         }
     }                                                 

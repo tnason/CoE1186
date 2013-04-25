@@ -19,7 +19,7 @@ public class TrackControllerView extends javax.swing.JFrame
     private Block currentBlock       = null;
 
     private Object   plcObject = null;
-    private Class<?> plcClass;
+    private Class<?> plcClass  = null;
     private boolean  plcLoaded = false;
 
     public TrackControllerView(Hashtable<Integer, Hashtable<Integer, Block>> allControllers) 
@@ -289,6 +289,16 @@ public class TrackControllerView extends javax.swing.JFrame
     {
         return plcObject;
     }
+
+    public Class<?> getPlcClass()
+    {
+        return plcClass;
+    }
+
+    public boolean PLCLoaded()
+    {
+        return plcLoaded;
+    }
                 
     private void changeLine(java.awt.event.MouseEvent evt) 
     {
@@ -404,7 +414,13 @@ public class TrackControllerView extends javax.swing.JFrame
                                                                                        
             plcObject = plcClass.newInstance();  
 
-            plcClass.getMethod("doMethod", int.class).invoke(plcObject, 5);
+            boolean isPLC = (boolean) plcClass.getMethod("verifyPLC").invoke(plcObject);
+
+            if(!isPLC)
+            {
+                JOptionPane.showMessageDialog(null, "This is not a valid PLC!");
+                return;
+            }
         } 
         catch (ClassNotFoundException cnfe)
         {
@@ -413,7 +429,7 @@ public class TrackControllerView extends javax.swing.JFrame
         }
         catch (Exception e)
         {
-            JOptionPane.showMessageDialog(null, e.toString());
+            JOptionPane.showMessageDialog(null, "This is not a valid PLC!\n"+ e.toString());
             return;
         }
         
