@@ -19,6 +19,7 @@ public class TrainModel implements constData
 	private int trainID;
 
 	//train state
+	private double time = 0;
 	private double power = 0; //in Watts
 	private double position = 0; //in m
 	private double velocity = 0; //in m/s
@@ -30,10 +31,14 @@ public class TrainModel implements constData
 
 	private int stepCounter = 0;
 
-	//deprecated?
-	private double time = 0; //in s
+	private double mass;
+	private double emptyMass = 51437; //loaded train mass in kg
 
-	private double mass = 51437; //loaded train mass in kg
+	private int crewCount = 2; //assume a minimal crew
+	private int passengerCount = 0; //no passengers
+
+	private final double personMass = 81.6; //average weight of a US citizen (180 lbs, assuming 50/50 gender mix)
+
 
 	private final double trLength = 32.2; //in m
 	private final double trWidth = 2.65;
@@ -58,11 +63,22 @@ public class TrainModel implements constData
 	private int accelRegime = 0;
 	private int forceRegime = 0;
 
+	//failure flags
+	private boolean signalPickupFailure = false;
+	private boolean brakeFailure = false; 
+	private boolean trainEngineFailure = false;
+
+	//axiallary (non-motion) state avariables
+	private boolean doorsOpen = false;
+	private boolean lightsOn = false;
+
 
 	public TrainModel(int trainID, Block start, double timeStep) 
 	{
 		this.trainID = trainID;
 		this.timeStep = timeStep;
+
+		this.mass = calculateMass();
 
 		occupiedBlocks.add(start);
 		blockEntryPos.add(position); 
@@ -71,6 +87,11 @@ public class TrainModel implements constData
 		currentBlockGrade = occupiedBlocks.get(0).getGrade();
 		occupiedBlocks.get(0).setOccupation(true);
 		fromYard = true;
+	}
+
+	private double calculateMass()
+	{
+		return emptyMass + ((passengerCount + crewCount) * personMass);
 	}
 
 	public double getVelocity() 
@@ -251,10 +272,10 @@ public class TrainModel implements constData
 		acceleration = endAccel;
 	    
         stepCounter++;
-//		if(stepCounter % 50 == 0)
-//		{
-//			System.out.println("!!TRAIN  MOTION___: p: " + position + " v: " + velocity + " a: " + acceleration);
-//		}
+		/*if(stepCounter % 50 == 0)
+		{
+		System.out.println("!!TRAIN  MOTION___: p: " + position + " v: " + velocity + " a: " + acceleration);
+		}*/
 
 
 		time += actualTimeStep;
@@ -304,7 +325,7 @@ public class TrainModel implements constData
 				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() - trLength/2.0)) //if the back of the train has left the old block
 				{
 					//send TnMd_TcCt_Update_Block_Occupancy
-					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackController, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlocks.get(1)});
+					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackController, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block", "trainID"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlocks.get(1), trainID});
 					Environment.passMessage(outgoingMessage);
 
 					fromYard = false;
@@ -337,6 +358,8 @@ public class TrainModel implements constData
 					//send TnMd_Sch_Notify_Yard
 					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID", "blockID"}, new Object[] {true, trainID, occupiedBlocks.get(0).getID()});
 					Environment.passMessage(outgoingMessage);
+
+					// I need you to call TrainControllerModule.destroyTrainController(int trainID) when train is destroyed --Ben
 
 					//no, really... destruct!
 					//well... get yourself unlisted first.
@@ -371,7 +394,7 @@ public class TrainModel implements constData
 				if((position - blockEntryPos.get(1)) > (occupiedBlocks.get(1).getLength() + trLength)) //if the back of the train has left the old block
 				{
 					//send TnMd_TcCt_Update_Block_Occupancy
-					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackController, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlocks.get(0)});
+					outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackController, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block", "trainID"}, new Object[] {occupiedBlocks.get(1).getID(), false, occupiedBlocks.get(0), trainID});
 					Environment.passMessage(outgoingMessage);
 
 					occupiedBlocks.get(1).setOccupation(false);
@@ -381,5 +404,67 @@ public class TrainModel implements constData
 			}
 		}
 	}
+	
+	
+	// Placeholder methods for compiling --Ben
+	public boolean getDoors()
+	{
+		return true;
+	}
 
+
+	public boolean getLights()
+	{
+		return true;
+	}
+	
+	
+	public double getTemperature()
+	{
+		return 0.0;
+	}
+	
+	
+	public boolean[] getFailureFlags()
+	{
+		return new boolean[] {true};
+	}
+
+	
+	
+	public void updateTrainController()
+	{
+		//NOTE: The TrainModel class needs a reference to a TrainController for updating the train controller.
+		//Call TrainControllerModule.getTrainController(int trainID); This returns a TrainController.
+		//Whenever a new block is traversed, call this method. Thanks. --Ben
+
+		/*
+		FIX THIS! 
+
+		tc.setUnderground(blockName.isUnderground());
+		tc.setInStation(blockName.isStation());
+		tc.setNextStation(blockName.getStationName());
+		tc.setTrackLimit(blockName.getSpeedLimit());
+		tc.setLights();
+		tc.setDoors();
+		*/
+	}
+	
+	
+	public void setDoors(boolean setting) // true = open, false = close
+	{
+		
+	}
+	
+	
+	public void setLights(boolean setting) // true = turn on, false = turn off
+	{
+		
+	}
+	
+	
+	public void setTemperature(double temp)
+	{
+		
+	}
 }

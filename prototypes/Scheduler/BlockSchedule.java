@@ -1,4 +1,13 @@
+//Marcus Hayes
+//Computer Engineeering
+//Senior
+//ECE 1186
+//Th 6-9
+//TLTTC - Scheduler/MBO
+
 package TLTTC;
+
+import java.sql.*;
 
 public class BlockSchedule
 {
@@ -94,8 +103,8 @@ public class BlockSchedule
 		String s = "Block: " + block;
 		s = s.concat("\nPrevious Node: " + previousNode);
 		s = s.concat("\nNext Node: " + nextNode);
-		s = s.concat("\nEntry Time: " + entryTime);
-		s = s.concat("\nExit Time: " + (traverseTime + entryTime));
+		s = s.concat("\nEntry Time: " + new Time(entryTime));
+		s = s.concat("\nExit Time: " + new Time(traverseTime + entryTime));
 		s = s.concat("\nSpeed: " + speed);
 
 		return s;

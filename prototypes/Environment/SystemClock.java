@@ -16,7 +16,7 @@ public class SystemClock
 	private final int START_MIN = 0;
 
 
-	public final int SIMULATION_SPEEDUP = 1; //rate of simulation speedup
+	public final int SIMULATION_SPEEDUP = 5; //rate of simulation speedup
 
 	public SystemClock()
 	{
@@ -42,7 +42,7 @@ public class SystemClock
 
 	//This method is for calling by the CTC/Scheduler
 	//This will return a Date object indicating the current simulation time
-	public Date getSimulationTime()
+	public Date getSimulationTimeDate()
 	{
 		Calendar temp = Calendar.getInstance();
 		long timeDiff;
@@ -57,7 +57,7 @@ public class SystemClock
 	public void printSimulationTime()
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		System.out.println(sdf.format(getSimulationTime()));
+		System.out.println(sdf.format(getSimulationTimeDate()));
 	}
 
 	public void printSystemTime()
@@ -65,7 +65,20 @@ public class SystemClock
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		System.out.println(sdf.format(new java.util.Date()));
 	}
-	
+
+
+	public String getSimulationTime()
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		return sdf.format(getSimulationTimeDate()).toString();
+	}
+
+	public String getSystemTime()
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		return sdf.format(new java.util.Date()).toString();
+	}
+
 	//Really stupid driver program that shows features of clock
 	public static void main(String args[])
 	{

@@ -1,3 +1,11 @@
+/*
+* Author(s): Cameron Dashti
+* Updated: 25 – 4 – 2013
+* Purpose: This file sets up the gui for the track controller. It allows
+           the user to view all of the block under each contoller and preform
+           various test meachanisms on the track.
+*/
+
 package TLTTC;
 
 import java.util.*;
@@ -11,27 +19,33 @@ import java.lang.reflect.*;
 public class TrackControllerView extends javax.swing.JFrame 
 {
 
-    private Hashtable<Integer, Hashtable<Integer, Block>> controller;
-    private DefaultTableModel tcListModel, tcPropModel, controllerInfoModel;
+    // Controller holds all of the controllers. Each controller in the table has a table of blocks 
+    // that it monitors. 
+    private Hashtable<Integer, Hashtable<Integer, Block>> controller;        
 
-    private int   selectedController = -1;
-    private int   userSelectedBlock  = -1;
-    private Block currentBlock       = null;
+    // Get the model of all of the tables so they can be updated.  
+    private DefaultTableModel tcListModel, tcPropModel, controllerInfoModel; 
 
-    private Object   plcObject = null;
-    private Class<?> plcClass;
-    private boolean  plcLoaded = false;
+    private int   selectedController = -1;   // Which number controller is selected in thegui
+    private int   userSelectedBlock  = -1;   // Which number block is selected in the gui
+    private Block currentBlock       = null; // Reference to the selected block
+
+    private Object   plcObject = null;       // Holds reference to dynamically loaded PLC class
+    private Class<?> plcClass  = null;       // Reference to plc class loaded by user
+    private boolean  plcLoaded = false;        
 
     public TrackControllerView(Hashtable<Integer, Hashtable<Integer, Block>> allControllers) 
     {
-        initComponents();
+        initComponents(); // Auto generated code to set up gui
 
-        tcListModel = (DefaultTableModel) tcList.getModel();
+        // Once the gui is built, get the model of the tables so they can be changed when action.
+        tcListModel = (DefaultTableModel) tcList.getModel();       
         tcPropModel = (DefaultTableModel) tcProp.getModel();
         controllerInfoModel = (DefaultTableModel) controllerInfo.getModel();
 
-        controller = allControllers;
+        controller = allControllers;  // Gets the table of contorllers from the main track contoller class.
         
+        // Loop over all track controllers and add them to the track controller list.
         for(int tcNum : controller.keySet())
         {
             tcListModel.addRow(new Object [] {"Track Controller " + tcNum});
@@ -285,9 +299,22 @@ public class TrackControllerView extends javax.swing.JFrame
         pack();
     }                     
 
+    // Returns a reference to the PLC object for the track controller to use it.
     public Object getPLC ()
     {
         return plcObject;
+    }
+
+     // Returns a reference to the PLC class for the track controller to get all methods.
+    public Class<?> getPlcClass()
+    {
+        return plcClass;
+    }
+
+    // Retruns a boolean whether or not the plc progam is loaded.
+    public boolean PLCLoaded()
+    {
+        return plcLoaded;
     }
                 
     private void changeLine(java.awt.event.MouseEvent evt) 
@@ -295,39 +322,51 @@ public class TrackControllerView extends javax.swing.JFrame
         
     }
 
+    // On close, set the gui to be invisible
     private void closeTC(java.awt.event.MouseEvent evt) 
     {
         this.setVisible(false);
     }
 
+    // a user selects a track controller
     private void tcSelected(java.awt.event.MouseEvent evt) 
     {             
-        enableCrossing.setEnabled(false);
+        int numTrains = 0;  // Number of valid trains
+
+        enableCrossing.setEnabled(false); // disable all of the buttons
         putMaintenance.setEnabled(false);
         toggleSwitch.setEnabled(false);
 
+        // Get the string value of which controller selected and parse its numeric value.
         String tcString = (String) tcList.getValueAt(tcList.getSelectedRow(), 0);
         selectedController = Integer.parseInt(tcString.split(" ")[2]);
 
+        // Remove all of the old controller information
         while(controllerInfoModel.getRowCount() > 0)
         {
             controllerInfoModel.removeRow(0);
         }
 
+        // Add new contoller statistics
+
         controllerInfoModel.addRow(new Object [] { controller.get(selectedController).size(),
                                                    "num Trains 0"});
-        refresh();
+        refresh();  // refresh the rest of the tables
     } 
 
+    // The user selectes a block from the gui
     private void blockSelected(java.awt.event.MouseEvent evt) 
     {                               
+        // Get the block number selected and get the block reference
         int choosenBlockNum = (int) tcProp.getValueAt(tcProp.getSelectedRow(), 0);
-
         currentBlock = controller.get(selectedController).get(choosenBlockNum);
 
-        userSelectedBlock = choosenBlockNum;
+        userSelectedBlock = choosenBlockNum; // save block number globally
 
-        putMaintenance.setEnabled(true);
+        if(!currentBlock.isOccupiedNoMaintenance())
+        {
+            putMaintenance.setEnabled(true);      
+        }
 
         if(currentBlock.isCrossing() && !currentBlock.getCrossing())
         {
@@ -404,7 +443,13 @@ public class TrackControllerView extends javax.swing.JFrame
                                                                                        
             plcObject = plcClass.newInstance();  
 
-            plcClass.getMethod("doMethod", int.class).invoke(plcObject, 5);
+            boolean isPLC = (boolean) plcClass.getMethod("verifyPLC").invoke(plcObject);
+
+            if(!isPLC)
+            {
+                JOptionPane.showMessageDialog(null, "This is not a valid PLC!");
+                return;
+            }
         } 
         catch (ClassNotFoundException cnfe)
         {
@@ -413,7 +458,7 @@ public class TrackControllerView extends javax.swing.JFrame
         }
         catch (Exception e)
         {
-            JOptionPane.showMessageDialog(null, e.toString());
+            JOptionPane.showMessageDialog(null, "This is not a valid PLC!\n"+ e.toString());
             return;
         }
         

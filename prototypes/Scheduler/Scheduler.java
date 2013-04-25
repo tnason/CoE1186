@@ -1,9 +1,16 @@
+//Marcus Hayes
+//Computer Engineeering
+//Senior
+//ECE 1186
+//Th 6-9
+//TLTTC - Scheduler/MBO
+
 package TLTTC;
 
 import java.util.*;
 import java.util.concurrent.*;
 
-public class Scheduler extends Worker implements constData
+public class Scheduler extends Worker implements Runnable, constData
 {
 	public static int NEXT_TRAIN_NUMBER = 0;
 
@@ -12,11 +19,46 @@ public class Scheduler extends Worker implements constData
 	private Module name;
 	private OperatorSchedule schedule;
 	private Timetable timetable;
-	private ArrayList<Train> trains;
+	private ArrayList<Train> redTrains;
+	private ArrayList<Train> greenTrains;
+	private RouteSchedule route;
+
+	public static Node[] nodes;
+	public static Block[] blocks;
 
 	public static void main(String[] args)
 	{
+		int numBlocks = 7;
+		int numNodes = numBlocks + 1;
+		blocks = new Block[numBlocks];
+		nodes = new Node[numNodes];
 
+		nodes[0] = new YardNode(0, 0, 0);
+		
+		for(int i = 1; i < nodes.length - 1;i++)
+		{
+			nodes[i]= new ConnectorNode(i * i * i * i * i, i * i * i * i * i, i * i * i * i * i);
+		}
+
+		nodes[nodes.length - 1] = new YardNode((nodes.length - 1) * (nodes.length - 1), (nodes.length - 1) * (nodes.length - 1), (nodes.length - 1) * (nodes.length - 1));
+
+		for(int i = 0; i < blocks.length; i++)
+		{
+			blocks[i] = new LinearBlock(nodes[i], nodes[i+1], i, 0);
+			nodes[i].setOutput(blocks[i]);
+			nodes[(i+1) % blocks.length].setInput(blocks[i]);
+		}		
+
+
+		Scheduler sch = new Scheduler();
+		new Thread(sch).start();
+
+		Message message = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard);
+		message.addData("entry", true);
+		message.addData("trainID", 0);
+		message.addData("isGreenLine", true);		
+		sch.setMsg(message);
+		System.out.println("here");		
 	}
 
 	/*
@@ -27,7 +69,9 @@ public class Scheduler extends Worker implements constData
 	{
 		timetable = new Timetable();
 		schedule = new OperatorSchedule();
-		trains = new ArrayList<Train>();
+		route = new RouteSchedule();
+		redTrains = new ArrayList<Train>();
+		greenTrains = new ArrayList<Train>();
 		listeners = new ArrayList<SchedulerListener>();
 		messages = new LinkedBlockingQueue<Message>();
 		this.name = Module.scheduler;
@@ -35,6 +79,7 @@ public class Scheduler extends Worker implements constData
 
 		updateOperatorSchedule();
 		updateTimetable();
+		sendTrainInfo();
 	}
 
 	/*
@@ -58,13 +103,13 @@ public class Scheduler extends Worker implements constData
 	{
 		int numTrains;
 
-		numTrains = calculateOptimalTrains(); //Get minimum number of trains that should be on the track
+		numTrains = calculateOptimalTrains(true); //Get minimum number of trains that should be on the track
 
-		if(trains.size() < numTrains)
+		if(greenTrains.size() < numTrains || redTrains.size() < numTrains)
 		{
 			//Add trains to schedule if there must be more trains on the track and on the schedule
 
-			while(schedule.size() < numTrains)
+			while(schedule.size() < numTrains * 2)
 			{
 				schedule.add("Train", "Operator", Scheduler.NEXT_TRAIN_NUMBER++, System.currentTimeMillis(), OperatorStatus.SHIFTNOTSTARTED);
 			}
@@ -79,28 +124,66 @@ public class Scheduler extends Worker implements constData
 
 	public boolean updateTimetable()
 	{
+		return updateTimetable(true);// && updateTimetable(false);
+	}
+
+	public boolean updateTimetable(boolean isGreenLine)
+	{
+		TrainRoute tr;
+		BlockSchedule bs;
+		Block block;
+		int trainNumber;
+		Iterator<TrainRoute> iTR;
+		Iterator<BlockSchedule> iBS;
+		
+		calculateRoutes(System.currentTimeMillis());
+		timetable = new Timetable();
+		
+		iTR = route.getIterator();
+
+		while(iTR.hasNext())
+		{
+			tr = iTR.next();
+			trainNumber = tr.getTrainNumber();
+
+			for(int i = 0; i < tr.size(); i++)
+			{
+				bs = tr.getIndex(i);
+				block = bs.getBlock();
+
+				if((i % 2) == 1)//block.isStation())
+				{
+					timetable.add("Station " + i/*block.getStationName()*/, trainNumber, (bs.getEntryTime() + bs.getExitTime()) / 2, TrainStatus.ONTIME);
+				}
+			}
+		}
+
 		timetableChanged();
 
 		return true;
 	}
 
-	private int calculateOptimalTrains()
+	private int calculateOptimalTrains(boolean isGreenLine)
 	{
 		return 1;
 	}
 
-	private void calculateRoutes(int time)
+	private void calculateRoutes(long time)
 	{
-		while(time < 36000000)
+	    try
+	    {
+		    route.routeTrains(time, greenTrains, schedule);
+		    route.routeTrains(time, redTrains, schedule);
+		    System.out.println("ROUTE! " + route);
+		}
+		catch (Exception e)
 		{
-			
-			time = time +1000;
 		}
 	}
 
 	//Searches train list for a train
 
-	private Train findTrain(int trainNumber)
+	private Train findTrain(int trainNumber, ArrayList<Train> trains)
 	{
 		int size = trains.size();
 
@@ -152,43 +235,49 @@ public class Scheduler extends Worker implements constData
 						/*case:
 							receivedGPSLocation(message);
 							break;*/
-						/*case 95:
+						case TnMd_Sch_Station_Arrival:
 							receivedTrainArrival(message);
-							break;	*/
+							break;
 						case TnMd_Sch_Notify_Yard:
 							if((boolean)message.getData().get("entry"))
 							{
 								receivedTrainReturn(message);
+								sendTrainInfo();
 							}
 							else
 							{
 								receivedTrainDispatch(message);
+								sendTrainInfo();
 							}
 							break;	
 					}
 				}
 				else
 				{
-					//System.out.println("PASSING MESSAGE: step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
+					//System.out.println("PASSING MESSAGE " + message.getType() + ": step->" + name + " source->" + message.getSource() + " dest->" + message.getDest());
 					message.updateSender(name);
 					Environment.passMessage(message);
 				}
 			}
 
-			Iterator<TimesObject> i;
-
-			i = timetable.getIterator();
-
 			//Checks timetable to see if train is late to arrive at a station
 
-			while(i.hasNext())
+			boolean timetableChanged = false;
+
+			for(int i = 0; i < timetable.size(); i++)
 			{
-				TimesObject time = i.next();
+				TimesObject time = timetable.getTimesObject(i);
 
 				if(time.status != TrainStatus.ARRIVED && time.time < System.currentTimeMillis())
 				{
 					time.status = TrainStatus.LATE;
+					timetableChanged = true;
 				}
+			}
+
+			if(timetableChanged)
+			{
+				timetableChanged();
 			}
 		}
 
@@ -213,9 +302,20 @@ public class Scheduler extends Worker implements constData
 		Operator operator;
 
 		trainID = (int)message.getData().get("trainID");
-		trains.add(new Train(trainID, System.currentTimeMillis()));
-		sendTrainUpdate(); //Notify MBO that a train was added to the track
+		//sendTrainUpdate(); //Notify MBO that a train was added to the track
 
+		Train train = new Train(trainID, System.currentTimeMillis());
+		train.setBlock(Scheduler.blocks[0],Scheduler.nodes[0],Scheduler.nodes[1], System.currentTimeMillis());
+		
+		if(message.getData().get("isGreenLine") != null && (boolean)message.getData().get("isGreenLine"))
+		{
+			greenTrains.add(train);
+		}
+		else
+		{
+			redTrains.add(new Train(trainID, System.currentTimeMillis()));
+		}
+			
 		operator = schedule.search(trainID);
 
 		//If train isn't in schedule, add it
@@ -247,6 +347,34 @@ public class Scheduler extends Worker implements constData
 
 	private void receivedTrainArrival(Message message)
 	{
+		int trainID;
+		String stationName;
+		TimesObject to;
+		Train train;
+
+		trainID = (int)message.getData().get("trainID");
+		stationName = (String)message.getData().get("trainID");
+
+		for(int i = 0; i < timetable.size(); i++)
+		{
+			to = timetable.getTimesObject(i);
+
+			if(to.status != TrainStatus.ARRIVED)
+			{
+				to.status = TrainStatus.ARRIVED;
+				break;
+			}
+		}
+
+		train = findTrain(trainID, greenTrains);
+
+		if(train == null)
+		{
+			train = findTrain(trainID, redTrains);
+		}
+
+		//train.setPassengerCount((int)message.getData().get("passengerCount"));
+		timetableChanged();		
 	}
 
 	private void receivedTimetableUpdateRequest(Message message)
@@ -259,10 +387,26 @@ public class Scheduler extends Worker implements constData
 	{
 		int trainID;
 		Operator operator;
+		Train train;
 
 		trainID = (int)message.getData().get("trainID");
-		trains.remove(findTrain(trainID));
-		sendTrainUpdate();
+		train = findTrain(trainID, greenTrains);
+
+		if(train == null)
+		{
+			train = findTrain(trainID, redTrains);
+
+			if(train != null)
+			{
+				redTrains.remove(trainID);
+			}
+		}
+		else
+		{
+			greenTrains.remove(trainID);
+		}
+
+		//sendTrainUpdate();
 
 		operator = schedule.search(trainID);
 
@@ -286,7 +430,7 @@ public class Scheduler extends Worker implements constData
 
 	public void send(Message message)
 	{
-	    	//System.out.println("SENDING MESSAGE: start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
+	    	//System.out.println("SENDING MESSAGE " + message.getType() + ": start->" + message.getSource() + " : dest->" + message.getDest() + "\n");
 		Environment.passMessage(message);
 	}
 
@@ -307,7 +451,7 @@ public class Scheduler extends Worker implements constData
 	}
 
 	//Notifies MBO a train has been added to or removed from the track
-
+/* Deprecated
 	private void sendTrainUpdate()
 	{
 		Message message;
@@ -315,6 +459,19 @@ public class Scheduler extends Worker implements constData
 		message = new Message(name, name, Module.MBO, msg.Sch_MBO_Notify_Train_Added_Removed);
 		message.addData("id", 96);
 		message.addData("trainList", trains);
+		send(message);
+	}
+*/
+
+
+	private void sendTrainInfo()
+	{
+		Message message;
+
+		message = new Message(name, name, Module.MBO, msg.Sch_MBO_Send_Train_Info);
+		message.addData("id", 96);
+		message.addData("greenLine", greenTrains);
+		message.addData("redLine", redTrains);
 		send(message);
 	}
 
@@ -346,30 +503,17 @@ public class Scheduler extends Worker implements constData
 
 	private synchronized void operatorScheduleChanged()
 	{
-		Iterator<SchedulerListener> i;
-		SchedulerEvent e;
-
-		e = new SchedulerEvent(this);
-		i = listeners.iterator();
-
-		while(i.hasNext())
+		for(int i = 0; i < listeners.size(); i++)
 		{
-			i.next().operatorScheduleChanged(e);
+			listeners.get(i).operatorScheduleChanged(new SchedulerEvent(this));
 		}
 	}
 
 	private synchronized void timetableChanged()
 	{
-
-		Iterator<SchedulerListener> i;
-		SchedulerEvent e;
-
-		e = new SchedulerEvent(this);
-		i = listeners.iterator();
-
-		while(i.hasNext())
+		for(int i = 0; i < listeners.size(); i++)
 		{
-			i.next().timetableChanged(e);
+			listeners.get(i).timetableChanged(new SchedulerEvent(this));
 		}
 
 	}

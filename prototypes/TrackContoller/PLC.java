@@ -1,3 +1,9 @@
+/*
+* Author(s): Cameron Dashti
+* Updated: 25 – 4 – 2013
+* Purpose: …
+*/
+
 package TLTTC;
 
 public class PLC
@@ -6,6 +12,11 @@ public class PLC
 	{
 
 
+	}
+
+	public boolean verifyPLC()
+	{
+		return true;
 	}
 
 	public void checkAuthority()
@@ -24,6 +35,14 @@ public class PLC
 	{
 
 
+	}
+
+	public void checkCrossing(Block occupied)
+	{
+		if(occupied.isCrossing())
+		{
+			occupied.setCrossing(true);
+		}
 	}
 
 	public void doMethod()

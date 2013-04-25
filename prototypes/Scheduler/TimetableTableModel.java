@@ -1,3 +1,10 @@
+//Marcus Hayes
+//Computer Engineeering
+//Senior
+//ECE 1186
+//Th 6-9
+//TLTTC - Scheduler/MBO
+
 package TLTTC;
 
 import java.awt.*;
@@ -25,6 +32,8 @@ public class TimetableTableModel extends DefaultTableModel
 		return false;
 	}
 
+	/*Updates the display of the Operator schedule in the UI*/
+
 	public void update(Timetable timetable)
 	{
 		Iterator<TimesObject> i;
@@ -50,8 +59,12 @@ public class TimetableTableModel extends DefaultTableModel
 
 			time = i.next();
 
+			/*search each row for matches*/
+
 			for(int row = 0; row < rowMatches.length; row++)
 			{
+				/*if a match is found, change the status*/
+
 				if(time.stationName.equals((String)getValueAt(row, stationColumn)) && time.trainNumber == (int)getValueAt(row, trainIDColumn) && time.time == ((Time)getValueAt(row, arrivalColumn)).getTime())
 				{
 					match = true;
@@ -65,11 +78,15 @@ public class TimetableTableModel extends DefaultTableModel
 				}
 			}
 
+			/*if not, add it to the end*/
+
 			if(!match)
 			{
 				addRow(new Object[]{time.stationName, time.trainNumber, time.trainNumber, new Time(time.time), time.status.toString()});
 			}
 		}
+
+		/*remove all indices that do not have a match*/
 
 		for(int row = rowMatches.length - 1; row >= 0; row--)
 		{

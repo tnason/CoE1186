@@ -1,3 +1,10 @@
+/*
+* Author(s): Cameron Dashti
+* Updated: 25 – 4 – 2013
+* Purpose: …
+*/
+
+
 package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
@@ -6,14 +13,16 @@ public class TrackController extends Worker implements constData, Runnable
 {
 	private Module name = Module.trackController;
   private LinkedBlockingQueue<Message> msgs = new LinkedBlockingQueue<Message>();
-
+  
+  private Hashtable<Integer, Block> allBlocks;
   private Hashtable<Integer, Hashtable<Integer, Block>> blockUnderController =
                                        new Hashtable<Integer, Hashtable<Integer, Block>>();
 
-  private Object myPLC = null;
+  private Object myPLC        = null;
+  private Class<?> myPlcClass = null;
+
   private TrackControllerView gui;
-
-
+  
   public TrackController()
   {
   
@@ -26,7 +35,7 @@ public class TrackController extends Worker implements constData, Runnable
 			if(msgs.peek() != null)
      		{
         	Message m = msgs.poll();
-          if(m.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority)
+          if(m.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority && m.getType() != msg.MBO_TnMd_Request_Velocity)
             System.out.println("THROUGH: " +m.getType()+" "+ m.getData().toString());
 
           if(name == m.getDest())
@@ -39,9 +48,21 @@ public class TrackController extends Worker implements constData, Runnable
             if(m.getType() == msg.MBO_TnCt_Send_Moving_Block_Authority)
             {
               // Check if safe MBA and add fixed block.
+              m.addData("authorityFB", (Object) 1400);
             }
             else if(m.getType() == msg.TnMd_CTC_Send_Block_Occupied)
             {
+              m.addData("isStation", (Object) (allBlocks.get(m.getData().get("blockId")).isStation()));
+              try
+              {
+                Block currentBlock = allBlocks.get(m.getData().get("blockId"));
+                myPlcClass.getMethod("handleCrossing", Block.class).invoke(myPLC, currentBlock);
+              }
+              catch (Exception e)
+              {
+
+              }
+
               gui.refresh();
             }
             
@@ -53,7 +74,7 @@ public class TrackController extends Worker implements constData, Runnable
 
   public void init(Worker tModel)
 	{
-    Hashtable<Integer, Block> allBlocks = new Hashtable<Integer, Block>(((TrackModel)tModel).getBlocks());
+    allBlocks = new Hashtable<Integer, Block>(((TrackModel)tModel).getBlocks());
 
     for(Block b : allBlocks.values())
     {
@@ -74,7 +95,7 @@ public class TrackController extends Worker implements constData, Runnable
     {
         for(Block blk : blockUnderController.get(i).values())
         {
-          System.out.println("Controller " + i + " block " + blk.getID() );
+          System.out.println("Controller " + i + " block " + blk.getID() + " " + blk.getStopNode().getNodeType());
        }
       System.out.println();
     }
@@ -82,10 +103,15 @@ public class TrackController extends Worker implements constData, Runnable
     gui = new TrackControllerView(blockUnderController);
     gui.setVisible(true);
 
-    //while(gui.getPLC() == null);
+    while(!gui.PLCLoaded())
+    {
+        System.out.print("");
+    }
 
-    //myPLC = gui.getPLC();
+    myPLC = gui.getPLC();
+    myPlcClass = gui.getPlcClass(); 
   }
+
 	public void setMsg(Message m)
   {
 		msgs.add(m);

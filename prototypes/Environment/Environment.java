@@ -9,6 +9,7 @@ public class Environment implements constData
     private static Scanner s = new Scanner(System.in);
 
 	private static SystemClock sysClk; 
+	private static SatelliteContainer sat;
 
     public static void main(String [] args)
     {
@@ -21,7 +22,7 @@ public class Environment implements constData
 		Worker tkm = new TrackModel();
 		Worker trc = new TrainControllerModule();
 		Worker trm = new TrainContainer();
-		Worker ctc = new CTCOffice();
+		Worker ctc = new CTCMessageServer();
 		
 		modualOrder.add(Module.MBO);
 		modualOrder.add(Module.scheduler);
@@ -51,10 +52,15 @@ public class Environment implements constData
 		//Pass it to your module through your init()
 		sysClk = new SystemClock();
 
+		//Initialize the satellites here
+		//Pass it to your module through your init()
+		sat = new SatelliteContainer();
+
 		((TrackModel)tkm).init();
 		((TrainControllerModule)trc).init((TrainContainer)trm);
-		((TrainContainer)trm).init((TrainControllerModule)trc, sysClk);
+		((TrainContainer)trm).init((TrainControllerModule)trc, sysClk, sat);
 		((TrackController)tkc).init(tkm);
+		((MovingBlockOverlay)mbo).init(sat);
 		
 		mboThread.start();
 		schThread.start();
@@ -76,9 +82,9 @@ public class Environment implements constData
 			while(messageQ.peek() != null)
 			{
 				Message inbox = messageQ.poll();
-
-				if(inbox.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority)
-					System.out.println("NEW " + inbox.getType()+" " + inbox.getData().toString() + " "+inbox.getSender()+"\n");
+				
+				//if(inbox.getType() != msg.MBO_TnCt_Send_Moving_Block_Authority)
+					//System.out.println("NEW " + inbox.getType()+" " + inbox.getData().toString() + " "+inbox.getSender()+"\n");
 
 				if(modualOrder.indexOf(inbox.getSender()) < modualOrder.indexOf(inbox.getDest()))
 				{
