@@ -15,12 +15,14 @@ public class TrainViewModel
     private Integer _nextBlock;
     private boolean _active = false;
     private RouteViewModel _route;
+    private TrainScheduleViewModel _trainSchedule;
     
     TrainViewModel ( Integer tID, String line )
     {
         _trainID = tID;
         _line = line;
         _route = new RouteViewModel(this);
+        _trainSchedule = new TrainScheduleViewModel(this);
         
         if (line == "green")
         {
@@ -108,7 +110,7 @@ public class TrainViewModel
     
     public String getNextStation ()
     {
-        return "Station 01"; //TODO - Implement this, yo!
+        return _trainSchedule.nextStation();
     }
     
     public String getScheduleStatus()
@@ -123,5 +125,10 @@ public class TrainViewModel
         routeList.add(2);
         return routeList;
         // TODO write this for realz
+    }
+    
+    public void nextStationReached()
+    {
+        _trainSchedule.stationReached();
     }
 }

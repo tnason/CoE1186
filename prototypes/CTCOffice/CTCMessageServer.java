@@ -103,7 +103,7 @@ public class CTCMessageServer extends Worker implements Runnable, constData
                     }
                     if (isStation)
                     {
-                        controller.reachedNextStation();
+                        controller.reachedNextStation(tID);
                     }
                 }
                 catch (Exception e)

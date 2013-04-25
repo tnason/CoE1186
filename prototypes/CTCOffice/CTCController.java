@@ -186,8 +186,9 @@ public class CTCController implements constData
         return _trainList.getTrain(tID).getRouteListing();
     }
     
-    public void reachedNextStation ()
+    public void reachedNextStation (Integer tID)
     {
-        // Implement
+        _trainList.getTrain(tID).nextStationReached();
+        _CTCInterface.setDataModelForTable(_trainList.getTrain(tID));
     }
 }

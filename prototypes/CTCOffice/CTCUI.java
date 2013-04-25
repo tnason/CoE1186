@@ -302,12 +302,12 @@ public class CTCUI extends javax.swing.JFrame {
         if (_currentSelectedLine == "green")
         {
             _currentSelectedLine = "red";
-            jButton4.setText("Currently selected line is: red.");
+            jButton4.setText("Selected line is: red.");
         }
         else
         {
             _currentSelectedLine = "green";
-            jButton4.setText("Currently selected line is: green.");
+            jButton4.setText("Selected line is: green.");
         }
     }
 
