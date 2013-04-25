@@ -661,7 +661,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     private void gpsConnectButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                 
         if (!noTrains){
             if (!tc.getGpsConnected()){
-                // connect to GPS
+                tc.setGpsConnected(true);
             }
         }
     }                                                
