@@ -17,6 +17,8 @@ public class MovingBlockOverlay extends Worker implements constData
 	private ArrayList<Train> redTrains;
 	private ArrayList<Train> greenTrains;
 
+	private SatelliteContainer sat;
+
 	/*
 		Main
 	*/
@@ -43,6 +45,11 @@ public class MovingBlockOverlay extends Worker implements constData
 	/*
 		Methods
 	*/
+
+	public void init(SatelliteContainer sat)
+	{
+		this.sat = sat;
+	}
 
 	//Searches train list for a train
 

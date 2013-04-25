@@ -51,10 +51,15 @@ public class Environment implements constData
 		//Pass it to your module through your init()
 		sysClk = new SystemClock();
 
+		//Initialize the satellites here
+		//Pass it to your module through your init()
+		sat = new SatelliteContainer();
+
 		((TrackModel)tkm).init();
 		((TrainControllerModule)trc).init((TrainContainer)trm);
-		((TrainContainer)trm).init((TrainControllerModule)trc, sysClk);
+		((TrainContainer)trm).init((TrainControllerModule)trc, sysClk, sat);
 		((TrackController)tkc).init(tkm);
+		((MovingBlockOverlay)mbo).init(sat);
 
 
 		
