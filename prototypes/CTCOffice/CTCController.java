@@ -68,9 +68,9 @@ public class CTCController implements constData
     public void updateOccupancy( int bID, int tID )
     {
         int vacantBlockID = _trainList.getTrain(tID).getCurrentBlock();
-        _blockList.getBlock(bID).setVacant();
+        // _blockList.getBlock(bID).setVacant();
         _trainList.getTrain(tID).setCurrentBlock(bID);
-        _blockList.getBlock(bID).setCurrentTrain(tID);
+        // _blockList.getBlock(bID).setCurrentTrain(tID);
         _CTCInterface.setDataModelForTable(_trainList.getTrain(tID));
     }
     

@@ -60,9 +60,9 @@ public class TrackController extends Worker implements constData, Runnable
               {
                 // get block being traversed and let PLC handle crossings
                 Block currentBlock = allBlocks.get(m.getData().get("blockID"));
-                myPlcClass.getMethod("handleCrossing", Block.class).invoke(myPLC, currentBlock);
+                // myPlcClass.getMethod("handleCrossing", Block.class).invoke(myPLC, currentBlock);
 
-                myPlcClass.getMethod("checkTrack", Hashtable.class, Hashtable.class,  Block.class).invoke(myPLC, oldBlocks, allBlocks, currentBlock);
+                // myPlcClass.getMethod("checkTrack", Hashtable.class, Hashtable.class,  Block.class).invoke(myPLC, oldBlocks, allBlocks, currentBlock);
                 
                double fixedAuth = (double) myPlcClass.getMethod("checkAuthority",Hashtable.class,  Block.class).invoke(myPLC, allBlocks, currentBlock);
 
@@ -78,7 +78,7 @@ public class TrackController extends Worker implements constData, Runnable
             else if(m.getType() == msg.TnMd_TcCt_Update_Block_Occupancy)
             {
                 Block currentBlock = allBlocks.get(m.getData().get("blockID"));
-                myPlcClass.getMethod("handleCrossing", Block.class).invoke(myPLC, currentBlock);
+                // myPlcClass.getMethod("handleCrossing", Block.class).invoke(myPLC, currentBlock);
 
                 gui.refresh();  // update the gui after state changes
             }

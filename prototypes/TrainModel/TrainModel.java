@@ -420,7 +420,7 @@ public class TrainModel implements constData
 				Environment.passMessage(outgoingMessage); 
 
 				//send TnMd_CTC_Send_Block_Occupied
-				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Send_Block_Occupied, new String[] {"blockID"}, new Object[] {occupiedBlocks.get(0).getID()});
+				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Send_Block_Occupied, new String[] {"blockID", "trainID"}, new Object[] {occupiedBlocks.get(0).getID(), trainID});
 				Environment.passMessage(outgoingMessage);
 
 				//send TnMd_TcCt_Update_Block_Occupancy
