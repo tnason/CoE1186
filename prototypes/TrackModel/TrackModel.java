@@ -17,6 +17,8 @@ public class TrackModel extends Worker implements Runnable, constData
         private HashMap<Integer, Block> blocks;
         private HashMap<Integer, Node> nodes;
 
+        private int yn = -1;
+
         public HashMap<Integer, Block> getBlocks(){
     	    return blocks;
         }
@@ -94,7 +96,7 @@ public class TrackModel extends Worker implements Runnable, constData
                     if(m.getType() == msg.CTC_TnMd_Request_Train_Creation)
                     {
                         m.addData("yardBlock",blocks.get(1)); // FIX THIS!
-                        m.addData("yardNode", nodes.get(1));
+                        m.addData("yardNode", nodes.get(yn));
                     }
 
                     //System.out.println("PASSING MSG ~ (source : " + m.getSource() + "), (step : " + name + "), (dest : "+m.getDest()+")");
@@ -141,7 +143,9 @@ public class TrackModel extends Worker implements Runnable, constData
                     nodes.put(id, new YardNode(Double.parseDouble(nodeAttr[2]),
                                                Double.parseDouble(nodeAttr[3]),
                                                Double.parseDouble(nodeAttr[4])));
-		    System.out.println("new yard parsed " + nodes.get(id).toString());                
+		    System.out.println("new yard parsed " + nodes.get(id).toString());  
+
+                    yn = id;            
 		}
                 else if (nodeAttr[0].equals("connection"))
                 {
