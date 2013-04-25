@@ -27,6 +27,7 @@ public class CTCUI extends javax.swing.JFrame {
     private boolean routeRowIsSelected = false;
     private DefaultListModel _routeModel;
     private String _currentSelectedLine = "green";
+    private int _count = 0;
     
      
     public CTCUI(CTCController controller) {
@@ -75,6 +76,8 @@ public class CTCUI extends javax.swing.JFrame {
                 tableSelectionListener(event);
             }
         });
+        jTable1.setRowSelectionAllowed(true);
+        jTable1.setColumnSelectionAllowed(false);
         jScrollPane1.setViewportView(jTable1);
 
         jList1.setModel(_routeModel);
@@ -122,7 +125,7 @@ public class CTCUI extends javax.swing.JFrame {
 
         jLabel4.setText("Schedule");
 
-        jTextField1.setText("0 mph");
+        jTextField1.setText("0.0");
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
@@ -171,7 +174,7 @@ public class CTCUI extends javax.swing.JFrame {
             }
         });
 
-        jTextField4.setText("Train #");
+        jTextField4.setText("Train 0");
         jTextField4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField4ActionPerformed(evt);
@@ -523,6 +526,7 @@ public class CTCUI extends javax.swing.JFrame {
     {
         ArrayList<Object> vals = new ArrayList<Object>();
         vals.add("Train " + train.getTrainID()); // train ID comes first
+        vals.add(train.getLine());
         vals.add(train.getCurrentBlock());
         vals.add(train.getSpeed());
         if (_FixedBlockIsActive)
@@ -536,6 +540,8 @@ public class CTCUI extends javax.swing.JFrame {
         vals.add(train.getNextStation());
         vals.add(train.getScheduleStatus());
         
+        System.out.print(vals);
+        
         return vals;
     }
     
@@ -544,13 +550,12 @@ public class CTCUI extends javax.swing.JFrame {
     {
         // check if it exists, first
         boolean trainExists = false;
-        int   row = _dataModel.getRowCount();
-        for (int i = 0; i< _dataModel.getRowCount(); i++)
+        int   row = _count;
+        for (int i = 0; i < _dataModel.getRowCount(); i++)
         {
             if (getCurrentTrainSelection((String) _dataModel.getValueAt(i, 0)) == train.getTrainID() )
             {
                 // it exists!
-                System.out.println("THE TRAIN EXISTS!");
                 trainExists = true;
                 row = i;
             }
@@ -561,8 +566,9 @@ public class CTCUI extends javax.swing.JFrame {
             _dataModel.setValuesForRow(parseValuesFromTrainModel(train), row);
         }
         else
-        {
+        {   
             _dataModel.setValuesForRow(parseValuesFromTrainModel(train), row);
+            _count++;
         }
     }
     
@@ -574,8 +580,8 @@ public class CTCUI extends javax.swing.JFrame {
 
 class TrainTableDataModel extends AbstractTableModel
 {
-    private String [] columnNames = new String[] { "Train #", "Location", "Speed", "Authority", "Next Station", "Schedule" };
-    private Object [][] data = new Object [10][6];
+    private String [] columnNames = new String[] { "Train #", "Line", "Location", "Speed", "Authority", "Next Station", "Schedule" };
+    private Object [][] data = new Object [10][7];
     
     public int getColumnCount()
     {
@@ -603,7 +609,7 @@ class TrainTableDataModel extends AbstractTableModel
     // This method will be used to iterate through a selected row and populate the detail
     public Object getValueAt(int row, int col)
     {   
-        if ( row < getRowCount() && col < getColumnCount() )
+        if ( row < getRowCount() && col < getColumnCount() && row >= 0 && col >= 0 )
         {
             return data[row][col];
         }
@@ -623,6 +629,10 @@ class TrainTableDataModel extends AbstractTableModel
             data[row][col] = val;
             fireTableCellUpdated(row, col);
         }
+        else
+        {
+            
+        }
     }
     
     // use this to update an entire row at once
@@ -635,6 +645,10 @@ class TrainTableDataModel extends AbstractTableModel
             {
                 setValueAt(vals.get(i), row, i);
             }
+        }
+        else 
+        {
+            System.out.println("NOT SAME SIZE");
         }
     } 
 }

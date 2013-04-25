@@ -95,7 +95,7 @@ public class TrackModel extends Worker implements Runnable, constData
 
                     if(m.getType() == msg.CTC_TnMd_Request_Train_Creation)
                     {
-                        m.addData("yardBlock",blocks.get(1)); // FIX THIS!
+                        m.addData("yardBlock",blocks.get(63)); // FIX THIS!
                         m.addData("yardNode", nodes.get(yn));
                     }
 

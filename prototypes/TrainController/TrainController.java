@@ -67,8 +67,10 @@ public class TrainController
   
   public void setPower() // this method is called whenever an authority, speed limit, or speed setpoint is received
   {
-    // get failure flags and update UI
-    // get time for UI
+    boolean[] flags = tm.getFailureFlags();
+    engineFail = flags[0];
+    signalPickupFail = flags[1];
+    brakeFail = flags[2];
     
     if (engineFail || signalPickupFail || brakeFail) // If train failure, stop train
     {
@@ -154,7 +156,15 @@ public class TrainController
   
   public void setLights(boolean automatic) // This method is called every time the train enters a new block or manually
   {
-    // get time from train model and set daytime variable
+    int time = new Calendar().get(Calendar.HOUR_OF_DAY);
+    if (time >= 9 && time < 16)
+    {
+    	daytime = true;
+    }
+    else
+    {
+    	daytime = false;
+    }
     lightsOn = tm.getLights(); // Current light status
     
     if (!daytime || underground && !lightsOn && automatic) // If nighttime or underground and lights are off, turn them on
