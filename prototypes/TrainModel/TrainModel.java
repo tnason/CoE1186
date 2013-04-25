@@ -1,4 +1,8 @@
-//The actual train
+/* 
+ * Author: Thomas Nason
+ * Updated: 4/25/13
+ * Purpose: This class will calculate train motion and hold train state
+ **/
 package TLTTC;
 import java.util.*;
 
@@ -14,14 +18,17 @@ public class TrainModel implements constData
 
 	public boolean whiteFlag = false; //if true, TrainContainer will kill this train
 
+	//used to indicate to TrainContainer that controllers must be updated
 	public boolean newBlockFlag = false;
 	public Block newBlock;
 
+	//Satellite for MBO, not implemented
 	private SatelliteInstance sat; 
 
-
+	//Flag for startup motion
 	private boolean fromYard;
 
+	//Train unique ID
 	private int trainID;
 
 	//train state
@@ -30,15 +37,18 @@ public class TrainModel implements constData
 	private double position = 0; //in m
 	private double velocity = 0; //in m/s
 	private double acceleration = 0;//in m/s^2
+	private double temperature = 65.0;
 
 	private double currentBlockGrade; //for motion!
 
+	//For variable timestep
 	private long lastMotionCalc = 0;
 
+	//for debugging
 	private int stepCounter = 0;
 
-	private double temperature = 65.0;
-
+	
+	//Train mass and passengers
 	private double mass;
 	private double emptyMass = 51437; //loaded train mass in kg
 
@@ -48,16 +58,19 @@ public class TrainModel implements constData
 	private final double personMass = 81.6; //average weight of a US citizen (180 lbs, assuming 50/50 gender mix)
 
 
+	//Train dimensions
 	private final double trLength = 32.2; //in m
 	private final double trWidth = 2.65;
 	private final double trHeight = 3.42;
 
+	//Brakes
 	private boolean trainBrakeOn = false;
 	private boolean trainEmergencyBrakeOn = false;
 
 	//This is only an ideal!
 	private final double timeStep; //in s
 
+	//Motion variables
 	private final double maxPower = 120000.0; //in W (120kW)
 	private final double maxSpeed = 70000/3600.0; //in m/s (70km/hr)
 
@@ -68,6 +81,7 @@ public class TrainModel implements constData
 
 	private final double gravity = 9.81; //in m/s^2
 
+	//For testing
 	private int accelRegime = 0;
 	private int forceRegime = 0;
 
@@ -165,7 +179,6 @@ public class TrainModel implements constData
 		return trainEmergencyBrakeOn = brake;
 	}
 
-
 	public int getID()
 	{
 		return trainID;
@@ -177,6 +190,7 @@ public class TrainModel implements constData
 		System.out.format("t: %.3f, p: %.1e, x: %.6f, v: %.6f, a: %.3f %d %d%n", time, power, position, velocity, acceleration, forceRegime, accelRegime);
 	}
 
+	//Do motion!
 	public void motionStep(SystemClock clock) 
 	{
 
@@ -332,10 +346,9 @@ public class TrainModel implements constData
 		{
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength() - trLength/2.0)) //if the front of the train is crossing into a new block
 			{
-				System.out.println("NEW BLOCK!!! "+occupiedBlocks.get(0).getID());
-				System.out.println("currentNode: " + currentNode);
+				//System.out.println("currentNode: " + currentNode);
 				nextNode = occupiedBlocks.get(0).getNextNode(currentNode);
-				System.out.println("nextNode: " + nextNode);
+				//System.out.println("nextNode: " + nextNode);
 				occupiedBlocks.add(0, occupiedBlocks.get(0).getNextBlock(currentNode));
 				blockEntryPos.add(0, position);
 
@@ -380,7 +393,7 @@ public class TrainModel implements constData
 		{
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength()))
 			{
-				System.out.println("NEW BLOCK!! " + occupiedBlocks.get(0).getID());
+				//System.out.println("NEW BLOCK!! " + occupiedBlocks.get(0).getID());
 				nextNode = occupiedBlocks.get(0).getNextNode(currentNode);
 
 				if(nextNode.getNodeType() == NodeType.Yard) //yard entry
@@ -504,6 +517,6 @@ public class TrainModel implements constData
 	
 	public void setTemperature(double temp)
 	{
-		temperature += (double)(temperature - temp)*.9;
+		temperature = temp;
 	}
 }

@@ -113,6 +113,7 @@ public class CTCController implements constData
         Module destination = Module.trainModel;
         msg type = msg.CTC_TnMd_Request_Train_Creation;
         _msgServer.composeMessage(destination, type, data);
+		//should wait for confirmation
         _trainList.addTrain(_trainCount, line);
         _CTCInterface.setDataModelForTable(_trainList.getTrain(_trainCount));
         _trainCount++;

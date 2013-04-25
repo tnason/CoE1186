@@ -1,12 +1,19 @@
+/* 
+ * Author: Thomas Nason
+ * Updated: 4/25/13
+ * Purpose: This class will hold all of the trains
+ * It will also receive messages and route them to the trains
+ * It will also also abstract out train construction 
+ **/
+
+
 package TLTTC;
 import java.util.*;
 import java.util.concurrent.*;
 
-//This class will hold all of the trains
-//It will also receive messages and route them to the trains
-//It will also also abstract out train construction 
 public class TrainContainer extends Worker implements Runnable, constData 
 {
+
 	private Module name;
 	private LinkedBlockingQueue<Message> msgs;
   
@@ -99,7 +106,6 @@ public class TrainContainer extends Worker implements Runnable, constData
 
 	public void run()
 	{
-		//Thread t = new Thread();
 
 		while(true)
 		{
@@ -133,11 +139,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 									System.out.println("	!!!!!!!!!!!!!!!!!NEW TRAIN!!!!!!!!");
 
 									tm = newTrain((int)mine.getData().get("trainID"), bl, n, TIME_STEP);
-									//deprecated
-									//tm.setYardNode(n);
 									//send associated messages!!!
-
-									// Cameron: Does this ever happen? Does it need to happen?
 									trc.createTrainController((int)mine.getData().get("trainID"));
 									
 									// Send will pass message to environment. Notify to console of msg send.
@@ -145,28 +147,19 @@ public class TrainContainer extends Worker implements Runnable, constData
 									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.CTC, msg.TnMd_CTC_Confirm_Train_Creation, new String[] {"trainID"}, new Object[] {mine.getData().get("trainID")});
 									send(outgoingMessage); 
 
-									//send TnMd_TnCt_Request_Train_Controller_Creation
-									//deprecated
-
 									//send TnMd_Sch_Notify_Yard
 									outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard, new String[] {"entry","trainID","blockID","isGreenLine"}, new Object[] {(Object)false, mine.getData().get("trainID"), (Object)(bl.getID()), (Object)true});
 									send(outgoingMessage);
 								}
 								break;
-							case TnCt_TnMd_Send_Power:
-								//deprecated
-								break;
-							case TnCt_TnMd_Request_Train_Velocity:
-								//deprecated
-								break;
 							default:
-								//stuff
+								//message not parsed!
 						}
 						
 					}
 					else
 					{
-						//other stuff!
+						//nothing for now
 					}
 				}
 				else
@@ -200,6 +193,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 		return clock.getSystemTime();
 	}
 
+	//Triggers train controller updates on block traversal
 	public void updateTrainController(int trainID, Block b)
 	{
 		TrainController tc = trc.getTrainController(trainID);
@@ -216,6 +210,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 		msgs.add(m);
 	}
 
+	//deprecated
 	public void send()
 	{
 		//Message outgoing = new Message(name, name, Module.trainController);
@@ -231,5 +226,4 @@ public class TrainContainer extends Worker implements Runnable, constData
 	}
 
   
-  //methods to send messages go here
 }
