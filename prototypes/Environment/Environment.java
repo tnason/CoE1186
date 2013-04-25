@@ -57,11 +57,11 @@ public class Environment implements constData
 		sat = new SatelliteContainer();
 
 		((TrackModel)tkm).init();
+		((Scheduler)sch).init((TrackModel)tkm);
 		((TrainControllerModule)trc).init((TrainContainer)trm);
 		((TrainContainer)trm).init((TrainControllerModule)trc, sysClk, sat);
 		((TrackController)tkc).init(tkm);
 		((MovingBlockOverlay)mbo).init(sat);
-		((Scheduler)sch).init((TrackModel)tkm);
 		
 		mboThread.start();
 		schThread.start();

@@ -167,6 +167,7 @@ public class RouteSchedule
 
 			//long t = (long)Math.ceil(1000 * train.getBlock().getLength() / (0 + .5 * (RouteSchedule.PERCENT_SPEED * train.getBlock().getSpeedLimit() - 0)));
 			tr.add(new BlockSchedule(start, 0, RouteSchedule.PERCENT_SPEED * train.getBlock().getSpeedLimit(), train.getBlock(), train.getPreviousNode(), train.getNextNode()));
+			//System.out.println(tr);
 			//Node previousNode = train.getNextNode();
 			//Block block = previousNode.getNextBlock(train.getBlock());
 			//Node nextNode = block.getNextNode(previousNode);

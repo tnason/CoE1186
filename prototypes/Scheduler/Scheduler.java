@@ -96,14 +96,14 @@ public class Scheduler extends Worker implements Runnable, constData
 		{
 			startingBlock = i.next();
 
-			if(startingBlock.getYardNode() != null && startingBlock.getYardNode().equals(startingBlock.getStartNode()))
+			if(startingBlock.getID() == 63)//startingBlock.getYardNode() != null && startingBlock.getYardNode().equals(startingBlock.getStartNode()))
 			{
 				startingPreviousNode = startingBlock.getStartNode();
 				startingNextNode = startingBlock.getStopNode();
 				break;
 			}
 		}
-		
+		//System.out.println("block: " + startingBlock + "\n\nStarting Node: " + startingPreviousNode + "\n\nNext Node: " + startingNextNode);
 	}
 
 	/*
@@ -175,7 +175,7 @@ public class Scheduler extends Worker implements Runnable, constData
 				bs = tr.getIndex(i);
 				block = bs.getBlock();
 
-				if((i % 2) == 1)//block.isStation())
+				if(block.isStation())
 				{
 					timetable.add("Station " + i/*block.getStationName()*/, trainNumber, (bs.getEntryTime() + bs.getExitTime()) / 2, TrainStatus.ONTIME);
 				}
@@ -195,6 +195,7 @@ public class Scheduler extends Worker implements Runnable, constData
 	private void calculateRoutes(long time) throws Exception
 	{
 		    route.routeTrains(time, greenTrains, schedule);
+		//System.out.println("\n" + route);
 		    //route.routeTrains(time, redTrains, schedule);
 		    //System.out.println("ROUTE! " + route);
 	}
