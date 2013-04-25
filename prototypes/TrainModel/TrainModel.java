@@ -293,7 +293,7 @@ public class TrainModel implements constData
 		{
 			if((position - blockEntryPos.get(0)) > (occupiedBlocks.get(0).getLength() - trLength/2.0)) //if the front of the train is crossing into a new block
 			{
-
+				currentNode = occupiedBlocks.get(0).getStopNode();
 				System.out.println("NEW BLOCK!!! "+occupiedBlocks.get(0).getID());
 				System.out.println("currentNode: " + currentNode);
 				nextNode = occupiedBlocks.get(0).getNextNode(currentNode);
