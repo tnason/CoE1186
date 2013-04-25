@@ -42,9 +42,10 @@ public class CTCController implements constData
         }
         else
         {
-            _trainList.addTrain(tID, "red");
+            _trainList.addTrain(tID, _CTCInterface.getCurrentLine());
             _trainList.setActive(tID);
         }
+        _CTCInterface.setDataModelForTable(_trainList.getTrain(tID));
     }
     
     public void removeTrain ( Integer tID )
@@ -59,7 +60,6 @@ public class CTCController implements constData
     {   
         // determine which train this "block" belongs to
         Integer tID = _trainList.nextBlocksForTrains().get(bID);
-        
         updateOccupancy(bID, tID);    
     }
     
@@ -69,6 +69,7 @@ public class CTCController implements constData
         _blockList.getBlock(bID).setVacant();
         _trainList.getTrain(tID).setCurrentBlock(bID);
         _blockList.getBlock(bID).setCurrentTrain(tID);
+        _CTCInterface.setDataModelForTable(_trainList.getTrain(tID));
     }
     
     // outbound handlers

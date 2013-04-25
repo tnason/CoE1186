@@ -26,6 +26,7 @@ public class CTCUI extends javax.swing.JFrame {
     private Integer selectedRouteRow;
     private boolean routeRowIsSelected = false;
     private DefaultListModel _routeModel;
+    private String _currentSelectedLine = "green";
     
      
     public CTCUI(CTCController controller) {
@@ -106,7 +107,7 @@ public class CTCUI extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setText("jButton4");
+        jButton4.setText("Selected Line is: Green");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -283,8 +284,8 @@ public class CTCUI extends javax.swing.JFrame {
     // jButton1 = Dispatch Train
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) 
     {
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
+        _controller.dispatchTrain(_currentSelectedLine);
+    }
 
     // jButton3 = Emergency Closing
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -295,10 +296,20 @@ public class CTCUI extends javax.swing.JFrame {
         _controller.closeTrackSections(bIDs);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    // jButton4 = ?
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    // jButton4 = Toggle train Line
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) 
+    {
+        if (_currentSelectedLine == "green")
+        {
+            _currentSelectedLine = "red";
+            jButton4.setText("Currently selected line is: red.");
+        }
+        else
+        {
+            _currentSelectedLine = "green";
+            jButton4.setText("Currently selected line is: green.");
+        }
+    }
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
@@ -553,6 +564,11 @@ public class CTCUI extends javax.swing.JFrame {
             _dataModel.setValuesForRow(parseValuesFromTrainModel(train), row);
         }
     }
+    
+    public String getCurrentLine ()
+    {
+        return _currentSelectedLine;
+    }
 }
 
 class TrainTableDataModel extends AbstractTableModel
@@ -567,7 +583,15 @@ class TrainTableDataModel extends AbstractTableModel
     
     public int getRowCount()
     {
-        return data.length;
+        if (data != null)
+        {
+            return data.length;
+        }
+        else
+        {
+            return 0;
+        }
+        
     }
     
     public String getColumnName(int col)
