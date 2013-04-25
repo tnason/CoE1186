@@ -124,6 +124,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
+        setTitle("Ben Kisley - Train Controller");
         trainContDropdown = new javax.swing.JComboBox<Integer>();
         doorControlPanel = new javax.swing.JPanel();
         doorControlButton = new javax.swing.JButton();
