@@ -11,8 +11,11 @@ public class Environment implements constData
 	private static SystemClock sysClk; 
 	private static SatelliteContainer sat;
 
+	
+
     public static void main(String [] args)
     {
+
     	ArrayList<Module> modualOrder = new ArrayList<Module>();
 		HashMap<Module, Worker> modWorker = new HashMap<Module, Worker>();
 

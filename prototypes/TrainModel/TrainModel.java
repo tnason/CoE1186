@@ -17,6 +17,8 @@ public class TrainModel implements constData
 	public boolean newBlockFlag = false;
 	public Block newBlock;
 
+	private Satellite sat; 
+
 
 	private boolean fromYard;
 
@@ -94,6 +96,11 @@ public class TrainModel implements constData
 		occupiedBlocks.get(0).setOccupation(true);
 		fromYard = true;
 		currentNode = yard;
+	}
+
+	public void setSatellite(Satellite s)
+	{
+		sat = s;
 	}
 
 	public int changeCrew(int change)
@@ -431,9 +438,8 @@ public class TrainModel implements constData
 			}
 		}
 	}
+
 	
-	
-	// Placeholder methods for compiling --Ben
 	public boolean getDoors()
 	{
 		return doorsOpen;

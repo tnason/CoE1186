@@ -15,7 +15,7 @@ public class CTCController implements constData
     private BlockList _blockList;
     private ControllerList _controllerList;
     private ScheduleViewModel _schedule;
-    private Integer _trainCount = 0;
+    private int _trainCount = 0; //this needs to be an int
     private CTCUI _CTCInterface;
     private double kMilesToMetersConversion = .44704;
     
@@ -36,7 +36,7 @@ public class CTCController implements constData
         
     }
     
-    public void addTrain ( Integer tID )
+    public void addTrain ( int tID )
     {
         if (_trainList.contains(tID))
         {
@@ -50,7 +50,7 @@ public class CTCController implements constData
         _CTCInterface.setDataModelForTable(_trainList.getTrain(tID));
     }
     
-    public void removeTrain ( Integer tID )
+    public void removeTrain ( int tID )
     {
         if (_trainList.contains(tID))
         {
@@ -58,16 +58,16 @@ public class CTCController implements constData
         }
     }
     
-    public void updateOccupancy ( Integer bID )
+    public void updateOccupancy ( int bID )
     {   
         // determine which train this "block" belongs to
-        Integer tID = _trainList.nextBlocksForTrains().get(bID);
+        int tID = _trainList.nextBlocksForTrains().get(bID);
         updateOccupancy(bID, tID);    
     }
     
-    public void updateOccupancy( Integer bID, Integer tID )
+    public void updateOccupancy( int bID, int tID )
     {
-        Integer vacantBlockID = _trainList.getTrain(tID).getCurrentBlock();
+        int vacantBlockID = _trainList.getTrain(tID).getCurrentBlock();
         _blockList.getBlock(bID).setVacant();
         _trainList.getTrain(tID).setCurrentBlock(bID);
         _blockList.getBlock(bID).setCurrentTrain(tID);
@@ -75,7 +75,7 @@ public class CTCController implements constData
     }
     
     // outbound handlers
-    public void sendManualSpeed ( Double speed, Integer tID )
+    public void sendManualSpeed ( Double speed, int tID )
     {
         Hashtable<String, Object> data = new Hashtable<String, Object>();
         data.put("velocity", speed);
@@ -85,7 +85,7 @@ public class CTCController implements constData
         _msgServer.composeMessage(destination, type, data);
     }
     
-    public void sendManualMovingBlockAuthority ( Double authority, Integer tID )
+    public void sendManualMovingBlockAuthority ( Double authority, int tID )
     {
         Hashtable<String, Object> data = new Hashtable<String, Object>();
         data.put("authority", authority);
@@ -95,7 +95,7 @@ public class CTCController implements constData
         _msgServer.composeMessage(destination, type, data);
     }
     
-    public void sendManualFixedBlockAuthority ( Integer authority, Integer tID )
+    public void sendManualFixedBlockAuthority ( Integer authority, int tID )
     {
         Hashtable<String, Object> data = new Hashtable<String, Object>();
         data.put("authority", authority);
@@ -118,7 +118,7 @@ public class CTCController implements constData
         _trainCount++;
     }
     
-    public void generateSchedule ( Integer tID ) {
+    public void generateSchedule ( int tID ) {
         Hashtable<String, Object> data = new Hashtable<String, Object>();
         // determine line for train
         String line = _trainList.getTrain(tID).getLine();
@@ -139,7 +139,7 @@ public class CTCController implements constData
         _msgServer.composeMessage(destination, type, data);   
     }
     
-    public void openTrackSections ( ArrayList<Integer> bIDs )
+    public void openTrackSections ( ArrayList<int> bIDs )
     {
         Hashtable<String, Object> data = new Hashtable<String, Object>();
         data.put("blockIDs", bIDs);
@@ -160,7 +160,7 @@ public class CTCController implements constData
         }
     }
     
-    public void setSpeedForTrain ( Integer tID, Double speed )
+    public void setSpeedForTrain ( int tID, Double speed )
     {
         // GUI calls this to set the speed of a train, so that controller can handle all the necessary interactions that must occur. Namely, a message must be sent and a model must be updated.
         
@@ -169,26 +169,26 @@ public class CTCController implements constData
         sendManualSpeed(speed * kMilesToMetersConversion, tID);
     }
     
-    public void setAuthorityForTrain ( Integer tID, Double authority)
+    public void setAuthorityForTrain ( int tID, Double authority)
     {
         _trainList.getTrain(tID).setMovingBlockAuthority(authority);
         _CTCInterface.setDataModelForTable(_trainList.getTrain(tID));
         sendManualMovingBlockAuthority(authority, tID);
     }
     
-    public void setAuthorityForTrain( Integer tID, Integer authority)
+    public void setAuthorityForTrain( int tID, Integer authority)
     {
         _trainList.getTrain(tID).setFixedBlockAuthority(authority);
         _CTCInterface.setDataModelForTable(_trainList.getTrain(tID));
         sendManualFixedBlockAuthority(authority, tID);
     }
     
-    public ArrayList<Integer> getRouteListingForTrain( Integer tID )
+    public ArrayList<Integer> getRouteListingForTrain( int tID )
     {
         return _trainList.getTrain(tID).getRouteListing();
     }
     
-    public void reachedNextStation (Integer tID)
+    public void reachedNextStation (int tID)
     {
         _trainList.getTrain(tID).nextStationReached();
         _CTCInterface.setDataModelForTable(_trainList.getTrain(tID));

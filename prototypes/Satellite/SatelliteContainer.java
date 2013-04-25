@@ -11,4 +11,10 @@ public class SatelliteContainer
 		satellites = new Hashtable<Integer, SatelliteInstance> ();
 	}
 
+	public Satellite addSatellite(TrainModel train)
+	{
+		Satellite newSat = new Satellite(train);
+		satellites.put(train.trainID, newSat);
+	}
+
 }

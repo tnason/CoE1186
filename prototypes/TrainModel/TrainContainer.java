@@ -25,7 +25,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 
 	private TrainControllerModule trc;
 	private TrackModelModule tkm;
-	private SatelliteContainer sat;
+	private SatelliteContainer satc;
 
 	//For now, simulationSpeedup = (trainTimestep * 1000) / timerTrigger
 
@@ -75,21 +75,24 @@ public class TrainContainer extends Worker implements Runnable, constData
   		}
 	}
 
-	public TrainModel newTrain(int TrainID, Block start, double step)
+	public TrainModel newTrain(int TrainID, Block start, Node n, double step)
 	{
-		//TODO: make a new satellite, pass it to the train constructor and add i to the satellite container list
+		//make a new satellite, pass it to the train constructor and add i to the satellite container list
+		Satellite sat;
 
-		TrainModel n = new TrainModel(TrainID, start, step);
-		trains.put(TrainID, n);
+		TrainModel tr = new TrainModel(TrainID, start, n, step);
+		sat = satc.addSatellite(tr);
+		tr.setSatellite(sat);
+		trains.put(TrainID, tr);
 		return n;
 	}
 
-	public void init(TrainControllerModule other, TrackModelModule tkm, SystemClock sys, SatelliteContainer sat)
+	public void init(TrainControllerModule other, TrackModelModule tkm, SystemClock sys, SatelliteContainer satc)
 	{
 		trc = other;
 		this.tkm = tkm;
 		clock = sys;
-		this.sat = sat;
+		this.satc = satc;
 		timerTrigger = (long)(TIME_STEP * 1000.0)/(long)clock.SIMULATION_SPEEDUP;
   		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every X ms
 	}
