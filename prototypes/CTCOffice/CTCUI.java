@@ -550,6 +550,7 @@ public class CTCUI extends javax.swing.JFrame {
             if (getCurrentTrainSelection((String) _dataModel.getValueAt(i, 0)) == train.getTrainID() )
             {
                 // it exists!
+                System.out.println("THE TRAIN EXISTS!");
                 trainExists = true;
                 row = i;
             }
@@ -611,7 +612,7 @@ class TrainTableDataModel extends AbstractTableModel
     
     public boolean isCellEditable(int row, int col)
     {
-        return false;
+        return true;
     }
     
     // use this to update models that already exist

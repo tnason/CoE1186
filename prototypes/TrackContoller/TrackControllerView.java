@@ -464,9 +464,6 @@ public class TrackControllerView extends javax.swing.JFrame
         
         plcLoaded = true;
         loadPLC.setEnabled(false);
-
-        for(Method m : plcClass.getMethods())
-            System.out.println(m);
     }       
 
     public void refresh()

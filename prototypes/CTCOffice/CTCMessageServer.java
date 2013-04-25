@@ -77,6 +77,7 @@ public class CTCMessageServer extends Worker implements Runnable, constData
             case TnMd_CTC_Confirm_Train_Creation:
                 // begin confirm train creation case
                 tID = (Integer) m.getData().get("trainID");
+                System.out.println("TRAIN CONFIRMED");
                 controller.addTrain(tID);
                 
             break; // end confirm train creation case
