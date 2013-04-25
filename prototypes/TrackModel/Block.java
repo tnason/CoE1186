@@ -107,6 +107,10 @@ public abstract class Block {
 	public boolean isOccupied(){
 		return occupied || maintenance;
 	}
+
+	public boolean isOccupiedNoMaintenance(){
+		return occupied;
+	}
 	
 	public double getGrade(){
 		//stopz - startz / linear distance

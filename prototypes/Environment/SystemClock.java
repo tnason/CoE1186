@@ -42,7 +42,7 @@ public class SystemClock
 
 	//This method is for calling by the CTC/Scheduler
 	//This will return a Date object indicating the current simulation time
-	public Date getSimulationTime()
+	public Date getSimulationTimeDate()
 	{
 		Calendar temp = Calendar.getInstance();
 		long timeDiff;
@@ -57,7 +57,7 @@ public class SystemClock
 	public void printSimulationTime()
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		System.out.println(sdf.format(getSimulationTime()));
+		System.out.println(sdf.format(getSimulationTimeData()));
 	}
 
 	public void printSystemTime()
@@ -70,7 +70,7 @@ public class SystemClock
 	public String getSimulationTime()
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		return sdf.format(getSimulationTime()).toString();
+		return sdf.format(getSimulationTimeDate()).toString();
 	}
 
 	public String getSystemTime()
