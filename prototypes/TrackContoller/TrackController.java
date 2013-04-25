@@ -91,15 +91,6 @@ public class TrackController extends Worker implements constData, Runnable
       }
     }
 
-    for(int i : blockUnderController.keySet())
-    {
-        for(Block blk : blockUnderController.get(i).values())
-        {
-          System.out.println("Controller " + i + " block " + blk.getID() + " " + blk.getStopNode().getNodeType());
-       }
-      System.out.println();
-    }
-
     gui = new TrackControllerView(blockUnderController);
     gui.setVisible(true);
 
