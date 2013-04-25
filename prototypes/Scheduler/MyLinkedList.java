@@ -1,3 +1,5 @@
+/* Not used
+
 package TLTTC;
 
 public class MyLinkedList<T extends Comparable<? super T>>
@@ -223,3 +225,4 @@ public class MyLinkedList<T extends Comparable<? super T>>
 		}
 	}
 }
+*/

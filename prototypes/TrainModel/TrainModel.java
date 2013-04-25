@@ -426,7 +426,7 @@ public class TrainModel implements constData
 	
 	public boolean[] getFailureFlags()
 	{
-		return new boolean[] = {
+		return new boolean[] {true};
 	}
 
 	

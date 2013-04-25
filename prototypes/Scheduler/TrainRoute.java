@@ -1,3 +1,10 @@
+//Marcus Hayes
+//Computer Engineeering
+//Senior
+//ECE 1186
+//Th 6-9
+//TLTTC - Scheduler/MBO
+
 package TLTTC;
 
 import java.util.*;
@@ -35,6 +42,8 @@ public class TrainRoute
 		return s;
 	}
 
+	/*Update the duration of Route*/
+
 	private void updateDuration()
 	{
 		if(route.size() == 0)
@@ -64,6 +73,8 @@ public class TrainRoute
 		return yardTime;
 	}
 
+	/*Get the time the train is expected to arrive at the yard. Returns -1 if train is not routed to yard.*/
+
 	public long getYardArrivalTime()
 	{
 		BlockSchedule bs = route.get(route.size()-1);
@@ -86,6 +97,11 @@ public class TrainRoute
 	public Iterator<BlockSchedule> getIterator()
 	{
 		return route.iterator();
+	}
+
+	public BlockSchedule getIndex(int index)
+	{
+		return route.get(index);
 	}
 
 	public int getTrainNumber()
@@ -162,19 +178,17 @@ public class TrainRoute
 		return true;
 	}
 
+	/*Checks if trains collide when going towards each other*/
+
 	public boolean isForwardCollision(Block block, Node previousNode, long entryTime, long exitTime)
 	{
 		for(int i = route.size() - 1; i >= 0; i--)
 		{
 			BlockSchedule bs = route.get(i);
-
-			if(entryTime < bs.getEntryTime())
-			{
-				return false;
-			}
-
 			long bsEntryTime = bs.getEntryTime();
 			long bsExitTime = bs.getExitTime();
+
+			/*Returns true if trains are on the same block and facing opposite directions, returns true*/
 
 			if(block.equals(bs.getBlock()) && previousNode.equals(bs.getNextNode()) && ((bsEntryTime <= entryTime && entryTime < bsExitTime) || (bsEntryTime <= exitTime && exitTime < bsExitTime) || (entryTime <= bsEntryTime && bsExitTime <= exitTime)))
 			{
@@ -185,20 +199,17 @@ public class TrainRoute
 		return false;
 	}
 
+	/*Checks if a train will collide into the train ahead of it when both are going in the same direction*/
+
 	public boolean isRearCollision(Block block, Node previousNode, long entryTime, long exitTime)
 	{
 		for(int i = route.size() - 1; i >= 0; i--)
 		{
 			BlockSchedule bs = route.get(i);
-/*
-			if(entryTime < bs.getEntryTime())
-			{
-				return false;
-			}
-*/
 			long bsEntryTime = bs.getEntryTime();
 			long bsExitTime = bs.getExitTime();
-			//System.out.println("TrainNumber: " + trainNumber + " Iteration: " + i + "\nEntry Time: " + new Time(entryTime) + " BS Entry Time: " + new Time(bsEntryTime) + "\nExit Time: " + new Time(exitTime) + "  BS Exit Time: " + new Time(bsExitTime));
+			
+			/*Returns true if trains are on the same block and facing the same direction*/
 
 			if(block.equals(bs.getBlock()) && previousNode.equals(bs.getPreviousNode()) && ((bsEntryTime < entryTime && entryTime < bsExitTime) || (bsEntryTime < exitTime && exitTime < bsExitTime) || (entryTime <= bsEntryTime && bsExitTime <= exitTime)))
 			{

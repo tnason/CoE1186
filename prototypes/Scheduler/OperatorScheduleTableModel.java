@@ -1,3 +1,10 @@
+//Marcus Hayes
+//Computer Engineeering
+//Senior
+//ECE 1186
+//Th 6-9
+//TLTTC - Scheduler/MBO
+
 package TLTTC;
 
 import java.awt.*;
@@ -34,6 +41,7 @@ public class OperatorScheduleTableModel extends DefaultTableModel
 		return false;
 	}
 
+	/*Updates the display of the Operator schedule in the UI*/
 	public void update(OperatorSchedule schedule)
 	{
 		Iterator<Operator> i;
@@ -49,8 +57,12 @@ public class OperatorScheduleTableModel extends DefaultTableModel
 
 			operator = i.next();
 
+			/*search each row for matches*/
+
 			for(int row = 0; row < rowMatches.length; row++)
 			{
+				/*if a match is found, change the status*/
+
 				if(operator.trainNumber == (int)getValueAt(row ,2))
 				{
 					match = true;
@@ -60,11 +72,15 @@ public class OperatorScheduleTableModel extends DefaultTableModel
 				}
 			}
 
+			/*if not, add it to the end*/
+
 			if(!match)
 			{
 				addRow(new Object[]{operator.firstName, operator.lastName, operator.trainNumber, new Time(operator.shiftStart), new Time(operator.breakStart), new Time(operator.breakEnd), new Time(operator.shiftEnd), operator.status.toString()});
 			}
 		}
+
+		/*remove all indices that do not have a match*/
 
 		for(int row = rowMatches.length - 1; row >= 0; row--)
 		{
