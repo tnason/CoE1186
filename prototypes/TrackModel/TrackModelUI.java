@@ -12,7 +12,7 @@ public class TrackModelUI
 	public TrackModelUI()
 	{
 		JFrame frame = new JFrame();
-		frame.setSize(400,400);
+		frame.setSize(400,600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	
@@ -74,7 +74,7 @@ class TrackRenderComponent extends JComponent
 	private int metersToPixels(double meters)
 	{
 		//for now no scaling
-		return (int)meters/4;
+		return (int)meters/8;
 	}
 
 	@Override

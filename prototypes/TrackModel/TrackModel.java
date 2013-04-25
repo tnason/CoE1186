@@ -106,11 +106,21 @@ public class TrackModel extends Worker implements Runnable, constData
             }
         }
     }
-//*/  
+//*/ 
+
+    TrackModelUI userInterface;
+    static TrackModelUI staticUI; 
+
+    public static void refreshView()
+    {
+        staticUI.refresh();
+    }
+
     public void init()
     {
 	
-	TrackModelUI userInterface = new TrackModelUI();
+	userInterface = new TrackModelUI();
+	staticUI = userInterface;
 
         try
         {

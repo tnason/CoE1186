@@ -17,6 +17,7 @@ public class CTCController implements constData
     private ScheduleViewModel _schedule;
     private Integer _trainCount = 0;
     private CTCUI _CTCInterface;
+    private double kMilesToMetersConversion = .44704;
     
     CTCController ( CTCMessageServer msgServer ) 
     {
@@ -164,7 +165,7 @@ public class CTCController implements constData
         
         _trainList.getTrain(tID).setSpeed(speed);
         _CTCInterface.setDataModelForTable(_trainList.getTrain(tID));
-        sendManualSpeed(speed, tID);
+        sendManualSpeed(speed * kMilesToMetersConversion, tID);
     }
     
     public void setAuthorityForTrain ( Integer tID, Double authority)
