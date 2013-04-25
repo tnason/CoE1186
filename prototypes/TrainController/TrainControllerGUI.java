@@ -696,6 +696,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     private void accelerateButtonActionPerformed(java.awt.event.ActionEvent evt) 
     {                                                 
         if (!noTrains){
+            tm.setEmergencyBrake(false);
             double v = new Double(velocitySetter.getValue().toString());
             tc.setTrainOperatorVelocity(v * 0.44704);
         }
