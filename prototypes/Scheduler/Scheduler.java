@@ -17,7 +17,7 @@ public class Scheduler extends Worker implements Runnable, constData
 	private RouteSchedule route;
 
 	public static Node[] nodes;
-	public static Node[] blocks;
+	public static Block[] blocks;
 
 	public static void main(String[] args)
 	{
@@ -144,7 +144,7 @@ public class Scheduler extends Worker implements Runnable, constData
 				bs = tr.getIndex(i);
 				block = bs.getBlock();
 
-				if(i % 2 = 1)//block.isStation())
+				if((i % 2) == 1)//block.isStation())
 				{
 					timetable.add("Station " + i/*block.getStationName()*/, trainNumber, (bs.getEntryTime() + bs.getExitTime()) / 2, TrainStatus.ONTIME);
 				}
@@ -298,7 +298,7 @@ public class Scheduler extends Worker implements Runnable, constData
 		//sendTrainUpdate(); //Notify MBO that a train was added to the track
 
 		Train train = new Train(trainID, System.currentTimeMillis());
-		train.setBlock(Scheduler.block[0],Scheduler.node[0],Scheduler.node[1]);
+		train.setBlock(Scheduler.blocks[0],Scheduler.nodes[0],Scheduler.nodes[1], System.currentTimeMillis());
 		
 		if(message.getData().get("isGreenLine") != null && (boolean)message.getData().get("isGreenLine"))
 		{
