@@ -206,7 +206,7 @@ public class TrainController
             speaker.allocate();
             speaker.speak("Next stop " + nextStation + " on " + trainID);
             speaker.deallocate();*/
-            System.out.println("Next station = " + nextStation);
+            System.out.println("Next station on train " + trainID + " = " + nextStation);
         }  
         else if (!automatic) // If button is pressed on GUI, announce station name
         {
@@ -215,7 +215,7 @@ public class TrainController
             speaker.allocate();
             speaker.speak("Next stop " + nextStation + " on " + trainID);
             speaker.deallocate();*/
-            System.out.println("Next station = " + nextStation);
+            System.out.println("Next station on train " + trainID + " = " + nextStation);
         }
     }
 
