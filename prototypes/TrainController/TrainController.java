@@ -12,7 +12,6 @@ import java.util.*;
 import com.sun.speech.freetts.VoiceManager;
 import com.sun.speech.freetts.audio.JavaClipAudioPlayer;*/
 
-
 public class TrainController
 {
     private int trainID;
@@ -38,21 +37,20 @@ public class TrainController
     private final double KI = 300; // Integral gain
     private double uk = 0; // Integral error
     private double power = 0; // Power of train
-    private final double trainMaxPower = 120000.0; // Maximum power of train (120 kW)
+    private final double TRAIN_MAX_POWER = 120000.0; // Maximum power of train (120 kW)
 
     private double trainOperatorVelocity = 0; // Velocity sent from train operator
     private double ctcOperatorVelocity = 0; // Velocity sent from CTC operator
     private double velocitySetpoint = 0; // Velocity setpoint
     private double velocity = 0; // Current velocity of train
     private double trackLimit = 0; // Track's speed limit
-    private final double trainLimit = 19.4444; // Train's speed limit (70 km/hr = 19.44 m/s)
+    private final double TRAIN_LIMIT = 19.4444; // Train's speed limit (70 km/hr = 19.44 m/s)
 
     private double fixedBlockAuth = 0; // Fixed block authority
     private double ctcFixedBlockAuth = 0; // Fixed block authority sent from CTC operator
     private double movingBlockAuth = 0; // Moving block authority sent from MBO
     private double ctcMovingBlockAuth = 0; // Moving block authority sent from CTC operator
     private double authority = 0; // Safest authority
-
 
     public TrainController(int id, TrainModel t, TrainContainer c, TrainControllerGUI g)
     {
@@ -73,7 +71,6 @@ public class TrainController
         ctcMovingBlockAuth = 1400;
         movingBlockAuth = 1400;
     }
-
 
     public void setPower() // this method is called whenever an authority, speed limit, or speed setpoint is received
     {
@@ -99,23 +96,23 @@ public class TrainController
             }
             // Max train deceleration = -1.2098 m/s^2
             // Using vf^2 = vi^2 + 2ad = 0 (final speed cannot be > 0), vi = sqrt(-2ad) = (2*1.2098*authority)
-            double authorityVelocityLimit = Math.sqrt(2.4196*authority);
+            double authorityVelocityLimit = Math.sqrt(2.4196 * authority);
 
             velocitySetpoint = Math.max(trainOperatorVelocity, ctcOperatorVelocity); // Selects faster of two velocities.
 
-            if (velocitySetpoint > Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
+            if (velocitySetpoint > Math.min(Math.min(trackLimit, TRAIN_LIMIT), authorityVelocityLimit)) // If the operator sends a dangerous velocity,
             {
-                velocitySetpoint = Math.min(Math.min(trackLimit, trainLimit), authorityVelocityLimit); // set to next highest allowable velocity
+                velocitySetpoint = Math.min(Math.min(trackLimit, TRAIN_LIMIT), authorityVelocityLimit); // set to next highest allowable velocity
             }
 
-            if (power < trainMaxPower) // If power command is allowable, add integral gain to current integral gain
+            if (power < TRAIN_MAX_POWER) // If power command is allowable, add integral gain to current integral gain
             {
-                uk = uk + (T/2.0)*(ek + (velocitySetpoint - velocity));
+                uk = uk + (T / 2.0) * (ek + (velocitySetpoint - velocity));
             }
 
             ek = velocitySetpoint - velocity; // Calculates proportional gain
-            power = ((KP*ek)+(KI*uk)); // Calculates power
-            if (Math.abs(power) < Math.abs(power2)*0.8 || Math.abs(power) > Math.abs(power2)*1.2) // If redundant power does not agree with this power by +/-20%, stop train
+            power = ((KP * ek) + (KI * uk)); // Calculates power
+            if (Math.abs(power) < Math.abs(power2) * 0.8 || Math.abs(power) > Math.abs(power2) * 1.2) // If redundant power does not agree with this power by +/-20%, stop train
             {
                 power = 0.0;
             }
@@ -124,7 +121,6 @@ public class TrainController
         }
     }
 
-
     private double setPower2(double pow, double uK, double eK, double vel, double fixedBlock, double ctcFixedBlock, double movingBlock, double ctcMovingBlock, double trainOpVel, double ctcOpVel, double trackLim)
     { // Redundant method used because train controller is safety-critical
         double auth = Math.min(Math.min(movingBlock, Math.min(ctcFixedBlock, ctcMovingBlock)), fixedBlock);
@@ -132,22 +128,21 @@ public class TrainController
         {
             auth = 0.1;
         }
-        double authLim = Math.sqrt(auth*2.4196);
+        double authLim = Math.sqrt(auth * 2.4196);
         double velSetpoint = Math.max(ctcOpVel, trainOpVel);
-        if (velSetpoint > Math.min(trainLimit, Math.min(authLim, trackLim)))
+        if (velSetpoint > Math.min(TRAIN_LIMIT, Math.min(authLim, trackLim)))
         {
-            velSetpoint = Math.min(trainLimit, Math.min(authLim, trackLim));
+            velSetpoint = Math.min(TRAIN_LIMIT, Math.min(authLim, trackLim));
         }
 
-        if (pow < trainMaxPower)
+        if (pow < TRAIN_MAX_POWER)
         {
-            uK = (T*((-vel + eK + velSetpoint)/2.0)) + uK;
+            uK = (T * ((-vel + eK + velSetpoint)/2.0)) + uK;
         }
         eK = -vel + velSetpoint;
-        pow = ((uK*KI)+(eK*KP));
+        pow = ((uK * KI) + (eK * KP));
         return pow;
     }
-
 
     public void setDoors(boolean automatic) // This method is called every time the train enters a new block or manually
     {
@@ -200,7 +195,6 @@ public class TrainController
         }
     }
 
-
     public void announceStation(boolean automatic) // this method is called every time the train enters a new block or manually
     {
         /*if (automatic && !oldNextStation.equals(nextStation)) // If a new station name is processed, automatically announce it
@@ -222,13 +216,11 @@ public class TrainController
     }*/
     }
 
-
     public void setMovingBlockAuth(double m)
     {
         movingBlockAuth = m;
         setPower();
     }
-
 
     public void setCtcMovingBlockAuth(double m)
     {
@@ -236,13 +228,11 @@ public class TrainController
         setPower();
     }
 
-
     public void setFixedBlockAuth(double f)
     {
         fixedBlockAuth = f;
         setPower();
     }
-
 
     public void setCtcFixedBlockAuth(double f)
     {
@@ -250,13 +240,11 @@ public class TrainController
         setPower();
     }
 
-
     public void setCtcOperatorVelocity(double v)
     {
         ctcOperatorVelocity = v;
         setPower();
     }
-
 
     public void setTrainOperatorVelocity(double v)
     {
@@ -264,13 +252,11 @@ public class TrainController
         setPower();
     }
 
-
     public void setTrackLimit(double v)
     {
         trackLimit = v;
         setPower();
     }
-
 
     public void setUnderground(boolean u)
     {
@@ -278,13 +264,11 @@ public class TrainController
         setLights(true);
     }
 
-
     public void setInStation(boolean i)
     {
         inStation = i;
         setDoors(true);
     }
-
 
     public void setNextStation(String s)
     {
@@ -296,7 +280,7 @@ public class TrainController
     //For stopping before a station....
     public double getStoppingDistance()
     {
-        return (.5*velocity*velocity)/(1.2); //returns stopping distance in meters  
+        return (.5* velocity * velocity) / (1.2); // returns stopping distance in meters  
     } 
 
     public void setGpsConnected(boolean s)
@@ -309,54 +293,45 @@ public class TrainController
         return authority;
     }
 
-
     public double getVelocity()
     {
         return velocity;
     }
-
 
     public double getVelocitySetpoint()
     {
         return velocitySetpoint;
     }
 
-
     public double getPower()
     {
         return power;
     }
-
 
     public boolean getEngineFail()
     {
         return engineFail;  
     }
 
-
     public boolean getSignalPickupFail()
     {
         return signalPickupFail;
     }
-
 
     public boolean getBrakeFail()
     {
         return brakeFail;
     }
 
-
     public String getNextStation()
     {
         return nextStation;
     }
 
-
     public boolean getGpsConnected()
     {
         return gpsConnected;
     }
-
 
     public TrainModel getTrain()
     {
