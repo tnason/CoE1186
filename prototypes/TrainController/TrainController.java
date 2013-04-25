@@ -12,6 +12,7 @@ public class TrainController
   private int trainID;
   private TrainModel tm;
   private TrainContainer cont;
+  private TrainControllerGUI gui;
   
   private boolean underground = false; // Underground status of block
   private boolean inStation = false; // Station status of block
@@ -47,11 +48,12 @@ public class TrainController
   private double authority = 0; // Safest authority
   
 
-  public TrainController(int id, TrainModel t, TrainContainer c)
+  public TrainController(int id, TrainModel t, TrainContainer c, TrainControllerGUI g)
   {
     trainID = id; // Sets train ID
     tm = t; // Associates train model with train controller
     cont = c; // Associates train container with train controller
+    gui = g;
     gpsConnected = true; // Connects to GPS
     
     // Test variables -- Remove later
@@ -73,16 +75,15 @@ public class TrainController
     engineFail = flags[0];
     signalPickupFail = flags[1];
     brakeFail = flags[2];
+    velocity = tm.getVelocity(); // Gets current velocity of train
     
     if (engineFail || signalPickupFail || brakeFail) // If train failure, stop train
     {
       tm.setPower(0.0);
+      gui.addRow(getDate(), velocity, 0.0, 0.0);
     }
 	else
-	{
-		double oldPower = power; // Power one time step ago.  Used in case redudant method, setPower2, calculates different power
-		
-		velocity = tm.getVelocity(); // Gets current velocity of train
+	{	
 		double power2 = setPower2(power, uk, ek, velocity, fixedBlockAuth, ctcFixedBlockAuth, movingBlockAuth, ctcMovingBlockAuth, trainOperatorVelocity, ctcOperatorVelocity, trackLimit);
 		// ^ Calculates power of train in another way (redundant/safety-critical method)
 		authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
@@ -112,6 +113,7 @@ public class TrainController
 		{
 			power = 0.0;
 		}
+		gui.addRow(getDate(), velocity, velocitySetpoint, power);
 		tm.setPower(power); // Sets power of train
 	}
   }
