@@ -148,16 +148,6 @@ public class TrainController
         return pow;
     }
 
-    public void setDoors()
-    {
-        setDoors(tm.getDoors());
-    }
-
-    public void setLights()
-    {
-        setLights(tm.getLights());
-    }
-
 
     public void setDoors(boolean automatic) // This method is called every time the train enters a new block or manually
     {
