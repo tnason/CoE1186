@@ -5,10 +5,16 @@ public class SwitchNode extends Node{
 		xPos = x;
 		yPos = y;
 		zPos = z;
+		System.out.println("made a switch!!!");	
 	}
 	
 	protected Block divergingOutput;
 	protected int   direction;
+	
+	public void setDivergingOutput(Block block)
+	{
+		divergingOutput = block;
+	}
 	
 	public void setSwitchState(int direction){
 		//TODO - input bounds check
