@@ -9,6 +9,7 @@ public class Environment implements constData
     private static Scanner s = new Scanner(System.in);
 
 	private static SystemClock sysClk; 
+	private static SatelliteContainer sat;
 
     public static void main(String [] args)
     {

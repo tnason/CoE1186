@@ -1,4 +1,4 @@
-package TLLTC;
+package TLTTC;
 
 import java.util.*;
 

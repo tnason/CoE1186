@@ -19,6 +19,7 @@ public class TrainModel implements constData
 	private int trainID;
 
 	//train state
+	private double time = 0;
 	private double power = 0; //in Watts
 	private double position = 0; //in m
 	private double velocity = 0; //in m/s
@@ -436,13 +437,17 @@ public class TrainModel implements constData
 		//NOTE: The TrainModel class needs a reference to a TrainController for updating the train controller.
 		//Call TrainControllerModule.getTrainController(int trainID); This returns a TrainController.
 		//Whenever a new block is traversed, call this method. Thanks. --Ben
-		
+
+		/*
+		FIX THIS! 
+
 		tc.setUnderground(blockName.isUnderground());
 		tc.setInStation(blockName.isStation());
 		tc.setNextStation(blockName.getStationName());
 		tc.setTrackLimit(blockName.getSpeedLimit());
 		tc.setLights();
 		tc.setDoors();
+		*/
 	}
 	
 	
