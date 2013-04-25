@@ -24,7 +24,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 	private int motionStepCount = 0;
 
 	private TrainControllerModule trc;
-	private SatelliteContainer sat;
+	private TrackModel tkm;
+	private SatelliteContainer satc;
 
 	//For now, simulationSpeedup = (trainTimestep * 1000) / timerTrigger
 
@@ -57,7 +58,13 @@ public class TrainContainer extends Worker implements Runnable, constData
 				if(tm.whiteFlag)
 				{
 					//kill it!
+					trc.destroyTrainController(trainID);
 					trains.remove(trainID);
+				}
+				else if(tm.newBlockFlag)
+				{
+					updateTrainController(tm.getID(), tm.newBlock);
+					tm.newBlockFlag = false;
 				}
 				else
 				{
@@ -68,21 +75,24 @@ public class TrainContainer extends Worker implements Runnable, constData
   		}
 	}
 
-	public TrainModel newTrain(int TrainID, Block start, double step)
+	public TrainModel newTrain(int TrainID, Block start, Node n, double step)
 	{
-		//TODO: make a new satellite, pass it to the train constructor and add i to the satellite container list
+		//make a new satellite, pass it to the train constructor and add i to the satellite container list
+		SatelliteInstance sat;
 
-		TrainModel n = new TrainModel(TrainID, start, step);
-		trains.put(TrainID, n);
-		return n;
+		TrainModel tr = new TrainModel(TrainID, start, n, step);
+		sat = satc.addSatellite(tr);
+		tr.setSatellite(sat);
+		trains.put(TrainID, tr);
+		return tr;
 	}
 
-	public void init(TrainControllerModule other, TrackModelModule tkm, SystemClock sys, SatelliteContainer sat)
+	public void init(TrainControllerModule other, TrackModel tkm, SystemClock sys, SatelliteContainer satc)
 	{
 		trc = other;
 		this.tkm = tkm;
 		clock = sys;
-		this.sat = sat;
+		this.satc = satc;
 		timerTrigger = (long)(TIME_STEP * 1000.0)/(long)clock.SIMULATION_SPEEDUP;
   		motionTimer.scheduleAtFixedRate(new motionTask(), 0, timerTrigger); //update all the train motion every X ms
 	}
@@ -123,8 +133,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 									System.out.println("	!!!!!!!!!!!!!!!!!NEW TRAIN!!!!!!!!");
 
 									tm = newTrain((int)mine.getData().get("trainID"), bl, n, TIME_STEP);
-									
-									tm.setYardNode(n);
+									//deprecated
+									//tm.setYardNode(n);
 									//send associated messages!!!
 
 									// Cameron: Does this ever happen? Does it need to happen?
@@ -190,6 +200,16 @@ public class TrainContainer extends Worker implements Runnable, constData
 		return clock.getSystemTime();
 	}
 
+	public void updateTrainController(int trainID, Block b)
+	{
+		TrainController tc = trc.getTrainController(trainID);
+		tc.setUnderground(b.isUnderground());
+		tc.setInStation(b.isStation());
+		tc.setNextStation(b.getStationName());
+		tc.setTrackLimit(b.getSpeedLimit());
+		tc.setLights(true);
+		tc.setDoors(true);
+	}
 
 	public void setMsg(Message m)
 	{

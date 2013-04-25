@@ -293,13 +293,13 @@ public class TrackModel extends Worker implements Runnable, constData
             SwitchNode newNode69 = new SwitchNode(oldNode69.getX(), oldNode69.getY(), oldNode69.getZ());
             //input      
             Block block85 = blocks.get(85);
-            System.out.println("block 85=" + block85);  
+            //System.out.println("block 85=" + block85);  
             //output
             Block block86 = blocks.get(86);
-            System.out.println("block 86=" + block86);  
+            //System.out.println("block 86=" + block86);  
             //diverging output  
             Block block100 = blocks.get(100);
-            System.out.println("block 100=" + block100);  
+            //System.out.println("block 100=" + block100);  
 
             newNode69.setInput(block85);
             newNode69.setOutput(block86);
@@ -310,7 +310,25 @@ public class TrackModel extends Worker implements Runnable, constData
             block100.setStopNode(newNode69);
             nodes.put(69, newNode69);
             	
-	
+
+            blocks.get(2).setStationName("Poineer");
+            blocks.get(9).setStationName("Edgebrook");
+            blocks.get(22).setStationName("Whited");
+            blocks.get(31).setStationName("South Bank");
+            blocks.get(39).setStationName("Central");
+            blocks.get(48).setStationName("Inglewood");
+            blocks.get(57).setStationName("Overbrook");
+            blocks.get(65).setStationName("Glenbury");
+            blocks.get(73).setStationName("Dormont");
+	        blocks.get(77).setStationName("Mt Lebanon");
+            blocks.get(88).setStationName("Poplar");
+            blocks.get(96).setStationName("Castle Shannon");
+            blocks.get(105).setStationName("Station Dormont");
+            blocks.get(114).setStationName("Glebbury");
+            blocks.get(123).setStationName("Overbrook");
+            blocks.get(132).setStationName("Inglewood");
+            blocks.get(141).setStationName("Central");
+
 			userInterface.refresh();
         	
         } 

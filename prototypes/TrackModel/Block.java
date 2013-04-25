@@ -57,6 +57,12 @@ public abstract class Block {
 	{
 		return stationName;
 	}
+
+	public void setStationName(String name)
+	{
+		stationName = name;
+		isStation = true;
+	}
 	
 	public Block(Node start, Node stop, int c)
 	{
