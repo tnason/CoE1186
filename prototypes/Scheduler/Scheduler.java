@@ -16,9 +16,42 @@ public class Scheduler extends Worker implements Runnable, constData
 	private ArrayList<Train> greenTrains;
 	private RouteSchedule route;
 
+	public static Node[] nodes;
+	public static Node[] blocks;
+
 	public static void main(String[] args)
 	{
+		int numBlocks = 7;
+		int numNodes = numBlocks + 1;
+		blocks = new Block[numBlocks];
+		nodes = new Node[numNodes];
 
+		nodes[0] = new YardNode(0, 0, 0);
+		
+		for(int i = 1; i < nodes.length - 1;i++)
+		{
+			nodes[i]= new ConnectorNode(i * i * i * i * i, i * i * i * i * i, i * i * i * i * i);
+		}
+
+		nodes[nodes.length - 1] = new YardNode((nodes.length - 1) * (nodes.length - 1), (nodes.length - 1) * (nodes.length - 1), (nodes.length - 1) * (nodes.length - 1));
+
+		for(int i = 0; i < blocks.length; i++)
+		{
+			blocks[i] = new LinearBlock(nodes[i], nodes[i+1], i, 0);
+			nodes[i].setOutput(blocks[i]);
+			nodes[(i+1) % blocks.length].setInput(blocks[i]);
+		}		
+
+
+		Scheduler sch = new Scheduler();
+		new Thread(sch).start();
+
+		Message message = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard);
+		message.addData("entry", true);
+		message.addData("trainID", 0);
+		message.addData("isGreenLine", true);		
+		sch.setMsg(message);
+		System.out.println("here");		
 	}
 
 	/*
@@ -106,16 +139,14 @@ public class Scheduler extends Worker implements Runnable, constData
 			tr = iTR.next();
 			trainNumber = tr.getTrainNumber();
 
-			iBS = tr.getIterator();
-
-			while(iBS.hasNext())
+			for(int i = 0; i < tr.size(); i++)
 			{
-				bs = iBS.next();
+				bs = tr.getIndex(i);
 				block = bs.getBlock();
 
-				if(block.isStation())
+				if(i % 2 = 1)//block.isStation())
 				{
-					timetable.add(block.getStationName(), trainNumber, (bs.getEntryTime() + bs.getExitTime()) / 2, TrainStatus.ONTIME);
+					timetable.add("Station " + i/*block.getStationName()*/, trainNumber, (bs.getEntryTime() + bs.getExitTime()) / 2, TrainStatus.ONTIME);
 				}
 			}
 		}
@@ -224,6 +255,8 @@ public class Scheduler extends Worker implements Runnable, constData
 
 			//Checks timetable to see if train is late to arrive at a station
 
+			boolean timetableChanged = false;
+
 			for(int i = 0; i < timetable.size(); i++)
 			{
 				TimesObject time = timetable.getTimesObject(i);
@@ -231,7 +264,13 @@ public class Scheduler extends Worker implements Runnable, constData
 				if(time.status != TrainStatus.ARRIVED && time.time < System.currentTimeMillis())
 				{
 					time.status = TrainStatus.LATE;
+					timetableChanged = true;
 				}
+			}
+
+			if(timetableChanged)
+			{
+				timetableChanged();
 			}
 		}
 
@@ -257,10 +296,13 @@ public class Scheduler extends Worker implements Runnable, constData
 
 		trainID = (int)message.getData().get("trainID");
 		//sendTrainUpdate(); //Notify MBO that a train was added to the track
-		if(message.getData().get("isGreenLine") != null && (boolean)message.getData().get("isGreenLine"))
 
+		Train train = new Train(trainID, System.currentTimeMillis());
+		train.setBlock(Scheduler.block[0],Scheduler.node[0],Scheduler.node[1]);
+		
+		if(message.getData().get("isGreenLine") != null && (boolean)message.getData().get("isGreenLine"))
 		{
-			greenTrains.add(new Train(trainID, System.currentTimeMillis()));
+			greenTrains.add(train);
 		}
 		else
 		{

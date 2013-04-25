@@ -88,6 +88,11 @@ public class TrainRoute
 		return route.iterator();
 	}
 
+	public BlockSchedule getIndex(int index)
+	{
+		return route.get(index);
+	}
+
 	public int getTrainNumber()
 	{
 		return trainNumber;

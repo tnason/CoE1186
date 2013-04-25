@@ -279,7 +279,6 @@ public class RouteSchedule
 					}
 					else if(!isRearCollision(i, trainRoute, block, previousNode, entryTime + traverseTime, 0))
 					{
-						//System.out.println(temp);
 						if(start[i] < size - 1)
 						{
 							trainRoute[i].set(start[i], temp);
