@@ -10,6 +10,11 @@ public class SwitchNode extends Node{
 		zPos = z;
 		System.out.println("made a switch!!!");	
 	}
+	
+	public String toString()
+	{
+		return "Switch" + super.toString();
+	}
 		
 	public void setDivergingOutput(Block block)
 	{
