@@ -127,14 +127,14 @@ public class RouteSchedule
 
 		if(trains.size() != schedule.size())
 		{
-			//throw new Exception("Schedule and trains sizes are not equal!!!"); //As of right now, trains must be the same size of the schedule.
+			throw new Exception("Schedule and trains sizes are not equal!!!"); //As of right now, trains must be the same size of the schedule.
 		}
 
 		int size = schedule.size();
 
 		if(size == 0)
 		{
-			return;//throw new Exception("Schedule and trains are empty!!!");
+			throw new Exception("Schedule and trains are empty!!!");
 		}
 
 		route.clear(); //First clears the previous routes

@@ -1,5 +1,6 @@
 package TLTTC;
 
+import java.util.*;
 // lib/freetts.jar needs to be added to classpath during compilation
 /*import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
@@ -156,7 +157,8 @@ public class TrainController
   
   public void setLights(boolean automatic) // This method is called every time the train enters a new block or manually
   {
-    int time = new Calendar().get(Calendar.HOUR_OF_DAY);
+    Calendar cal = Calendar.getInstance();
+    int time = cal.get(Calendar.HOUR_OF_DAY);
     if (time >= 9 && time < 16)
     {
     	daytime = true;

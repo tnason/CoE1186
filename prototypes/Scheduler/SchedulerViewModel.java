@@ -110,6 +110,8 @@ public class SchedulerViewModel
 	{
 		public void actionPerformed(ActionEvent e)
 		{
+			try
+			{
 			if(e.getSource() == myTimetableButton)
 			{
 				scheduler.updateTimetable();
@@ -117,6 +119,11 @@ public class SchedulerViewModel
 			else if(e.getSource() == myScheduleButton)
 			{
 				scheduler.updateOperatorSchedule();
+			}
+			}
+			catch(Exception ex)
+			{
+				ex.printStackTrace();
 			}
 		}
 	}
