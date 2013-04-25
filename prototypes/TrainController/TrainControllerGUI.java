@@ -73,8 +73,8 @@ public class TrainControllerGUI extends JFrame implements Runnable {
             pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
             brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
             model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
-            Calendar cal = Calendar.getInstance();
-            model.addRow(new Object[]{new String(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE )), tm.getVelocity()*2.23694, tc.getVelocitySetpoint()*2.23694, tc.getPower()});
+            Date date = tc.getDate();
+            model.addRow(new Object[]{new String(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()), tm.getVelocity()*2.23694, tc.getVelocitySetpoint()*2.23694, tc.getPower()});
             powerTable.getSelectionModel().setSelectionInterval(powerTable.getRowCount()-1, powerTable.getRowCount()-1);
             powerTable.scrollRectToVisible(powerTable.getCellRect(powerTable.getRowCount()-1, 0, true));
         }
