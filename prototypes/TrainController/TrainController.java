@@ -156,7 +156,7 @@ public class TrainController
   
   public void setLights(boolean automatic) // This method is called every time the train enters a new block or manually
   {
-    int time = new Calendar().get(Calendar.HOUR_OF_DAY);
+    int time = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
     if (time >= 9 && time < 16)
     {
     	daytime = true;
