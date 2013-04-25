@@ -61,10 +61,10 @@ public class TrainController
         gpsConnected = true; // Connects to GPS
 
         // Test variables -- Remove later
-        velocity = 5;
-        trainOperatorVelocity = 100;
+        velocity = 0;
+        trainOperatorVelocity = 14;
         ctcOperatorVelocity = 1000;
-        trackLimit = 15;
+        trackLimit = 14;
 
         fixedBlockAuth = 1400;
         ctcFixedBlockAuth = 1400;
