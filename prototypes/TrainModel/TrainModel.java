@@ -31,6 +31,8 @@ public class TrainModel implements constData
 
 	private int stepCounter = 0;
 
+	private double temperature = 65.0;
+
 	private double mass;
 	private double emptyMass = 51437; //loaded train mass in kg
 
@@ -73,7 +75,7 @@ public class TrainModel implements constData
 	private boolean lightsOn = false;
 
 
-	public TrainModel(int trainID, Block start, double timeStep) 
+	public TrainModel(int trainID, Block start, Node yard, double timeStep) 
 	{
 		this.trainID = trainID;
 		this.timeStep = timeStep;
@@ -87,6 +89,25 @@ public class TrainModel implements constData
 		currentBlockGrade = occupiedBlocks.get(0).getGrade();
 		occupiedBlocks.get(0).setOccupation(true);
 		fromYard = true;
+		currentNode = yard;
+	}
+
+	public int changeCrew(int change)
+	{
+		if(change < crewCount)
+		{
+			crewCount += change;
+		}
+
+	}
+
+	public int changePassengers(int change)
+	{
+		if(change < passengerCount)
+		{
+			passengerCount += change;
+		}
+
 	}
 
 	private double calculateMass()
@@ -99,6 +120,7 @@ public class TrainModel implements constData
 		return velocity;
 	}
 
+	//deprecated
 	public void setYardNode (Node yard)
 	{
 		currentNode = yard;
@@ -272,10 +294,6 @@ public class TrainModel implements constData
 		acceleration = endAccel;
 	    
         stepCounter++;
-		/*if(stepCounter % 50 == 0)
-		{
-		System.out.println("!!TRAIN  MOTION___: p: " + position + " v: " + velocity + " a: " + acceleration);
-		}*/
 
 
 		time += actualTimeStep;
@@ -318,6 +336,8 @@ public class TrainModel implements constData
 				//send TnMd_TcCt_Update_Block_Occupancy
 				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackController, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlocks.get(0)});
 				Environment.passMessage(outgoingMessage);
+
+				updateTrainController();
 			}
 
 			if(occupiedBlocks.size() == 2)
@@ -387,6 +407,8 @@ public class TrainModel implements constData
 				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackController, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlocks.get(0)});
 				Environment.passMessage(outgoingMessage);
 
+				updateTrainController();
+
 			}
 
 			if(occupiedBlocks.size() == 2)
@@ -409,27 +431,41 @@ public class TrainModel implements constData
 	// Placeholder methods for compiling --Ben
 	public boolean getDoors()
 	{
-		return true;
+		return doorsOpen;
 	}
 
 
 	public boolean getLights()
 	{
-		return true;
+		return lightsOn;
 	}
 	
 	
 	public double getTemperature()
 	{
-		return 0.0;
+		return temperature;
 	}
 	
 	
 	public boolean[] getFailureFlags()
 	{
-		return new boolean[] {false, false, false};
+		return new boolean[] {signalPickupFailure, brakeFailure, trainEngineFailure};
 	}
 
+	public void setSignalPickupFailure(boolean setting)
+	{
+		signalPickupFailure = setting;
+	}
+
+	public void setBrakeFailure(boolean setting)
+	{
+		brakeFailure = setting;
+	}
+
+	public void setTrainEngineFailure(boolean setting)
+	{
+		trainEngineFailure = setting;
+	}
 	
 	
 	public void updateTrainController()
@@ -438,33 +474,33 @@ public class TrainModel implements constData
 		//Call TrainControllerModule.getTrainController(int trainID); This returns a TrainController.
 		//Whenever a new block is traversed, call this method. Thanks. --Ben
 
-		/*
-		FIX THIS! 
+		
+		//FIX THIS! 
 
-		tc.setUnderground(blockName.isUnderground());
-		tc.setInStation(blockName.isStation());
-		tc.setNextStation(blockName.getStationName());
-		tc.setTrackLimit(blockName.getSpeedLimit());
+		tc.setUnderground(occupiedBlocks.get(0).isUnderground());
+		tc.setInStation(occupiedBlocks.get(0).isStation());
+		tc.setNextStation(occupiedBlocks.get(0).getStationName());
+		tc.setTrackLimit(occupiedBlocks.get(0).getSpeedLimit());
 		tc.setLights();
 		tc.setDoors();
-		*/
+		
 	}
 	
 	
 	public void setDoors(boolean setting) // true = open, false = close
 	{
-		
+		doorsOpen = setting;
 	}
 	
 	
 	public void setLights(boolean setting) // true = turn on, false = turn off
 	{
-		
+		lightsOn = setting;
 	}
 	
 	
 	public void setTemperature(double temp)
 	{
-		
+		temperature += (double)(temperature - temp)*.9;
 	}
 }
