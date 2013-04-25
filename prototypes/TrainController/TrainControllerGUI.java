@@ -1,3 +1,10 @@
+/*
+ * Author(s): Ben Kisley
+ * Updated: 04 - 25- 2013
+ * Purpose: This class is the GUI for the train controller.
+*/
+
+
 package TLTTC;
 
 import javax.swing.*;
