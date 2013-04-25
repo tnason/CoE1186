@@ -15,11 +15,15 @@ public class PLC
 
 	}
 
+	// Track controller will ask if this class is a PLC. returns true
 	public boolean verifyPLC()
 	{
 		return true;
 	}
 
+	// to check fixed block authority, look at the next block and
+	// see if is unoccupied. Returns 0 if the next block is occupied
+	// or sends the distance of the next block.
 	public double checkAuthority(Hashtable<Integer, Block> newState,
 							   Block newBlock)
 	{
@@ -40,10 +44,15 @@ public class PLC
 
 	public void checkSwitch()
 	{
+			// DID not recieve rout from CTC
 
+		/*
+
+		*/
 
 	}
 
+	// Check for consistency of track while train moves over it.
 	public boolean checkTrack(Hashtable<Integer, Block> oldState,
 						      Hashtable<Integer, Block> newState,
 						      Block newBlock)
@@ -54,11 +63,16 @@ public class PLC
 
 	}
 
+	// Checks crossing when the 
 	public void checkCrossing(Block occupied)
 	{
-		if(occupied.isCrossing())
+		if(occupied.isCrossing() && occupied.isOccupied() )
 		{
-			occupied.setCrossing(true);
+			occupied.setCrossing(true); // enable crossing
 		}
+		else
+		{
+			occupied.setCrossing(false); // else crossing is disabled
+ 		}
 	}
 }
