@@ -85,6 +85,10 @@ public class TrainController
 		double power2 = setPower2(power, uk, ek, velocity, fixedBlockAuth, ctcFixedBlockAuth, movingBlockAuth, ctcMovingBlockAuth, trainOperatorVelocity, ctcOperatorVelocity, trackLimit);
 		// ^ Calculates power of train in another way (redundant/safety-critical method)
 		authority = Math.min(Math.min(fixedBlockAuth, ctcFixedBlockAuth), Math.min(movingBlockAuth, ctcMovingBlockAuth)); // Selects safest authority
+		if (authority <= 0)
+		{
+			authority = 0.1;
+		}
 		// Max train deceleration = -1.2098 m/s^2
 		// Using vf^2 = vi^2 + 2ad = 0 (final speed cannot be > 0), vi = sqrt(-2ad) = (2*1.2098*authority)
 		double authorityVelocityLimit = Math.sqrt(2.4196*authority);
@@ -103,7 +107,7 @@ public class TrainController
 
 		ek = velocitySetpoint - velocity; // Calculates proportional gain
 		power = ((KP*ek)+(KI*uk)); // Calculates power
-		if (power < power2*0.8 || power > power2*1.2) // If redundant power does not agree with this power by +/-20%, stop train
+		if (Math.abs(power) < Math.abs(power2)*0.8 || Math.abs(power) > Math.abs(power2)*1.2) // If redundant power does not agree with this power by +/-20%, stop train
 		{
 			power = 0.0;
 		}
@@ -115,6 +119,10 @@ public class TrainController
   private double setPower2(double pow, double uK, double eK, double vel, double fixedBlock, double ctcFixedBlock, double movingBlock, double ctcMovingBlock, double trainOpVel, double ctcOpVel, double trackLim)
   { // Redundant method used because train controller is safety-critical
 	double auth = Math.min(Math.min(movingBlock, Math.min(ctcFixedBlock, ctcMovingBlock)), fixedBlock);
+	if (auth <= 0)
+	{
+		auth = 0.1;
+	}
 	double authLim = Math.sqrt(auth*2.4196);
 	double velSetpoint = Math.max(ctcOpVel, trainOpVel);
 	if (velSetpoint > Math.min(trainLimit, Math.min(authLim, trackLim)))
