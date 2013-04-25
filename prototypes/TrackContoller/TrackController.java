@@ -78,7 +78,22 @@ public class TrackController extends Worker implements constData, Runnable
             else if(m.getType() == msg.TnMd_TcCt_Update_Block_Occupancy)
             {
                 Block currentBlock = allBlocks.get(m.getData().get("blockID"));
-                // myPlcClass.getMethod("handleCrossing", Block.class).invoke(myPLC, currentBlock);
+               try
+                {
+                  myPlcClass.getMethod("handleCrossing", Block.class).invoke(myPLC, currentBlock);
+                }
+                catch (NoSuchMethodException e)
+                {
+                  
+                }
+                catch (IllegalAccessException e)
+                {
+                  
+                }
+                catch (java.lang.reflect.InvocationTargetException e)
+                {
+                  
+                }
 
                 gui.refresh();  // update the gui after state changes
             }
