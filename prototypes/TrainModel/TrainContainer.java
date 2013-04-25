@@ -175,6 +175,11 @@ public class TrainContainer extends Worker implements Runnable, constData
 		return clock.getSimulationTime();		
 	}
 
+	public Date getSimulationTimeDate()
+	{
+		return clock.getSimulationTimeDate();
+	}
+
 	public String getSystemTime()
 	{
 		return clock.getSystemTime();
