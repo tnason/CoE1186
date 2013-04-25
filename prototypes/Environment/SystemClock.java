@@ -57,7 +57,7 @@ public class SystemClock
 	public void printSimulationTime()
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		System.out.println(sdf.format(getSimulationTimeData()));
+		System.out.println(sdf.format(getSimulationTimeDate()));
 	}
 
 	public void printSystemTime()
