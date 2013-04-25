@@ -285,7 +285,12 @@ public class TrainController
     nextStation = s;
     announceStation(true);
   }
-  
+ 
+  //For stopping before a station....
+  public double getStoppingDistance()
+  {
+	return (.5*velocity*velocity)/(trainBrakeAccel /*1.2 m/s^2*/); //returns stopping distance in meters  
+  } 
   
   public void setGpsConnected(boolean s)
   {

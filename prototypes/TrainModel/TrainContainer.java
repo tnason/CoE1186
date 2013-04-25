@@ -24,6 +24,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 	private int motionStepCount = 0;
 
 	private TrainControllerModule trc;
+	private TrackModelModule tkm;
 	private SatelliteContainer sat;
 
 	//For now, simulationSpeedup = (trainTimestep * 1000) / timerTrigger
@@ -57,7 +58,13 @@ public class TrainContainer extends Worker implements Runnable, constData
 				if(tm.whiteFlag)
 				{
 					//kill it!
+					tkm.destroyTrainController(trainID);
 					trains.remove(trainID);
+				}
+				else if(tm.newBlockFlag)
+				{
+					tm.updateTrainController(tm.trainID, tm.newBlock);
+					tm.newBlockFlag = false;
 				}
 				else
 				{
@@ -123,8 +130,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 									System.out.println("	!!!!!!!!!!!!!!!!!NEW TRAIN!!!!!!!!");
 
 									tm = newTrain((int)mine.getData().get("trainID"), bl, n, TIME_STEP);
-									
-									tm.setYardNode(n);
+									//deprecated
+									//tm.setYardNode(n);
 									//send associated messages!!!
 
 									// Cameron: Does this ever happen? Does it need to happen?
@@ -190,6 +197,16 @@ public class TrainContainer extends Worker implements Runnable, constData
 		return clock.getSystemTime();
 	}
 
+	public void updateTrainController(int trainID, Block b)
+	{
+		TrainController tc = trc.getTrainController(trainID);
+		tc.setUnderground(b.isUnderground());
+		tc.setInStation(b.isStation());
+		tc.setNextStation(b.getStationName());
+		tc.setTrackLimit(b.getSpeedLimit());
+		tc.setLights();
+		tc.setDoors();
+	}
 
 	public void setMsg(Message m)
 	{

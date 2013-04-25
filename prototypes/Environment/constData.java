@@ -2,6 +2,8 @@ package TLTTC;
 
 public interface constData
 {
+	public double final trainBrakeAccel = 1.2; //m/s^2 
+
 	public enum Module
 	{
 		satellite, scheduler, MBO, CTC, trackController,

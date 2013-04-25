@@ -14,6 +14,10 @@ public class TrainModel implements constData
 
 	public boolean whiteFlag = false; //if true, TrainContainer will kill this train
 
+	public boolean newBlockFlag = false;
+	public Block newBlock;
+
+
 	private boolean fromYard;
 
 	private int trainID;
@@ -57,7 +61,7 @@ public class TrainModel implements constData
 
 	private final double trainFriction = .001; //coefficient of friction of rolling steel wheels
 
-	private final double trainBrake = 1.2; //in m/s^2
+	private final double trainBrake = trainBrakeAccel; //1.2 m/s^2
 	private final double trainEmergencyBrake = 2.73; //in m/s^2
 
 	private final double gravity = 9.81; //in m/s^2
@@ -336,8 +340,8 @@ public class TrainModel implements constData
 				//send TnMd_TcCt_Update_Block_Occupancy
 				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackController, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlocks.get(0)});
 				Environment.passMessage(outgoingMessage);
-
-				updateTrainController();
+				newBlockFlag = true;
+				newBlock = occupiedBlocks.get(0);
 			}
 
 			if(occupiedBlocks.size() == 2)
@@ -407,7 +411,8 @@ public class TrainModel implements constData
 				outgoingMessage = new Message(Module.trainModel, Module.trainModel, Module.trackController, msg.TnMd_TcCt_Update_Block_Occupancy, new String[] {"blockID", "occupancy", "block"}, new Object[] {occupiedBlocks.get(0).getID(), true, occupiedBlocks.get(0)});
 				Environment.passMessage(outgoingMessage);
 
-				updateTrainController();
+				newBlockFlag = true;
+				newBlock = occupiedBlocks.get(0);
 
 			}
 
@@ -468,23 +473,6 @@ public class TrainModel implements constData
 	}
 	
 	
-	public void updateTrainController()
-	{
-		//NOTE: The TrainModel class needs a reference to a TrainController for updating the train controller.
-		//Call TrainControllerModule.getTrainController(int trainID); This returns a TrainController.
-		//Whenever a new block is traversed, call this method. Thanks. --Ben
-
-		
-		//FIX THIS! 
-
-		tc.setUnderground(occupiedBlocks.get(0).isUnderground());
-		tc.setInStation(occupiedBlocks.get(0).isStation());
-		tc.setNextStation(occupiedBlocks.get(0).getStationName());
-		tc.setTrackLimit(occupiedBlocks.get(0).getSpeedLimit());
-		tc.setLights();
-		tc.setDoors();
-		
-	}
 	
 	
 	public void setDoors(boolean setting) // true = open, false = close
