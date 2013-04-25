@@ -99,25 +99,23 @@ public class TrainController
 		}
 		ek = velocitySetpoint - velocity; // Calculates proportional gain
 		power = ((KP*ek)+(KI*uk)); // Calculates power
-		if (power < power2*0.99 || power > power2*1.01) // If redundant power does not agree with this power, send old power command
+		if (power < power2*0.8 || power > power2*1.2) // If redundant power does not agree with this power by +/-20%, stop train
 		{
-			power = oldPower;
+			power = 0.0;
 		}
 		tm.setPower(power); // Sets power of train
-
-    System.out.println("POWER: " + power + " vsp " +velocitySetpoint +" vel "+ velocity);
 	}
   }
   
   
-  private double setPower2(double pow, double uK, double eK, double vel, double fixedBlock, double ctcFixedBlock, double movingBlockAuth, double ctcMovingBlockAuth, double trainOpVel, double ctcOpVel, double trackLim)
+  private double setPower2(double pow, double uK, double eK, double vel, double fixedBlock, double ctcFixedBlock, double movingBlock, double ctcMovingBlock, double trainOpVel, double ctcOpVel, double trackLim)
   { // Redundant method used because train controller is safety-critical
 	double auth = Math.min(Math.min(movingBlock, Math.min(ctcFixedBlock, ctcMovingBlock)), fixedBlock);
 	double authLim = Math.sqrt(auth*2.4196);
 	double velSetpoint = Math.max(ctcOpVel, trainOpVel);
 	if (velSetpoint > Math.min(trainLimit, Math.min(authLim, trackLim)))
 	{
-		velSepoint = Math.min(trainLimit, Math.min(authLim, trackLim));
+		velSetpoint = Math.min(trainLimit, Math.min(authLim, trackLim));
 	}
 	
 	if (pow < trainMaxPower)
@@ -125,7 +123,7 @@ public class TrainController
 		uK = (T*((-vel + eK + velSetpoint)/2.0)) + uK;
 	}
 	eK = -vel + velSetpoint;
-	pow = ((uk*KI)+(eK*KP));
+	pow = ((uK*KI)+(eK*KP));
 	return pow;
   }
   
