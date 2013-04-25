@@ -122,7 +122,6 @@ public class TrainController
 	if (pow < trainMaxPower)
 	{
 		uK = (T*((-vel + eK + velSetpoint)/2.0)) + uK;
->>>>>>> de191872322005d7a1fe02c62a95e152290d5974
 	}
 	eK = -vel + velSetpoint;
 	pow = ((uK*KI)+(eK*KP));

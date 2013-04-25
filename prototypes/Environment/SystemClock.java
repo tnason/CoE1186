@@ -65,7 +65,20 @@ public class SystemClock
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		System.out.println(sdf.format(new java.util.Date()));
 	}
-	
+
+
+	public String getSimulationTime()
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		return sdf.format(getSimulationTime()).toString();
+	}
+
+	public String getSystemTime()
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		return sdf.format(new java.util.Date()).toString();
+	}
+
 	//Really stupid driver program that shows features of clock
 	public static void main(String args[])
 	{

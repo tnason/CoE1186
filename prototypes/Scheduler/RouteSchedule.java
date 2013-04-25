@@ -152,12 +152,12 @@ public class RouteSchedule
 				throw new Exception("Cannot route trains that are in the yard!!!");
 			}
 
-			long t = (long)Math.ceil(1000 * train.getBlock().getLength() / (0 + .5 * (RouteSchedule.PERCENT_SPEED * train.getBlock().getSpeedLimit() - 0)));
-			tr.add(new BlockSchedule(start, t, RouteSchedule.PERCENT_SPEED * train.getBlock().getSpeedLimit(), train.getBlock(), train.getPreviousNode(), train.getNextNode()));
-			Node previousNode = train.getNextNode();
-			Block block = previousNode.getNextBlock(train.getBlock());
-			Node nextNode = block.getNextNode(previousNode);
-			tr.add(new BlockSchedule(start + t, 0, RouteSchedule.PERCENT_SPEED * block.getSpeedLimit(), block, previousNode, nextNode));
+			//long t = (long)Math.ceil(1000 * train.getBlock().getLength() / (0 + .5 * (RouteSchedule.PERCENT_SPEED * train.getBlock().getSpeedLimit() - 0)));
+			tr.add(new BlockSchedule(start, 0, RouteSchedule.PERCENT_SPEED * train.getBlock().getSpeedLimit(), train.getBlock(), train.getPreviousNode(), train.getNextNode()));
+			//Node previousNode = train.getNextNode();
+			//Block block = previousNode.getNextBlock(train.getBlock());
+			//Node nextNode = block.getNextNode(previousNode);
+			//tr.add(new BlockSchedule(start + t, 0, RouteSchedule.PERCENT_SPEED * block.getSpeedLimit(), block, previousNode, nextNode));
 
 			if(!add(tr))
 			{
@@ -185,7 +185,7 @@ public class RouteSchedule
 
 		for(int i = 0; i < trainRoute.length; i++)
 		{
-			start[i] = 1;
+			start[i] = 0;
 			direction[i] = true;
 		}
 
@@ -277,8 +277,9 @@ public class RouteSchedule
 					{
 						trainRoute[i].set(start[i], temp);
 					}
-					else if(!isRearCollision(i, trainRoute, block, previousNode, entryTime, entryTime))
+					else if(!isRearCollision(i, trainRoute, block, previousNode, entryTime + traverseTime, 0))
 					{
+						//System.out.println(temp);
 						if(start[i] < size - 1)
 						{
 							trainRoute[i].set(start[i], temp);
@@ -328,7 +329,7 @@ public class RouteSchedule
 	{
 		for(int i = 0; i < tr.length; i++)
 		{
-			if(i != index && tr[i].isRearCollision(block, previousNode, entryTime, traverseTime))
+			if(i != index && tr[i].isRearCollision(block, previousNode, entryTime, entryTime + traverseTime))
 			{
 				return true;
 			}
@@ -341,7 +342,7 @@ public class RouteSchedule
 	{
 		for(int i = 0; i < tr.length; i++)
 		{
-			if(i != index && tr[i].isForwardCollision(block, previousNode, entryTime, traverseTime))
+			if(i != index && tr[i].isForwardCollision(block, previousNode, entryTime, entryTime + traverseTime))
 			{
 				return true;
 			}
