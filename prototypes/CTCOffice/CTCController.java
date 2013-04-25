@@ -185,7 +185,10 @@ public class CTCController implements constData
     
     public ArrayList<Integer> getRouteListingForTrain( Integer tID )
     {
-        return _trainList.getTrain(tID).getRouteListing();
+        if (_trainList.contains(tID))
+        {
+            return _trainList.getTrain(tID).getRouteListing();
+        }
     }
     
     public void reachedNextStation (Integer tID)
