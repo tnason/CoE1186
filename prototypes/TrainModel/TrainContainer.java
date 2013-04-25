@@ -207,8 +207,8 @@ public class TrainContainer extends Worker implements Runnable, constData
 		tc.setInStation(b.isStation());
 		tc.setNextStation(b.getStationName());
 		tc.setTrackLimit(b.getSpeedLimit());
-		tc.setLights();
-		tc.setDoors();
+		tc.setLights(true);
+		tc.setDoors(true);
 	}
 
 	public void setMsg(Message m)
