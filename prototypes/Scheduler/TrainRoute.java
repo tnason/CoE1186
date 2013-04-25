@@ -190,16 +190,17 @@ public class TrainRoute
 		for(int i = route.size() - 1; i >= 0; i--)
 		{
 			BlockSchedule bs = route.get(i);
-
+/*
 			if(entryTime < bs.getEntryTime())
 			{
 				return false;
 			}
-
+*/
 			long bsEntryTime = bs.getEntryTime();
 			long bsExitTime = bs.getExitTime();
+			//System.out.println("TrainNumber: " + trainNumber + " Iteration: " + i + "\nEntry Time: " + new Time(entryTime) + " BS Entry Time: " + new Time(bsEntryTime) + "\nExit Time: " + new Time(exitTime) + "  BS Exit Time: " + new Time(bsExitTime));
 
-			if(block.equals(bs.getBlock()) && previousNode.equals(bs.getPreviousNode()) && ((bsEntryTime <= entryTime && entryTime < bsExitTime) || (bsEntryTime <= exitTime && exitTime < bsExitTime) || (entryTime <= bsEntryTime && bsExitTime <= exitTime)))
+			if(block.equals(bs.getBlock()) && previousNode.equals(bs.getPreviousNode()) && ((bsEntryTime < entryTime && entryTime < bsExitTime) || (bsEntryTime < exitTime && exitTime < bsExitTime) || (entryTime <= bsEntryTime && bsExitTime <= exitTime)))
 			{
 				return true;
 			}
