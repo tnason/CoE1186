@@ -26,6 +26,10 @@ public class Scheduler extends Worker implements Runnable, constData
 	public static Node[] nodes;
 	public static Block[] blocks;
 
+	private Block startingBlock;
+	private Node startingPreviousNode;
+	private Node startingNextNode;
+
 	public static void main(String[] args)
 	{
 		int numBlocks = 7;
@@ -50,15 +54,16 @@ public class Scheduler extends Worker implements Runnable, constData
 		}		
 
 
-		Scheduler sch = new Scheduler();
-		new Thread(sch).start();
+		Worker sch = new Scheduler();
+		Thread t = new Thread(sch);
+		t.start();
 
 		Message message = new Message(Module.trainModel, Module.trainModel, Module.scheduler, msg.TnMd_Sch_Notify_Yard);
-		message.addData("entry", true);
+		message.addData("entry", false);
 		message.addData("trainID", 0);
 		message.addData("isGreenLine", true);		
 		sch.setMsg(message);
-		System.out.println("here");		
+		//System.out.println("here");		
 	}
 
 	/*
@@ -78,8 +83,27 @@ public class Scheduler extends Worker implements Runnable, constData
 		new SchedulerViewModel(this);
 
 		updateOperatorSchedule();
-		updateTimetable();
+		//updateTimetable();
 		sendTrainInfo();
+	}
+
+	public void init(TrackModel tm)
+	{
+		HashMap<Integer, Block> blocks = tm.getBlocks();
+		Iterator<Block> i = tm.getBlocks().values().iterator();
+
+		while(i.hasNext())
+		{
+			startingBlock = i.next();
+
+			if(startingBlock.getYardNode() != null && startingBlock.getYardNode().equals(startingBlock.getStartNode()))
+			{
+				startingPreviousNode = startingBlock.getStartNode();
+				startingNextNode = startingBlock.getStopNode();
+				break;
+			}
+		}
+		
 	}
 
 	/*
@@ -109,7 +133,7 @@ public class Scheduler extends Worker implements Runnable, constData
 		{
 			//Add trains to schedule if there must be more trains on the track and on the schedule
 
-			while(schedule.size() < numTrains * 2)
+			while(schedule.size() < numTrains)
 			{
 				schedule.add("Train", "Operator", Scheduler.NEXT_TRAIN_NUMBER++, System.currentTimeMillis(), OperatorStatus.SHIFTNOTSTARTED);
 			}
@@ -122,12 +146,12 @@ public class Scheduler extends Worker implements Runnable, constData
 		return false;
 	}
 
-	public boolean updateTimetable()
+	public boolean updateTimetable() throws Exception
 	{
 		return updateTimetable(true);// && updateTimetable(false);
 	}
 
-	public boolean updateTimetable(boolean isGreenLine)
+	public boolean updateTimetable(boolean isGreenLine) throws Exception
 	{
 		TrainRoute tr;
 		BlockSchedule bs;
@@ -168,17 +192,11 @@ public class Scheduler extends Worker implements Runnable, constData
 		return 1;
 	}
 
-	private void calculateRoutes(long time)
+	private void calculateRoutes(long time) throws Exception
 	{
-	    try
-	    {
 		    route.routeTrains(time, greenTrains, schedule);
-		    route.routeTrains(time, redTrains, schedule);
-		    System.out.println("ROUTE! " + route);
-		}
-		catch (Exception e)
-		{
-		}
+		    //route.routeTrains(time, redTrains, schedule);
+		    //System.out.println("ROUTE! " + route);
 	}
 
 	//Searches train list for a train
@@ -226,7 +244,8 @@ public class Scheduler extends Worker implements Runnable, constData
 				if(name == message.getDest())
 				{
 					//System.out.println("\nRECEIVED MESSAGE: source->" + message.getSource() + " : dest->" + message.getDest() + "\n");
-
+					try
+					{
 					switch(message.getType())
 					{
 						case CTC_Sch_Generate_Schedule:
@@ -250,6 +269,11 @@ public class Scheduler extends Worker implements Runnable, constData
 								sendTrainInfo();
 							}
 							break;	
+					}
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
 					}
 				}
 				else
@@ -296,7 +320,7 @@ public class Scheduler extends Worker implements Runnable, constData
 	{
 	}
 
-	private void receivedTrainDispatch(Message message)
+	private void receivedTrainDispatch(Message message) throws Exception
 	{
 		int trainID;
 		Operator operator;
@@ -305,7 +329,7 @@ public class Scheduler extends Worker implements Runnable, constData
 		//sendTrainUpdate(); //Notify MBO that a train was added to the track
 
 		Train train = new Train(trainID, System.currentTimeMillis());
-		train.setBlock(Scheduler.blocks[0],Scheduler.nodes[0],Scheduler.nodes[1], System.currentTimeMillis());
+		train.setBlock(startingBlock, startingPreviousNode, startingNextNode, System.currentTimeMillis());
 		
 		if(message.getData().get("isGreenLine") != null && (boolean)message.getData().get("isGreenLine"))
 		{
@@ -325,7 +349,6 @@ public class Scheduler extends Worker implements Runnable, constData
 			Scheduler.NEXT_TRAIN_NUMBER = trainID;
 			schedule.add("Train", "Operator", Scheduler.NEXT_TRAIN_NUMBER++, System.currentTimeMillis(), OperatorStatus.SHIFTFIRSTHALF);
 			operatorScheduleChanged();
-			updateTimetable();
 		}
 
 		//If train is in schedule update status
@@ -343,6 +366,8 @@ public class Scheduler extends Worker implements Runnable, constData
 				operatorScheduleChanged();
 			}
 		}
+
+		updateTimetable();
 	}
 
 	private void receivedTrainArrival(Message message)
@@ -377,7 +402,7 @@ public class Scheduler extends Worker implements Runnable, constData
 		timetableChanged();		
 	}
 
-	private void receivedTimetableUpdateRequest(Message message)
+	private void receivedTimetableUpdateRequest(Message message) throws Exception
 	{
 		updateTimetable();
 		sendTimetable();

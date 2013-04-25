@@ -64,7 +64,7 @@ public class TimetableTableModel extends DefaultTableModel
 			for(int row = 0; row < rowMatches.length; row++)
 			{
 				/*if a match is found, change the status*/
-
+				
 				if(time.stationName.equals((String)getValueAt(row, stationColumn)) && time.trainNumber == (int)getValueAt(row, trainIDColumn) && time.time == ((Time)getValueAt(row, arrivalColumn)).getTime())
 				{
 					match = true;
@@ -82,7 +82,7 @@ public class TimetableTableModel extends DefaultTableModel
 
 			if(!match)
 			{
-				addRow(new Object[]{time.stationName, time.trainNumber, time.trainNumber, new Time(time.time), time.status.toString()});
+				addRow(new Object[]{time.stationName, time.trainNumber, new Time(time.time), time.status.toString()});
 			}
 		}
 
