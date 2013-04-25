@@ -118,7 +118,8 @@ public class TrackModel extends Worker implements Runnable, constData
 
     public void init()
     {
-	
+	TrackModelForm form = new TrackModelForm();
+	form.setVisible(true);
 	userInterface = new TrackModelUI();
 	staticUI = userInterface;
 
@@ -237,10 +238,32 @@ public class TrackModel extends Worker implements Runnable, constData
                 i++;
             }
 
+
+		blocks.get(13).setOccupation(true);
+
+/*
+
+	    Block b1 = blocks.get(1);
+	    Block b12 = blocks.get(12);
+	    Block b13 = blocks.get(13);
+
+	    System.out.println("\n\n\n block1="+b1+"\n\nblock12="+b12+"\n\nblock13="+b13+"\n\n\n");
+
+            //hardcoded switches, replace if time permits
+	    SwitchNode switch1 = new SwitchNode(1300, 100, 0);
+	    switch1.setDivergingOutput(b1);
+	    switch1.setOutput(b12);
+	    switch1.setInput(b13);
+
+	    nodes.put(137, switch1);
+	    b1.setStartNode(switch1);
+	    b12.setStopNode(switch1);
+	    b13.setStartNode(switch1);
+*/		
+	
 	    userInterface.refresh();
         	
-     
- 	    System.out.println("\n\n foo" + blocks);           
+                
 	          
         } 
         catch (Exception e)
