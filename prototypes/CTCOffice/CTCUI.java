@@ -545,7 +545,7 @@ public class CTCUI extends javax.swing.JFrame {
         // check if it exists, first
         boolean trainExists = false;
         int   row = _dataModel.getRowCount();
-        for (int i = 0; i< _dataModel.getColumnCount(); i++)
+        for (int i = 0; i< _dataModel.getRowCount(); i++)
         {
             if (getCurrentTrainSelection((String) _dataModel.getValueAt(i, 0)) == train.getTrainID() )
             {
@@ -601,8 +601,12 @@ class TrainTableDataModel extends AbstractTableModel
     
     // This method will be used to iterate through a selected row and populate the detail
     public Object getValueAt(int row, int col)
-    {
-        return data[row][col];
+    {   
+        if ( row < getRowCount() && col < getColumnCount() )
+        {
+            return data[row][col];
+        }
+        else return null;
     }
     
     public boolean isCellEditable(int row, int col)
@@ -613,8 +617,11 @@ class TrainTableDataModel extends AbstractTableModel
     // use this to update models that already exist
     public void setValueAt(Object val, int row, int col )
     {
-        data[row][col] = val;
-        fireTableCellUpdated(row, col);
+        if ( row < getRowCount() && col < getColumnCount() )
+        {
+            data[row][col] = val;
+            fireTableCellUpdated(row, col);
+        }
     }
     
     // use this to update an entire row at once
