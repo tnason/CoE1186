@@ -52,7 +52,7 @@ public class TrackController extends Worker implements constData, Runnable
             }
             else if(m.getType() == msg.TnMd_CTC_Send_Block_Occupied)
             {
-              m.addData("isStation", (Object) (allBlock.get(m.getData().get("blockId"))))
+              m.addData("isStation", (Object) (allBlock.get(m.getData().get("blockId"))));
               try
               {
                 Block currentBlock = allBlocks.get(m.getData().get("blockId"));
