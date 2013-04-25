@@ -73,4 +73,15 @@ import java.util.*;
         
         return blocks;
     }
+    
+    public Integer trainCount ()
+    {
+        return _trainList.size();
+    }
+    
+    public ArrayList<TrainViewModel> getTrains ()
+    {
+        ArrayList<TrainViewModel> trains = new ArrayList<TrainViewModel>(_trainList.values());
+        return trains;
+    }
  }

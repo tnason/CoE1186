@@ -105,4 +105,23 @@ public class TrainViewModel
     {
         return _active;
     }
+    
+    public String getNextStation ()
+    {
+        return "Station 01"; //TODO - Implement this, yo!
+    }
+    
+    public String getScheduleStatus()
+    {
+        return "On Time"; // TODO - implement this, yo!
+    }
+    public ArrayList<Integer> getRouteListing ()
+    {
+        ArrayList<Integer> routeList = new ArrayList<Integer>();
+        routeList.add(0);
+        routeList.add(1);
+        routeList.add(2);
+        return routeList;
+        // TODO write this for realz
+    }
 }

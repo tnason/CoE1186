@@ -1,18 +1,37 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  *
  * @author seanmoore
  */
+ 
+package TLTTC;
+import java.util.*;
+import java.io.*;
+import javax.swing.*;
+import javax.swing.table.*;
+import java.util.concurrent.*;
+import java.lang.reflect.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+@SuppressWarnings("unchecked") 
 public class CTCUI extends javax.swing.JFrame {
 
     /**
      * Creates new form CTCUI
      */
-    public CTCUI() {
+     
+    private CTCController _controller;
+    private boolean _FixedBlockIsActive = true;
+    private TrainTableDataModel _dataModel;
+    private Integer selectedRouteRow;
+    private boolean routeRowIsSelected = false;
+    private DefaultListModel _routeModel;
+    
+     
+    public CTCUI(CTCController controller) {
+        _controller = controller;
+        _dataModel = new TrainTableDataModel();
+        _routeModel = new DefaultListModel();
         initComponents();
     }
 
@@ -48,23 +67,21 @@ public class CTCUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "Train #", "Location", "Speed", "Authority", "Next Station", "Schedule"
+        jTable1.setModel(_dataModel);
+        jTable1.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent event)
+            {
+                tableSelectionListener(event);
             }
-        ));
+        });
         jScrollPane1.setViewportView(jTable1);
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+        jList1.setModel(_routeModel);
+        jList1.getSelectionModel().addListSelectionListener( new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent event)
+            {
+                listSelectionListener(event);
+            };
         });
         jScrollPane2.setViewportView(jList1);
 
@@ -146,7 +163,7 @@ public class CTCUI extends javax.swing.JFrame {
             }
         });
 
-        jButton8.setText("Update Schedule");
+        jButton8.setText("Update Route");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);
@@ -254,18 +271,28 @@ public class CTCUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // jButton2 = Scheduled Closing
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) 
+    {
+        // this should pop up some sort of window to select blocks for closing
+        // TODO: Implement & perform some sort of scheduling mechanism
+        ArrayList<Integer> bIDs = new ArrayList<Integer>();
+        bIDs.add(0);
+        _controller.closeTrackSections(bIDs);
+    }
 
     // jButton1 = Dispatch Train
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) 
+    {
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // jButton3 = Emergency Closing
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        // this should pop up some sort of window to select blocks for closing
+        // TODO: Implement
+        ArrayList<Integer> bIDs = new ArrayList<Integer>();
+        bIDs.add(0);
+        _controller.closeTrackSections(bIDs);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     // jButton4 = ?
@@ -286,14 +313,58 @@ public class CTCUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     // jButton5 = setSpeed
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) 
+    {
+        // grab the value of the "speed" textfield, check it as it's converted to a Double, and if the speed is valid, pass along that info to the controller to handle
+        String speedText = jTextField1.getText();
+        Integer trainID = getCurrentTrainSelection();
+        if (trainID != null)
+        {
+            try
+            {
+                Double speed = Double.parseDouble(speedText);
+                _controller.setSpeedForTrain(trainID, speed);
+            }
+            catch(Exception e)
+            {
+                // right now, we'll fail silently. Could clear the field or reset it.
+            }
+        }
+    }
 
     // jButton6 = set authority
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt)
+    {
+        String authorityText = jTextField2.getText();
+        Integer trainID = getCurrentTrainSelection();
+        if (trainID != null)
+        {
+            if (_FixedBlockIsActive)
+            {
+                try
+                {
+                    Integer fixedAuthority = Integer.parseInt(authorityText);
+                    _controller.setAuthorityForTrain(trainID, fixedAuthority);
+                }
+                catch(Exception e)
+                {
+
+                }
+            }
+            else
+            {
+                try
+                {
+                    Double movingAuthority = Double.parseDouble(authorityText);
+                    _controller.setAuthorityForTrain(trainID, movingAuthority);
+                }
+                catch(Exception e)
+                {
+                    
+                }
+            }
+        }
+    }
 
     // jButton7 = Update Schedule
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
@@ -301,13 +372,56 @@ public class CTCUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     // jButton8 - Update Route
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton8ActionPerformed
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) 
+    {
+        // first check if the input is valid - should either be Route XX or XX
+        // TODO - actually implement above, since I forgot to add the text field
+        Integer blockID = 0;
+        int index;
+        // now, check if anything is selected
+        if (routeRowIsSelected)
+        {
+            index = selectedRouteRow;
+            _routeModel.insertElementAt((String) "Block " + blockID, index);
+        }
+        else // otherwise, set it to the length of the list
+        {
+            _routeModel.addElement((String) "Block " + blockID);
+        }
+        
+        // finally, clear the text
+        // which, again, I'll actually need to implement when I add the field...
+    }
+    
+    private void tableSelectionListener(javax.swing.event.ListSelectionEvent event)
+    {
+        // grab the row data and set it to the detail views
+        int row = event.getFirstIndex();
+        jTextField4.setText((String) _dataModel.getValueAt(row, 0)); // setting the train 
+        jTextField1.setText((String) _dataModel.getValueAt(row, 2)); // setting the speed
+        jTextField2.setText((String) _dataModel.getValueAt(row, 3)); // setting authority
+        jTextField3.setText((String) _dataModel.getValueAt(row, 4)); // setting station
+        
+        Integer tID = getCurrentTrainSelection((String) _dataModel.getValueAt(row, 0));
+        // strip the route list and rebuild it with the current selection
+        _routeModel.removeAllElements();
+        ArrayList<Integer> route = _controller.getRouteListingForTrain(tID);
+        for (Integer block : route)
+        {
+            _routeModel.addElement((String) "Block " + block);
+        }
+    }
+
+    private void listSelectionListener(javax.swing.event.ListSelectionEvent event)
+    {
+        selectedRouteRow = event.getFirstIndex();
+        routeRowIsSelected = true;
+    }
 
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField4ActionPerformed
+
 
     /**
      * @param args the command line arguments
@@ -337,11 +451,11 @@ public class CTCUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new CTCUI().setVisible(true);
-            }
-        });
+        // java.awt.EventQueue.invokeLater(new Runnable() {
+//             public void run() {
+//                 new CTCUI().setVisible(true);
+//             }
+//         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -365,4 +479,131 @@ public class CTCUI extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
+    
+    // helper methods for private use
+    private Integer getCurrentTrainSelection()
+    {
+        String trainText = jTextField4.getText();
+        String[] splitText = trainText.split(" ");
+        try
+        {
+            return Integer.parseInt(splitText[1]);
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+    
+    private Integer getCurrentTrainSelection(String selection)
+    {
+        String[] splitText = selection.split(" ");
+        try
+        {
+            return Integer.parseInt(splitText[1]);
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+    
+    private ArrayList<Object> parseValuesFromTrainModel( TrainViewModel train)
+    {
+        ArrayList<Object> vals = new ArrayList<Object>();
+        vals.add("Train " + train.getTrainID()); // train ID comes first
+        vals.add(train.getCurrentBlock());
+        vals.add(train.getSpeed());
+        if (_FixedBlockIsActive)
+        {
+            vals.add(train.getFixedBlockAuthority());
+        }
+        else
+        {
+            vals.add(train.getMovingBlockAuthority());
+        }
+        vals.add(train.getNextStation());
+        vals.add(train.getScheduleStatus());
+        
+        return vals;
+    }
+    
+    // access methods for Controller updating
+    public void setDataModelForTable( TrainViewModel train )
+    {
+        // check if it exists, first
+        boolean trainExists = false;
+        int   row = _dataModel.getRowCount();
+        for (int i = 0; i< _dataModel.getColumnCount(); i++)
+        {
+            if (getCurrentTrainSelection((String) _dataModel.getValueAt(i, 0)) == train.getTrainID() )
+            {
+                // it exists!
+                trainExists = true;
+                row = i;
+            }
+        }
+        
+        if (trainExists)
+        {
+            _dataModel.setValuesForRow(parseValuesFromTrainModel(train), row);
+        }
+        else
+        {
+            _dataModel.setValuesForRow(parseValuesFromTrainModel(train), row);
+        }
+    }
 }
+
+class TrainTableDataModel extends AbstractTableModel
+{
+    private String [] columnNames = new String[] { "Train #", "Location", "Speed", "Authority", "Next Station", "Schedule" };
+    private Object [][] data;
+    
+    public int getColumnCount()
+    {
+        return columnNames.length;
+    }
+    
+    public int getRowCount()
+    {
+        return data.length;
+    }
+    
+    public String getColumnName(int col)
+    {
+        return columnNames[col];
+    }
+    
+    // This method will be used to iterate through a selected row and populate the detail
+    public Object getValueAt(int row, int col)
+    {
+        return data[row][col];
+    }
+    
+    public boolean isCellEditable(int row, int col)
+    {
+        return false;
+    }
+    
+    // use this to update models that already exist
+    public void setValueAt(Object val, int row, int col )
+    {
+        data[row][col] = val;
+        fireTableCellUpdated(row, col);
+    }
+    
+    // use this to update an entire row at once
+    public void setValuesForRow(ArrayList<Object> vals, int row)
+    {
+        // perform a check to ensure lengths are equals
+        if (vals.size() == getColumnCount())
+        {
+            for (int i = 0; i < vals.size(); i++)
+            {
+                setValueAt(vals.get(i), row, i);
+            }
+        }
+    } 
+}
+

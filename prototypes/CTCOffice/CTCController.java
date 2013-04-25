@@ -16,6 +16,7 @@ public class CTCController implements constData
     private ControllerList _controllerList;
     private ScheduleViewModel _schedule;
     private Integer _trainCount = 0;
+    private CTCUI _CTCInterface;
     
     CTCController ( CTCMessageServer msgServer ) 
     {
@@ -24,6 +25,7 @@ public class CTCController implements constData
         _blockList = new BlockList( this );
         _controllerList = new ControllerList ( this );
         _schedule = new ScheduleViewModel( this );
+        _CTCInterface = new CTCUI( this );
     }
     
     // Inbound handlers
@@ -140,5 +142,45 @@ public class CTCController implements constData
         Module destination = Module.trackModel;
         msg type = msg.CTC_TcMd_Send_Track_Opening;
         _msgServer.composeMessage(destination, type, data);
+    }
+    
+    public ArrayList<TrainViewModel> getTrainList ()
+    {
+        if (_trainList.trainCount() > 0)
+        {
+            return _trainList.getTrains(); // returns array list of train view models
+        }
+        else
+        {
+            return null; // be sure to check for this when called
+        }
+    }
+    
+    public void setSpeedForTrain ( Integer tID, Double speed )
+    {
+        // GUI calls this to set the speed of a train, so that controller can handle all the necessary interactions that must occur. Namely, a message must be sent and a model must be updated.
+        
+        _trainList.getTrain(tID).setSpeed(speed);
+        _CTCInterface.setDataModelForTable(_trainList.getTrain(tID));
+        sendManualSpeed(speed, tID);
+    }
+    
+    public void setAuthorityForTrain ( Integer tID, Double authority)
+    {
+        _trainList.getTrain(tID).setMovingBlockAuthority(authority);
+        _CTCInterface.setDataModelForTable(_trainList.getTrain(tID));
+        sendManualMovingBlockAuthority(authority, tID);
+    }
+    
+    public void setAuthorityForTrain( Integer tID, Integer authority)
+    {
+        _trainList.getTrain(tID).setFixedBlockAuthority(authority);
+        _CTCInterface.setDataModelForTable(_trainList.getTrain(tID));
+        sendManualFixedBlockAuthority(authority, tID);
+    }
+    
+    public ArrayList<Integer> getRouteListingForTrain( Integer tID )
+    {
+        return _trainList.getTrain(tID).getRouteListing();
     }
 }
