@@ -1,4 +1,8 @@
-// TODO: Implement Route, Schedule, nextBlock
+/*
+ * Author: Sean Moore
+ * Last Updated: 4/25/13
+ * Purpose: Virtual model for trains (local access of variables)
+ */
 
 package TLTTC;
 import java.util.*;

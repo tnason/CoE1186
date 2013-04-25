@@ -1,5 +1,7 @@
 /*
- *
+ * Author: Sean Moore
+ * Last Updated: 4/25/13
+ * Purpose: Container for all the block objects
  */
 
 // Imports and Packages

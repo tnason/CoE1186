@@ -1,5 +1,7 @@
 /*
- *
+ * Author: Sean Moore
+ * Last Updated: 4/21/13
+ * Purpose: Routing all inbound/ outbound messages, updating view, and keeping data models in sync with other systems. this is the BIG DOG.
  */
 
 // Imports and Packages
