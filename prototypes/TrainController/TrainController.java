@@ -97,6 +97,7 @@ public class TrainController
 		{
 		  uk = uk + (T/2.0)*(ek + (velocitySetpoint - velocity));
 		}
+
 		ek = velocitySetpoint - velocity; // Calculates proportional gain
 		power = ((KP*ek)+(KI*uk)); // Calculates power
 		if (power < power2*0.8 || power > power2*1.2) // If redundant power does not agree with this power by +/-20%, stop train

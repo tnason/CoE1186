@@ -271,10 +271,10 @@ public class TrainModel implements constData
 		acceleration = endAccel;
 	    
         stepCounter++;
-		if(stepCounter % 50 == 0)
+		/*if(stepCounter % 50 == 0)
 		{
 		System.out.println("!!TRAIN  MOTION___: p: " + position + " v: " + velocity + " a: " + acceleration);
-		}
+		}*/
 
 
 		time += actualTimeStep;

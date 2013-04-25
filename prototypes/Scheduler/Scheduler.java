@@ -136,7 +136,7 @@ public class Scheduler extends Worker implements Runnable, constData
 	    {
 		    route.routeTrains(time, greenTrains, schedule);
 		    route.routeTrains(time, redTrains, schedule);
-		    System.out.println(route);
+		    System.out.println("ROUTE! " + route);
 		}
 		catch (Exception e)
 		{
