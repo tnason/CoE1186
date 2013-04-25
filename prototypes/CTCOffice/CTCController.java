@@ -114,6 +114,7 @@ public class CTCController implements constData
         msg type = msg.CTC_TnMd_Request_Train_Creation;
         _msgServer.composeMessage(destination, type, data);
         _trainList.addTrain(_trainCount, line);
+        _CTCInterface.setDataModelForTable(_trainList.getTrain(_trainCount));
         _trainCount++;
     }
     
