@@ -63,10 +63,20 @@ public class TrackModel extends Worker implements Runnable, constData
     
     private LinkedBlockingQueue<Message> msgs;
     private Module name = Module.trackModel;
+    TrackModelUI userInterface;
 
     public void run() {
+
+        long refreshRender = System.currentTimeMillis()+1000;
         while (true) 
         {
+            if(System.currentTimeMillis() > refreshRender)
+            {
+                userInterface.refresh();
+                refreshRender = System.currentTimeMillis() + 1000;
+            }
+
+
             if(msgs.peek() != null)
             {
                 Message m = msgs.poll();
@@ -100,20 +110,21 @@ public class TrackModel extends Worker implements Runnable, constData
         }
     }
 
-    TrackModelUI userInterface;
+
+/*
     static TrackModelUI staticUI; 
 
     public static void refreshView()
     {
         staticUI.refresh();
     }
-
+*/
     public void init()
     {
 	    TrackModelForm form = new TrackModelForm();
     	form.setVisible(true);
 	    userInterface = new TrackModelUI();
-    	staticUI = userInterface;
+    	//staticUI = userInterface;
 
         try
         {
@@ -223,6 +234,8 @@ public class TrackModel extends Worker implements Runnable, constData
                 i++;
             }
 
+        System.out.println("\n\nshit+"+blocks.get(63)+"\n\n");
+
 
 		blocks.get(13).setOccupation(true);
 
@@ -257,74 +270,9 @@ public class TrackModel extends Worker implements Runnable, constData
 	    
 
             System.out.println(e.getMessage());
-            /*    
-	    Node node1 = new YardNode(0,0,0);
-            Node node2 = new ConnectorNode(200,0,0);
-            Node node3 = new ConnectorNode(400,0,1);
-            Node node4 = new ConnectorNode(600,0,2);
-            Node node5 = new ConnectorNode(800,0,2);
-            Node node6 = new SwitchNode(1000,0,1);
-            Node node7 = new ConnectorNode(1200,0,0);
-            Node node8 = new YardNode(1400,0,0);            
-            
-            nodes.put(1, node1);
-            nodes.put(2, node2);            
-            nodes.put(3, node3);
-            nodes.put(4, node4);
-            nodes.put(5, node5);
-            nodes.put(6, node6);
-            nodes.put(7, node7);
-            nodes.put(8, node8);            
-            
-            
-            LinearBlock block1 = new LinearBlock(node1, node2, 1 , 0 );
-            LinearBlock block2 = new LinearBlock(node2, node3, 2 , 0);
-            LinearBlock block3 = new LinearBlock(node3, node4, 3 , 0 );
-            LinearBlock block4 = new LinearBlock(node4, node5, 4 , 0 );
-            LinearBlock block5 = new LinearBlock(node5, node6, 5 , 1 );
-            LinearBlock block6 = new LinearBlock(node6, node7, 6 , 1 );
-            LinearBlock block7 = new LinearBlock(node7, node8, 7 , 1 );
-
-            node1.setOutput(block1);
-
-            node2.setInput(block1);
-            node2.setOutput(block2);
-
-            node3.setInput(block2);
-            node3.setOutput(block3);
-
-            node4.setInput(block3);
-            node4.setOutput(block4);
-
-            node5.setInput(block4);
-            node5.setOutput(block5);
-
-            node6.setInput(block5);
-            node6.setOutput(block6);
-
-            node7.setInput(block6);
-            node7.setOutput(block7);
-
-            node8.setInput(block7);
-
-
-
-            block4.addController(1);
-            
-            blocks.put(1, block1);
-            blocks.put(2, block2);
-            blocks.put(3, block3);
-            blocks.put(4, block4);  
-            blocks.put(5, block5);
-            blocks.put(6, block6);            
-            blocks.put(7, block7);
-	    */
         }
-    	
-    
     }
 
-///*  
     public void setMsg(Message m) 
     {
         msgs.add(m);

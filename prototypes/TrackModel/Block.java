@@ -83,12 +83,12 @@ public abstract class Block {
 
 	public void setOccupation(boolean state){
 		occupied = state;
-		TrackModel.refreshView();
+		//TrackModel.refreshView();
 	}
 
 	public void setMaintenance(boolean state){
 		maintenance = state;
-		TrackModel.refreshView();
+		//TrackModel.refreshView();
 	}
 
 	public boolean getMaintenance()
