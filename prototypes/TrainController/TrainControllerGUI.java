@@ -59,7 +59,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         
         (new Thread(new UpdateGUI())).start();
     }
-    @SuppressWarnings("deprecation")
+
     
     private void refreshUI(){
         if (!noTrains)
@@ -90,7 +90,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         } 
     }
     
-    
+    @SuppressWarnings("deprecation")
     public void addRow(Date date, double vel, double setpt, double pow)
     {
         model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
