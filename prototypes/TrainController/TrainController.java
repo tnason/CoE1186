@@ -1,3 +1,9 @@
+/*
+ * Author(s): Ben Kisley
+ * Updated: 04 - 25- 2013
+ * Purpose: This class is the train controller for a specific train.
+*/
+
 package TLTTC;
 
 import java.util.*;
