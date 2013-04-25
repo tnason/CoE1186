@@ -54,12 +54,12 @@ public class TrackController extends Worker implements constData, Runnable
             }
             else if(m.getType() == msg.TnMd_CTC_Send_Block_Occupied)
             {
-              m.addData("isStation", (Object) (allBlocks.get(m.getData().get("blockId")).isStation()));
+              m.addData("isStation", (Object) (allBlocks.get(m.getData().get("blockID")).isStation()));
 
               try
               {
                 // get block being traversed and let PLC handle crossings
-                Block currentBlock = allBlocks.get(m.getData().get("blockId"));
+                Block currentBlock = allBlocks.get(m.getData().get("blockID"));
                 myPlcClass.getMethod("handleCrossing", Block.class).invoke(myPLC, currentBlock);
 
                 myPlcClass.getMethod("checkTrack", Hashtable.class, Hashtable.class,  Block.class).invoke(myPLC, oldBlocks, allBlocks, currentBlock);
@@ -77,7 +77,7 @@ public class TrackController extends Worker implements constData, Runnable
             }
             else if(m.getType() == msg.TnMd_TcCt_Update_Block_Occupancy)
             {
-                Block currentBlock = allBlocks.get(m.getData().get("blockId"));
+                Block currentBlock = allBlocks.get(m.getData().get("blockID"));
                 myPlcClass.getMethod("handleCrossing", Block.class).invoke(myPLC, currentBlock);
 
                 gui.refresh();  // update the gui after state changes
