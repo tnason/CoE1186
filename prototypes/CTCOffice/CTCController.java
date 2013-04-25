@@ -26,6 +26,7 @@ public class CTCController implements constData
         _controllerList = new ControllerList ( this );
         _schedule = new ScheduleViewModel( this );
         _CTCInterface = new CTCUI( this );
+        _CTCInterface.setVisible(true);
     }
     
     // Inbound handlers
