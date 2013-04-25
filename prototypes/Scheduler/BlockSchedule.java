@@ -1,5 +1,7 @@
 package TLTTC;
 
+import java.sql.*;
+
 public class BlockSchedule
 {
   private long entryTime;
@@ -94,8 +96,8 @@ public class BlockSchedule
 		String s = "Block: " + block;
 		s = s.concat("\nPrevious Node: " + previousNode);
 		s = s.concat("\nNext Node: " + nextNode);
-		s = s.concat("\nEntry Time: " + entryTime);
-		s = s.concat("\nExit Time: " + (traverseTime + entryTime));
+		s = s.concat("\nEntry Time: " + new Time(entryTime));
+		s = s.concat("\nExit Time: " + new Time(traverseTime + entryTime));
 		s = s.concat("\nSpeed: " + speed);
 
 		return s;

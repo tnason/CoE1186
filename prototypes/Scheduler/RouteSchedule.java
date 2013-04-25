@@ -23,7 +23,7 @@ public class RouteSchedule
 		
 		for(int i = 1; i < nodes.length - 1;i++)
 		{
-			nodes[i]= new ConnectorNode(i * i, i * i, i * i);
+			nodes[i]= new ConnectorNode(i * i * i * i * i, i * i * i * i * i, i * i * i * i * i);
 		}
 
 		nodes[nodes.length - 1] = new YardNode((nodes.length - 1) * (nodes.length - 1), (nodes.length - 1) * (nodes.length - 1), (nodes.length - 1) * (nodes.length - 1));
@@ -39,10 +39,12 @@ public class RouteSchedule
 		schedule.add("first","last",0,System.currentTimeMillis(),OperatorStatus.SHIFTFIRSTHALF);
 
 		train.get(0).setBlock(blocks[0], nodes[0], nodes[1], 0);
+
+		train.add(new Train(1, 0));
+		schedule.add("first","last",1,System.currentTimeMillis(),OperatorStatus.SHIFTFIRSTHALF);
+
+		train.get(1).setBlock(blocks[1], nodes[1], nodes[2], 0);
 		
-
-		ROUTE_LENGTH = 10 * 1000;
-
 		rs.routeTrains(System.currentTimeMillis(), train, schedule);		
 
 		System.out.println(rs.toString());
@@ -156,6 +158,7 @@ public class RouteSchedule
 			Block block = previousNode.getNextBlock(train.getBlock());
 			Node nextNode = block.getNextNode(previousNode);
 			tr.add(new BlockSchedule(start + t, 0, RouteSchedule.PERCENT_SPEED * block.getSpeedLimit(), block, previousNode, nextNode));
+
 			if(!add(tr))
 			{
 				throw new Exception("Schedule has duplicate operators!!!");
@@ -192,7 +195,6 @@ public class RouteSchedule
 
 			for(int i = 0; i < trainRoute.length; i++)
 			{
-				System.out.println(i + "\n");
 				Block block;
 				Node previousNode;
 				Node nextNode;
@@ -271,7 +273,11 @@ public class RouteSchedule
 						temp = new BlockSchedule(entryTime + traverseTime, 0, RouteSchedule.PERCENT_SPEED * block.getSpeedLimit(), block, previousNode, nextNode);
 					}
 
-					if(block != null && !isRearCollision(i, trainRoute, block, previousNode, entryTime, traverseTime))
+					if(block == null)
+					{
+						trainRoute[i].set(start[i], temp);
+					}
+					else if(!isRearCollision(i, trainRoute, block, previousNode, entryTime, entryTime))
 					{
 						if(start[i] < size - 1)
 						{
