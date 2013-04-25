@@ -1,7 +1,7 @@
 /*
 * Author(s): Cameron Dashti
 * Updated: 25 – 4 – 2013
-* Purpose: …
+* Purpose: Simulate PLC program that runs on the track controller
 */
 
 package TLTTC;
