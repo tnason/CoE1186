@@ -4,7 +4,6 @@
  * Purpose: This class is the GUI for the train controller.
 */
 
-
 package TLTTC;
 
 import javax.swing.*;
