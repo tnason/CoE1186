@@ -16,27 +16,9 @@ public class TrackModelUI
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	
-		/*TrackRenderComponent*/ renderer = new TrackRenderComponent();
+		renderer = new TrackRenderComponent();
 		frame.getContentPane().add(renderer);
 
-		/* --example for reference
-		//basic tests to see how linear blocks render
-		ConnectorNode cn1 = new ConnectorNode(0,0,0);
-		ConnectorNode cn2 = new ConnectorNode(100,0,0);
-		ConnectorNode cn3 = new ConnectorNode(100,100,0);
-		ConnectorNode cn4 = new ConnectorNode(300,300,0);
-
-		LinearBlock lb1 = new LinearBlock(cn1, cn2, 0, 0);
-		LinearBlock lb2 = new LinearBlock(cn2, cn3, 0, 0);
-		LinearBlock lb3 = new LinearBlock(cn3, cn4, 0, 0);
-
-		lb2.setOccupation(true);
-
-		renderer.addBlock(lb1);
-		renderer.addBlock(lb2);
-		renderer.addBlock(lb3);
-		renderer.repaint();
-		*/
 	}
 	
 	public void addBlockToRender( LinearBlock block )

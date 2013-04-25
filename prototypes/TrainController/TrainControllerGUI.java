@@ -73,7 +73,8 @@ public class TrainControllerGUI extends JFrame implements Runnable {
             pickupFailureText.setBackground(tc.getSignalPickupFail() == true ? Color.RED : Color.GRAY);
             brakeFailureText.setBackground(tc.getBrakeFail() == true ? Color.RED : Color.GRAY);
             model = (javax.swing.table.DefaultTableModel) powerTable.getModel();
-            model.addRow(new Object[]{"time", tm.getVelocity()*2.23694, tc.getVelocitySetpoint()*2.23694, tc.getPower()});
+            Calendar cal = Calendar.getInstance();
+            model.addRow(new Object[]{new String(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE )), tm.getVelocity()*2.23694, tc.getVelocitySetpoint()*2.23694, tc.getPower()});
             powerTable.getSelectionModel().setSelectionInterval(powerTable.getRowCount()-1, powerTable.getRowCount()-1);
             powerTable.scrollRectToVisible(powerTable.getCellRect(powerTable.getRowCount()-1, 0, true));
         }
@@ -114,7 +115,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     
     
     @SuppressWarnings("serial")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         trainContDropdown = new javax.swing.JComboBox<Integer>();
@@ -581,7 +582,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         );
 
         pack();
-    }// </editor-fold>
+    }// </editor-fold>                        
     
     private void trainContDropdownActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         if (!noTrains){
@@ -665,7 +666,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
         }
     }                                                
 
-    // Variables declaration - do not modify
+    // Variables declaration - do not modify                     
     private javax.swing.JButton accelerateButton;
     private javax.swing.JLabel authorityLabel;
     private javax.swing.JTextField authorityText;
@@ -702,7 +703,7 @@ public class TrainControllerGUI extends JFrame implements Runnable {
     private javax.swing.JLabel velocityLabel;
     private javax.swing.JSpinner velocitySetter;
     private javax.swing.JTextField velocityText;
-    // End of variables declaration
+    // End of variables declaration                   
 
 private class UpdateGUI implements Runnable {
     public void run() {

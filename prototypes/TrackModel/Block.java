@@ -153,6 +153,16 @@ public abstract class Block {
 	public Node getStopNode(){
 		return stopNode;
 	}
+
+	public void setStartNode(Node start)
+	{
+		startNode = start;
+	}
+
+	public void setStopNode(Node stop)
+	{
+		stopNode = stop;
+	}
 	
 	public int getAllowedDirection(){
 		return allowedDirections;
