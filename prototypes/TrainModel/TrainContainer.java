@@ -24,7 +24,7 @@ public class TrainContainer extends Worker implements Runnable, constData
 	private int motionStepCount = 0;
 
 	private TrainControllerModule trc;
-	private TrackModelModule tkm;
+	private TrackModel tkm;
 	private SatelliteContainer satc;
 
 	//For now, simulationSpeedup = (trainTimestep * 1000) / timerTrigger
@@ -58,12 +58,12 @@ public class TrainContainer extends Worker implements Runnable, constData
 				if(tm.whiteFlag)
 				{
 					//kill it!
-					tkm.destroyTrainController(trainID);
+					trc.destroyTrainController(trainID);
 					trains.remove(trainID);
 				}
 				else if(tm.newBlockFlag)
 				{
-					tm.updateTrainController(tm.trainID, tm.newBlock);
+					updateTrainController(tm.getID(), tm.newBlock);
 					tm.newBlockFlag = false;
 				}
 				else
@@ -78,16 +78,16 @@ public class TrainContainer extends Worker implements Runnable, constData
 	public TrainModel newTrain(int TrainID, Block start, Node n, double step)
 	{
 		//make a new satellite, pass it to the train constructor and add i to the satellite container list
-		Satellite sat;
+		SatelliteInstance sat;
 
 		TrainModel tr = new TrainModel(TrainID, start, n, step);
 		sat = satc.addSatellite(tr);
 		tr.setSatellite(sat);
 		trains.put(TrainID, tr);
-		return n;
+		return tr;
 	}
 
-	public void init(TrainControllerModule other, TrackModelModule tkm, SystemClock sys, SatelliteContainer satc)
+	public void init(TrainControllerModule other, TrackModel tkm, SystemClock sys, SatelliteContainer satc)
 	{
 		trc = other;
 		this.tkm = tkm;

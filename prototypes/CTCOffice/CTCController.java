@@ -139,7 +139,7 @@ public class CTCController implements constData
         _msgServer.composeMessage(destination, type, data);   
     }
     
-    public void openTrackSections ( ArrayList<int> bIDs )
+    public void openTrackSections ( ArrayList<Integer> bIDs )
     {
         Hashtable<String, Object> data = new Hashtable<String, Object>();
         data.put("blockIDs", bIDs);

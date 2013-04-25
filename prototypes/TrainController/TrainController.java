@@ -141,6 +141,16 @@ public class TrainController
 	pow = ((uK*KI)+(eK*KP));
 	return pow;
   }
+
+  public void setDoors()
+  {
+	setDoors(tm.getDoors());
+  }
+
+  public void setLights()
+  {
+	setLights(tm.getLights());
+  }
   
   
   public void setDoors(boolean automatic) // This method is called every time the train enters a new block or manually
@@ -290,7 +300,7 @@ public class TrainController
   //For stopping before a station....
   public double getStoppingDistance()
   {
-	return (.5*velocity*velocity)/(trainBrakeAccel /*1.2 m/s^2*/); //returns stopping distance in meters  
+	return (.5*velocity*velocity)/(1.2); //returns stopping distance in meters  
   } 
   
   public void setGpsConnected(boolean s)

@@ -2,7 +2,11 @@ package TLTTC;
 
 public interface constData
 {
+<<<<<<< HEAD
 	public final double trainBrakeAccel = 1.2; //m/s^2 
+=======
+	public double trainBrakeAccel = 1.2; //m/s^2 
+>>>>>>> fixed my stuff
 
 	public enum Module
 	{

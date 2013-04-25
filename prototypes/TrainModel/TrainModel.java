@@ -17,7 +17,7 @@ public class TrainModel implements constData
 	public boolean newBlockFlag = false;
 	public Block newBlock;
 
-	private Satellite sat; 
+	private SatelliteInstance sat; 
 
 
 	private boolean fromYard;
@@ -63,7 +63,7 @@ public class TrainModel implements constData
 
 	private final double trainFriction = .001; //coefficient of friction of rolling steel wheels
 
-	private final double trainBrake = trainBrakeAccel; //1.2 m/s^2
+	private final double trainBrake = 1.2; //1.2 m/s^2
 	private final double trainEmergencyBrake = 2.73; //in m/s^2
 
 	private final double gravity = 9.81; //in m/s^2
@@ -98,7 +98,7 @@ public class TrainModel implements constData
 		currentNode = yard;
 	}
 
-	public void setSatellite(Satellite s)
+	public void setSatellite(SatelliteInstance s)
 	{
 		sat = s;
 	}
@@ -108,8 +108,10 @@ public class TrainModel implements constData
 		if(change < crewCount)
 		{
 			crewCount += change;
+			calculateMass();
+			return change;
 		}
-
+		return 0;
 	}
 
 	public int changePassengers(int change)
@@ -117,8 +119,10 @@ public class TrainModel implements constData
 		if(change < passengerCount)
 		{
 			passengerCount += change;
+			calculateMass();
+			return change;
 		}
-
+		return 0;
 	}
 
 	private double calculateMass()
@@ -159,6 +163,12 @@ public class TrainModel implements constData
 	public boolean setEmergencyBrake(boolean brake) 
 	{
 		return trainEmergencyBrakeOn = brake;
+	}
+
+
+	public int getID()
+	{
+		return trainID;
 	}
 
 	//for motion debugging
