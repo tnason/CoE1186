@@ -1,6 +1,7 @@
 package TLTTC;
 
 import java.util.*;
+import java.sql.*;
 
 public class TrainRoute
 {
@@ -22,8 +23,8 @@ public class TrainRoute
 	public String toString()
 	{
 		String s = "Train Number: " + trainNumber;
-		s = s.concat("\nStart Time: " + startTime);
-		s = s.concat("\nYard time: " + yardTime);
+		s = s.concat("\nStart Time: " + new Time(startTime));
+		s = s.concat("\nYard time: " + new Time (yardTime));
 		s = s.concat("\nRoute Duration: " + duration);
 
 		for(int i = 0; i< route.size(); i++)
