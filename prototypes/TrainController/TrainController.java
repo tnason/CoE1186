@@ -62,9 +62,9 @@ public class TrainController
 
         // Test variables -- Remove later
         velocity = 0;
-        trainOperatorVelocity = 14;
-        ctcOperatorVelocity = 1000;
-        trackLimit = 14;
+        trainOperatorVelocity = 15;
+        ctcOperatorVelocity = 6;
+        trackLimit = 15;
 
         fixedBlockAuth = 1400;
         ctcFixedBlockAuth = 1400;
