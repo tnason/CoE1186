@@ -196,6 +196,7 @@ public class TrainController
   {
     /*if (automatic && !oldNextStation.equals(nextStation)) // If a new station name is processed, automatically announce it
     {
+    	oldNextStation = nextStation;
         VoiceManager voiceManager = VoiceManager.getInstance();
         Voice speaker = voiceManager.getVoice("kevin16");
         speaker.allocate();
